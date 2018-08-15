@@ -9,5 +9,5 @@
     <color name="colorLightGrey">#BDBDBD</color>
     <color name="colorGrey">#999999</color>
     <color name="colorTextGray">#939393</color>
-
+    <color name="colorTransparent">#00ffffff</color>
 </resources>
