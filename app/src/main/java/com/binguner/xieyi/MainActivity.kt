@@ -146,7 +146,7 @@ class MainActivityUI: AnkoComponent<MainActivity>{
 
             val fragmentContainer = frameLayout {
                 id = id_fragmentscontainer
-                backgroundColor = Color.RED
+                backgroundColor = Color.TRANSPARENT
             }.lparams(width = matchParent, height = dip(0)){
                 //topToBottom = id_shadow_line
                 bottomToTop = id_btn3
