@@ -21,6 +21,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".activities.CreateProtocolActivity" />
+        <activity android:name=".activities.SettingActivity"></activity>
     </application>
 
 </manifest>

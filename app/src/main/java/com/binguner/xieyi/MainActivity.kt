@@ -196,7 +196,7 @@ class MainActivityUI: AnkoComponent<MainActivity>{
         btnList.get(1).setImageResource(R.drawable.ic_arrow_up_drop_circle_black_24dp_noneselected)
         btnList.get(2).setImageResource(R.drawable.ic_account_black_24dp_noneselected)
         if (mfragmentManager != null) {
-            Log.d("MaintActivityTag","fm not null")
+            //Log.d("MaintActivityTag","fm not null")
             val ft = mfragmentManager?.beginTransaction()
             ft?.hide(homeFragment)?.hide(createProtocolFragment)?.hide(personFragment)?.commit()
         }
@@ -204,19 +204,19 @@ class MainActivityUI: AnkoComponent<MainActivity>{
             id_btn1 -> {
                 selectedBtn.setImageResource(R.drawable.ic_home_black_24dp_selected)
                 mfragmentManager?.beginTransaction()?.show(homeFragment)?.commit()
-                mfragmentManager?.beginTransaction()?.hide(createProtocolFragment)?.hide(personFragment)?.commit()
+                //mfragmentManager?.beginTransaction()?.hide(createProtocolFragment)?.hide(personFragment)?.commit()
                 mtablayout?.visibility = View.VISIBLE
             }
             id_btn2 -> {
                 selectedBtn.setImageResource(R.drawable.ic_arrow_up_drop_circle_black_24dp_selected)
                 mfragmentManager?.beginTransaction()?.show(createProtocolFragment)?.commit()
-                mfragmentManager?.beginTransaction()?.hide(homeFragment)?.hide(personFragment)?.commit()
+                //mfragmentManager?.beginTransaction()?.hide(homeFragment)?.hide(personFragment)?.commit()
                 mtablayout?.visibility = View.INVISIBLE
             }
             id_btn3 -> {
                 selectedBtn.setImageResource(R.drawable.ic_account_black_24dp_selected)
                 mfragmentManager?.beginTransaction()?.show(personFragment)?.commit()
-                mfragmentManager?.beginTransaction()?.hide(homeFragment)?.hide(createProtocolFragment)?.commit()
+                //mfragmentManager?.beginTransaction()?.hide(homeFragment)?.hide(createProtocolFragment)?.commit()
                 mtablayout?.visibility = View.INVISIBLE
 
             }
