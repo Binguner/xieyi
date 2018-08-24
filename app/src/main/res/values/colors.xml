@@ -13,4 +13,6 @@
     <color name="colorGrey">#999999</color>
     <color name="colorTextGray">#939393</color>
     <color name="colorTransparent">#00ffffff</color>
+    <color name="colorAlertDialogContentBackground">#FAFAFA</color>
+    <color name="colorAlertDialogToolbar">#EEEEEE</color>
 </resources>
