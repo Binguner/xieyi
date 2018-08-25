@@ -34,6 +34,10 @@ dependencies {
     implementation 'com.squareup.picasso:picasso:2.5.2'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
 
+    //implementation 'com.zhihu.android:matisse:$latest_version'
+    //implementation 'com.zhihu.android:matisse:0.5.1'
+    implementation 'com.lzy.widget:imagepicker:0.6.1'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

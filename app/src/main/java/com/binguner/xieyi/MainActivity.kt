@@ -1,5 +1,8 @@
 package com.binguner.xieyi
 
+import android.Manifest
+import android.app.Activity
+import android.content.pm.PackageManager
 import android.support.v4.app.Fragment
 import android.graphics.Color
 import android.media.Image
@@ -13,6 +16,7 @@ import org.jetbrains.anko.constraint.layout.applyConstraintSet
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.constraint.layout.ConstraintSetBuilder.Side.*
 import android.support.constraint.ConstraintSet.PARENT_ID
+import android.support.v4.app.ActivityCompat
 import android.support.v4.app.FragmentManager
 import android.support.v4.content.ContextCompat
 import android.support.v4.content.ContextCompat.getColor
@@ -22,6 +26,7 @@ import android.view.ViewManager
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TableLayout
+import com.binguner.xieyi.activities.type
 import com.binguner.xieyi.fragments.CreateProtocolFragment
 import com.binguner.xieyi.fragments.HomeFragment
 import com.binguner.xieyi.fragments.PersonFragment
@@ -40,6 +45,25 @@ class MainActivity : AppCompatActivity() {
         MainActivityUI().setContentView(this)
         setTransparentStatusbar();
         initFragments()
+        askPermission()
+    }
+
+    private fun askPermission() {
+        var permissionid = -1
+        if(ContextCompat.checkSelfPermission(this,Manifest.permission.INTERNET) != PackageManager.PERMISSION_GRANTED){
+            permissionid = 0
+        }
+        if(ContextCompat.checkSelfPermission(this,Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            permissionid = 1
+        }
+        if(ContextCompat.checkSelfPermission(this,Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            permissionid = 2
+        }
+        when(permissionid){
+            0 -> ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.INTERNET),1)
+            1 -> ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),1)
+            2 -> ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),1)
+        }
     }
 
     private fun initFragments() {
