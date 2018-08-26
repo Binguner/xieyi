@@ -16,14 +16,19 @@
         <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustResize|stateHidden">
+
+
+        </activity>
+        <activity android:name=".activities.CreateProtocolActivity" />
+        <activity android:name=".activities.SettingActivity" />
+        <activity android:name=".LoginActivity">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.CreateProtocolActivity" />
-        <activity android:name=".activities.SettingActivity"></activity>
     </application>
 
 </manifest>
