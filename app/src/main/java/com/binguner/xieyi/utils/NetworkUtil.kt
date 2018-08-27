@@ -12,7 +12,8 @@ class NetworkUtil{
         }
 
         fun isAvailable(context: Context):Boolean{
-            
+            var networkInfo: NetworkInfo = getActivitveNetworkInfo(context)
+            return networkInfo != null && networkInfo.isAvailable
         }
     }
 }
