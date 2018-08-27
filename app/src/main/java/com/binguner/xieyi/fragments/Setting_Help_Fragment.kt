@@ -84,6 +84,15 @@ class SettingHelpFragmentUI:AnkoComponent<Setting_Help_Fragment>{
                 leftMargin = dip(10)
             }
 
+            textView(){
+                text = "使用帮助"
+            }.lparams(){
+                topToTop = id_help_toolbar
+                bottomToBottom = id_help_toolbar
+                startToStart = id_help_toolbar
+                endToEnd = id_help_toolbar
+            }
+
             val help_shadow = include<View>(R.layout.shadow_line){
                 id = id_help_shadow
             }.lparams(width = matchParent){
