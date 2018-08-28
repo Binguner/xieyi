@@ -40,6 +40,7 @@ class SettingActivity : AppCompatActivity() {
         SettingActivityUI().setContentView(this)
         StatusBarUtil.setStatusBarColor(this,R.color.colorWhite)
         StatusBarUtil.setStatusBarTextBalck(this)
+        //setContentView()
 
          flag = intent.extras.getInt("flag")
         initFragments()

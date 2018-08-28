@@ -2,6 +2,7 @@ package com.binguner.xieyi
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.ResultReceiver
 import android.renderscript.ScriptGroup
 import android.support.constraint.ConstraintSet.INVISIBLE
 import android.support.constraint.ConstraintSet.PARENT_ID
@@ -14,6 +15,7 @@ import android.text.method.TransformationMethod
 import android.util.Log
 import android.view.View
 import com.binguner.xieyi.RxUtils.HttpClient
+import com.binguner.xieyi.listeners.ResultListener
 import com.binguner.xieyi.utils.StatusBarUtil
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
@@ -144,7 +146,7 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                             1 -> {
                                 username = this@editText.text.toString()
                                 if(username.equals("")){
-                                    toast("请输入用户名！")
+                                   //toast("请输入用户名！")
                                 }else{
                                     username = this@editText.text.toString()
                                 }
@@ -152,7 +154,7 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                             2 -> {
                                 password = this@editText.text.toString()
                                 if(password.equals("")){
-                                    toast("请输入密码！")
+                                    //toast("请输入密码！")
                                 }else{
                                     password = this@editText.text.toString()
                                 }
@@ -255,14 +257,29 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                                 app_phone_pass_name_text.text = "密码"
                                 app_phone_pass_name_ed.hint = "请输入密码"
                                 app_phone_pass_name_ed.transformationMethod = PasswordTransformationMethod.getInstance()
+                            }else{
+                                toast("请输入用户名！")
                             }
 
                         }
                         type_passwor -> {
                             if(!password.equals("")){
                                 Log.d("LogingaTag","phonenumber = $phoneNumber, password = $password, username = $username")
-                                httpClient.doRegister(phoneNumber, username, password)
+                                httpClient.doRegister(phoneNumber, username, password,object: ResultListener {
+                                    override fun postResullt(resultType: Int, msg: String) {
+                                        when(resultType){
+                                            ResultListener.succeedType -> {
+                                                toast(msg)
+                                            }
+                                            ResultListener.errorType -> {
+                                                toast(msg)
+                                            }
+                                        }
+                                    }
+                                })
                                 //startActivity<MainActivity>()
+                            }else{
+                                toast("请输入密码！")
                             }
                         }
                     }

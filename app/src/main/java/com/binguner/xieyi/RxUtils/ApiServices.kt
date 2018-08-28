@@ -8,7 +8,7 @@ import java.util.*
 interface ApiServices{
 
     companion object {
-        val BASE_URL = "39.106.122.7:3001/api/v1/"
+        val BASE_URL = "39.106.122.7:3000/api/v1/"
     }
 
     // Register

@@ -92,7 +92,7 @@ class HttpClient(context: Context){
 
         val retrofit = Retrofit.Builder()
                 .client(getNewClient(context))
-                .baseUrl("http://39.106.122.7:3001/api/v1/")
+                .baseUrl("http://39.106.122.7:3000/api/v1/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 //.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -112,14 +112,14 @@ class HttpClient(context: Context){
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
                 .subscribe({
-                    Log.d("fmosanfaus",it.message)
-                },{
-                    Log.d("fmosanfaus",it.toString())
-                    resultListener.postResullt(ResultListener.errorType)
-                }, {
-                    Log.d("fmosanfaus","onCompliated")
-                    resultListener.postResullt(ResultListener.succeedType)
+                    //Log.d("fmosanfaus",it.message)
 
+                },{
+                    //Log.d("fmosanfaus",it.toString())
+                    resultListener.postResullt(ResultListener.errorType,it.message!!)
+                }, {
+                    //Log.d("fmosanfaus","onCompliated")
+                    resultListener.postResullt(ResultListener.succeedType, "")
                 })
 
 
