@@ -1,24 +1,24 @@
 package com.binguner.xieyi.RxUtils
 
 import android.content.Context
-import android.support.annotation.MainThread
+import android.util.Log
 import com.binguner.xieyi.BuildConfig
-import com.binguner.xieyi.beans.DoRegisterBean
+import com.binguner.xieyi.listeners.ResultListener
 import com.binguner.xieyi.utils.NetworkUtil
+
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.Result
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
-import rx.Scheduler
-import rx.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
-import rx.schedulers.Schedulers;
 
 class HttpClient(context: Context){
 
@@ -82,6 +82,7 @@ class HttpClient(context: Context){
             builder.addInterceptor(loggingInterceptor)
                     .addInterceptor(cacheIntercepter)
                     .connectTimeout(15,TimeUnit.SECONDS)
+                    //.addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                     .readTimeout(15,TimeUnit.SECONDS)
                     .cache(cache)
                     .writeTimeout(15,TimeUnit.SECONDS)
@@ -93,7 +94,8 @@ class HttpClient(context: Context){
                 .client(getNewClient(context))
                 .baseUrl("http://39.106.122.7:3001/api/v1/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
-                .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                //.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
 
         this.retrofit = retrofit
@@ -104,37 +106,22 @@ class HttpClient(context: Context){
 
     val services = retrofit.create(ApiServices::class.java)
 
-    fun doRegister(phone:String, username:String, password:String){
-        services.doRegister(phone,username,password)
+    fun doRegister(phone:String, username:String, password:String, resultListener:ResultListener){
+        services.doRegister(phone, username, password)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
-                .observeOn(io.reactivex.schedulers.Schedulers.io())
-                .subscribe {
-                    
-                }
+                .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
+                .subscribe({
+                    Log.d("fmosanfaus",it.message)
+                },{
+                    Log.d("fmosanfaus",it.toString())
+                    resultListener.postResullt(ResultListener.errorType)
+                }, {
+                    Log.d("fmosanfaus","onCompliated")
+                    resultListener.postResullt(ResultListener.succeedType)
 
-                /*.subscribeOn(rx.schedulers.Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn()*/
+                })
 
-
-                /*.observeOn(AndroidSchedulers.mainThread() as io.reactivex.Scheduler)
-                .subscribe (object : Subscriber<DoRegisterBean>() {
-                    override fun onNext(t: DoRegisterBean?) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
-
-                    override fun onCompleted() {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
-
-                    override fun onError(e: Throwable?) {
-                        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-                    }
-
-                })*/
 
     }
-
-
 }

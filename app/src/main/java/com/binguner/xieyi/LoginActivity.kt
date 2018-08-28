@@ -13,6 +13,7 @@ import android.text.method.SingleLineTransformationMethod
 import android.text.method.TransformationMethod
 import android.util.Log
 import android.view.View
+import com.binguner.xieyi.RxUtils.HttpClient
 import com.binguner.xieyi.utils.StatusBarUtil
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
@@ -34,6 +35,7 @@ class LoginActivity : AppCompatActivity() {
 var phoneNumber = ""
 var username = ""
 var password = ""
+lateinit var httpClient :HttpClient
 
 class LoginActitivyUI:AnkoComponent<LoginActivity>{
 
@@ -51,10 +53,10 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
     val type_passwor = 2
     var type_flag = -1
 
-
     override fun createView(ui: AnkoContext<LoginActivity>) = with(ui) {
 
         type_flag = type_phone
+        httpClient = HttpClient(ctx)
 
         constraintLayout {
 
@@ -206,14 +208,12 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                 onClick {
                     if(type_flag == type_passwor && visiable == false){
                         visiable = true
-                        Log.d("ererewqf","123")
                         this@imageView.setImageResource(R.drawable.ic_remove_red_eye_grey_900_24dp)
                         //app_phone_pass_name_ed.inputType = InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                         app_phone_pass_name_ed.transformationMethod = HideReturnsTransformationMethod.getInstance()
                     }
                     else if(visiable == true && type_flag == type_passwor){
                         visiable = false
-                        Log.d("ererewqf","321")
                         this@imageView.setImageResource(R.drawable.ic_remove_red_eye_blue_grey_200_24dp)
                         app_phone_pass_name_ed.inputType = InputType.TYPE_CLASS_TEXT and InputType.TYPE_TEXT_VARIATION_PASSWORD
                         app_phone_pass_name_ed.transformationMethod = PasswordTransformationMethod.getInstance()
@@ -254,15 +254,15 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                                 app_phone_pass_name_image.setImageResource(R.drawable.ic_lock_outline_grey_800_24dp)
                                 app_phone_pass_name_text.text = "密码"
                                 app_phone_pass_name_ed.hint = "请输入密码"
-                                //app_phone_pass_name_ed.transformationMethod = PasswordTransformationMethod.getInstance()
                                 app_phone_pass_name_ed.transformationMethod = PasswordTransformationMethod.getInstance()
-                                //app_phone_pass_name_ed.inputType = InputType.TYPE_CLASS_TEXT and InputType.TYPE_TEXT_VARIATION_PASSWORD
                             }
 
                         }
                         type_passwor -> {
                             if(!password.equals("")){
-                                startActivity<MainActivity>()
+                                Log.d("LogingaTag","phonenumber = $phoneNumber, password = $password, username = $username")
+                                httpClient.doRegister(phoneNumber, username, password)
+                                //startActivity<MainActivity>()
                             }
                         }
                     }
