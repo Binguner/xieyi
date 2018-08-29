@@ -1,5 +1,6 @@
 package com.binguner.xieyi.RxUtils
 
+import com.binguner.xieyi.beans.DoLoginBean
 import com.binguner.xieyi.beans.DoRegisterBean
 import io.reactivex.Observable
 import retrofit2.http.*
@@ -19,7 +20,7 @@ interface ApiServices{
     // Login
     @POST("dologin")
     @FormUrlEncoded
-    fun doLogin(@Field("username") username: String, @Field("password")password :String)
+    fun doLogin(@Field("username") username: String, @Field("password")password :String) :Observable<DoLoginBean>
 
     // Get user information
     @GET("userinfo")

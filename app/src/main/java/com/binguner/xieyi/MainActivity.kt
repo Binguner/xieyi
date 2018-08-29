@@ -75,6 +75,7 @@ class MainActivity : AppCompatActivity() {
         }
         if(personFragment == null){
             personFragment = PersonFragment.newInstance()
+            personFragment!!.attachAty(this)
         }
         mfragmentManager = supportFragmentManager
         mfragmentManager?.beginTransaction()?.add(id_fragmentscontainer, homeFragment)?.add(id_fragmentscontainer, createProtocolFragment)?.add(id_fragmentscontainer, personFragment)?.commit()

@@ -2,25 +2,20 @@ package com.binguner.xieyi
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.os.ResultReceiver
-import android.renderscript.ScriptGroup
-import android.support.constraint.ConstraintSet.INVISIBLE
 import android.support.constraint.ConstraintSet.PARENT_ID
 import android.support.v4.content.ContextCompat
 import android.text.InputType
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import android.text.method.SingleLineTransformationMethod
-import android.text.method.TransformationMethod
-import android.util.Log
 import android.view.View
 import com.binguner.xieyi.RxUtils.HttpClient
+import com.binguner.xieyi.databases.DBUtils
+import com.binguner.xieyi.databases.database
 import com.binguner.xieyi.listeners.ResultListener
 import com.binguner.xieyi.utils.StatusBarUtil
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.sdk25.coroutines.onClick
-import org.jetbrains.anko.sdk25.coroutines.onLongClick
 import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 
 class LoginActivity : AppCompatActivity() {
@@ -33,7 +28,9 @@ class LoginActivity : AppCompatActivity() {
         StatusBarUtil.setStatusBarTextBalck(this)
     }
 }
-
+val newUser = 0
+val oldUser = 1
+var userType = newUser
 var phoneNumber = ""
 var username = ""
 var password = ""
@@ -57,6 +54,7 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
 
     override fun createView(ui: AnkoContext<LoginActivity>) = with(ui) {
 
+        val db = ctx.database.writableDatabase
         type_flag = type_phone
         httpClient = HttpClient(ctx)
 
@@ -186,6 +184,7 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                 id = id_app_phone_pass_name_ok_already_have
                 text = "已经注册"
                 onClick {
+                    userType = oldUser
                     app_phone_pass_name_ed.setText("")
                     app_phone_pass_name_image.setImageResource(R.drawable.ic_person_outline_grey_800_24dp)
                     app_phone_pass_name_text.text = "用户名"
@@ -264,19 +263,42 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                         }
                         type_passwor -> {
                             if(!password.equals("")){
-                                Log.d("LogingaTag","phonenumber = $phoneNumber, password = $password, username = $username")
-                                httpClient.doRegister(phoneNumber, username, password,object: ResultListener {
-                                    override fun postResullt(resultType: Int, msg: String) {
-                                        when(resultType){
-                                            ResultListener.succeedType -> {
-                                                toast(msg)
+                                when(userType){
+                                    newUser ->{
+                                        httpClient.doRegister(phoneNumber, username, password,object: ResultListener {
+                                            override fun postResullt(resultType: Int, msg: String) {
+                                                when(resultType){
+                                                    ResultListener.nextType ->{
+                                                        toast(msg)
+                                                    }
+                                                    ResultListener.succeedType -> {
+                                                        //123toast(msg)
+                                                        Thread.sleep(1000)
+
+                                                        //startActivity<MainActivity>()
+                                                        //owner.finish()
+                                                    }
+                                                    ResultListener.errorType -> {
+                                                        toast(msg)
+                                                    }
+                                                }
                                             }
-                                            ResultListener.errorType -> {
-                                                toast(msg)
-                                            }
-                                        }
+                                        })
                                     }
-                                })
+                                    oldUser ->{
+                                        httpClient.doLogin(username, password,object :ResultListener{
+                                            override fun postResullt(resultType: Int, msg: String) {
+                                                when (resultType){
+                                                    ResultListener.nextType ->{
+                                                        Thread.sleep(1000)
+                                                        startActivity<MainActivity>()
+                                                        owner.finish()
+                                                    }
+                                                }
+                                            }
+                                        })
+                                    }
+                                }
                                 //startActivity<MainActivity>()
                             }else{
                                 toast("请输入密码！")
@@ -292,10 +314,10 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                 topMargin = dip(30)
             }
 
-
         }
 
     }
+
 
 
 }

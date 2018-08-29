@@ -1,13 +1,17 @@
 package com.binguner.xieyi.RxUtils
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.util.Log
 import com.binguner.xieyi.BuildConfig
+import com.binguner.xieyi.databases.DBUtils
 import com.binguner.xieyi.listeners.ResultListener
+import com.binguner.xieyi.phoneNumber
 import com.binguner.xieyi.utils.NetworkUtil
 
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
@@ -20,10 +24,24 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import java.io.File
 import java.util.concurrent.TimeUnit
 
+
+/**
+ *  Name: UserData
+ *      isLoging
+ *      username
+ *      password
+ *      phonenumber
+ *      user_id
+ */
 class HttpClient(context: Context){
 
     lateinit var retrofit:Retrofit
+    lateinit var editor: SharedPreferences.Editor
+    var dbUtils = DBUtils(context)
     init {
+
+        editor = context.getSharedPreferences("UserData",Context.MODE_PRIVATE).edit()
+
         val gson:Gson = GsonBuilder()
                 .setLenient()
                 .create()
@@ -92,7 +110,7 @@ class HttpClient(context: Context){
 
         val retrofit = Retrofit.Builder()
                 .client(getNewClient(context))
-                .baseUrl("http://39.106.122.7:3000/api/v1/")
+                .baseUrl("http://xyapi.lzhu.top/api/v1/")
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 //.addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
@@ -113,6 +131,16 @@ class HttpClient(context: Context){
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
                 .subscribe({
                     //Log.d("fmosanfaus",it.message)
+                    editor.putString("username", username)
+                    editor.putString("password", password)
+                    editor.putString("phonenumber", phone)
+                    editor.putString("user_id", it.data.id)
+                    editor.commit()
+
+                    dbUtils.insertNewUserInfo(phone,username,password,it.data.id,"" )
+
+                    //Log.d("Whatsinsp","phontnumber is $phoneNumber, username is $username , password is $password")
+                    resultListener.postResullt(ResultListener.nextType,it.message)
 
                 },{
                     //Log.d("fmosanfaus",it.toString())
@@ -122,6 +150,27 @@ class HttpClient(context: Context){
                     resultListener.postResullt(ResultListener.succeedType, "")
                 })
 
+    }
 
+    fun doLogin(username: String, password: String, resultListener: ResultListener){
+        Log.d("erwr", "username is $username, password id $password")
+        services.doLogin(username, password)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    editor.putString("username", it.data.username)
+                    editor.putString("password", password)
+                    editor.putString("phonenumber", it.data.phone)
+                    editor.putString("user_id", it.data._id)
+                    editor.commit()
+
+                    dbUtils.insertOldUserInfo(it)
+                    resultListener.postResullt(ResultListener.nextType,it.message)
+                },{
+                    resultListener.postResullt(ResultListener.errorType,it.message!!)
+                },{
+                    resultListener.postResullt(ResultListener.succeedType,"")
+                })
     }
 }

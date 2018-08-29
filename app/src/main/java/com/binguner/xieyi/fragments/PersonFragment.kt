@@ -1,7 +1,9 @@
 package com.binguner.xieyi.fragments
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -15,11 +17,14 @@ import android.view.ViewGroup
 
 import com.binguner.xieyi.R
 import com.binguner.xieyi.activities.SettingActivity
+import com.binguner.xieyi.databases.DBUtils
 import de.hdodenhof.circleimageview.CircleImageView
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.ctx
+
+lateinit var personActivity: Activity
 
 class PersonFragment : Fragment() {
 
@@ -43,6 +48,10 @@ class PersonFragment : Fragment() {
 
     interface OnFragmentInteractionListener {
         fun onFragmentInteraction(uri: Uri)
+    }
+
+    fun attachAty(activity: Activity){
+        personActivity = activity
     }
 
     companion object {
@@ -72,11 +81,16 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
     val id_person_help= View.generateViewId()
     val id_person_logout= View.generateViewId()
     val id_person_setting= View.generateViewId()
+    lateinit var dbUtils:DBUtils
+    lateinit var sharedPreferences: SharedPreferences
 
     override fun createView(ui: AnkoContext<PersonFragment>) = with(ui) {
         constraintLayout {
 
             backgroundColor = ContextCompat.getColor(ctx,R.color.colorNormalBack)
+
+            dbUtils = DBUtils(ctx)
+            sharedPreferences = ctx.getSharedPreferences("UserData",Context.MODE_PRIVATE)
 
             include<View>(R.layout.toolbar_layout){
                 id = id_person_toolbar
@@ -220,16 +234,15 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
                 id = id_person_logout
                 backgroundColor = ContextCompat.getColor(ctx, R.color.colorWhite)
                 onClick {
-                    toast("Log out")
+                    dbUtils.deleteAccout(sharedPreferences.getString("user_id",""))
+                    toast("退出成功")
+                    personActivity.finish()
+
                 }
             }.lparams(width = matchParent, height = dip(40)){
                 topToBottom = id_person_help
                 topMargin = dip(10)
             }
-
-
-
-
 
         }
     }
