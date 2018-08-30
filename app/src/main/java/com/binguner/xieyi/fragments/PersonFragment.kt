@@ -234,7 +234,7 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
                 id = id_person_logout
                 backgroundColor = ContextCompat.getColor(ctx, R.color.colorWhite)
                 onClick {
-                    dbUtils.deleteAccout(sharedPreferences.getString("user_id",""))
+                    dbUtils.deleteAccout(sharedPreferences.getString("username",""))
                     toast("退出成功")
                     personActivity.finish()
 

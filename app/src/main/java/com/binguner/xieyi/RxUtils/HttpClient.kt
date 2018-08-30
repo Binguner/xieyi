@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit
  */
 class HttpClient(context: Context){
 
+    val HttpClientTag = "HttpTagTag"
     lateinit var retrofit:Retrofit
     lateinit var editor: SharedPreferences.Editor
     var dbUtils = DBUtils(context)
@@ -167,9 +168,12 @@ class HttpClient(context: Context){
 
                     dbUtils.insertOldUserInfo(it)
                     resultListener.postResullt(ResultListener.nextType,it.message)
+                    Log.d(HttpClientTag,"onNext : ${it.message}")
                 },{
+                    Log.d(HttpClientTag,"onError : ${it.message}")
                     resultListener.postResullt(ResultListener.errorType,it.message!!)
                 },{
+                    Log.d(HttpClientTag,"onComplete : ")
                     resultListener.postResullt(ResultListener.succeedType,"")
                 })
     }

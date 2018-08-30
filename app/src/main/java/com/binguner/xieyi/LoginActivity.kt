@@ -26,6 +26,7 @@ class LoginActivity : AppCompatActivity() {
         StatusBarUtil.transparentStatusBar(this)
         StatusBarUtil.setStatusBarColor(this,R.color.colorNormalBack)
         StatusBarUtil.setStatusBarTextBalck(this)
+        userType = newUser
     }
 }
 val newUser = 0
@@ -267,19 +268,27 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                                     newUser ->{
                                         httpClient.doRegister(phoneNumber, username, password,object: ResultListener {
                                             override fun postResullt(resultType: Int, msg: String) {
-                                                when(resultType){
-                                                    ResultListener.nextType ->{
-                                                        toast(msg)
+                                                when (resultType) {
+                                                    ResultListener.nextType -> {
+                                                       // if(!msg.equals("")){
+                                                            toast(msg)
+                                                        //}else if(msg.contains("登录失败")){
+                                                          //  toast("登陆失败，请检查用户名和密码是否正确!")
+                                                        //}
                                                     }
                                                     ResultListener.succeedType -> {
                                                         //123toast(msg)
                                                         Thread.sleep(1000)
-
-                                                        //startActivity<MainActivity>()
-                                                        //owner.finish()
+                                                        if (msg.equals("注册成功")) {
+                                                            toast(msg)
+                                                            startActivity<MainActivity>()
+                                                            owner.finish()
+                                                        }
                                                     }
                                                     ResultListener.errorType -> {
-                                                        toast(msg)
+                                                        if (!msg.equals("")) {
+                                                            toast("登陆失败，请检查用户名和密码是否正确!")
+                                                        }
                                                     }
                                                 }
                                             }
