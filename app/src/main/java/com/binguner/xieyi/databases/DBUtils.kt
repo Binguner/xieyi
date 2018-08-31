@@ -34,6 +34,11 @@ class DBUtils(context: Context){
         contentValues.put("user_name",doLoginBean.data.username)
         contentValues.put("user_phonenumber",doLoginBean.data.phone)
         contentValues.put("user_password",doLoginBean.data.password)
+        if(null != doLoginBean.data.email && !doLoginBean.data.email.equals("")){
+            contentValues.put("email",doLoginBean.data.email)
+        }else{
+            contentValues.put("email","")
+        }
         contentValues.put("user_avatar","")
         try {
             db.insert("User_info",null,contentValues)
@@ -64,7 +69,7 @@ class DBUtils(context: Context){
 
     // delete this accoutn
     fun deleteAccout(user_name:String){
-        db.delete("User_info","user_name like ?", arrayOf("user_name"))
+        val isDelete = db.delete("User_info","user_name like ?", arrayOf(user_name))
     }
 
 }

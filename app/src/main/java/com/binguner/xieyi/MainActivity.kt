@@ -2,6 +2,9 @@ package com.binguner.xieyi
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.support.v4.app.Fragment
 import android.graphics.Color
@@ -42,10 +45,22 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_main)
+        initId()
+        var isLoging = sharedPreferences.getBoolean("isLoging",false)
+        //Log.d("DSDSD","$isLoging")
+        if(!isLoging){
+            val intent = Intent(this,LoginActivity::class.java)
+            startActivity(intent)
+            this.finish()
+        }
         MainActivityUI().setContentView(this)
         setTransparentStatusbar();
         initFragments()
         askPermission()
+    }
+
+    private fun initId() {
+        sharedPreferences = getSharedPreferences("UserData",Context.MODE_PRIVATE)
     }
 
     private fun askPermission() {
@@ -75,7 +90,8 @@ class MainActivity : AppCompatActivity() {
         }
         if(personFragment == null){
             personFragment = PersonFragment.newInstance()
-            personFragment!!.attachAty(this)
+            Log.d("tetete","isAttaching")
+            personFragment!!.attachAty(this!!)
         }
         mfragmentManager = supportFragmentManager
         mfragmentManager?.beginTransaction()?.add(id_fragmentscontainer, homeFragment)?.add(id_fragmentscontainer, createProtocolFragment)?.add(id_fragmentscontainer, personFragment)?.commit()
@@ -88,6 +104,10 @@ class MainActivity : AppCompatActivity() {
         //StatusBarUtil.transparentStatusBar(this)
     }
 
+    public fun finishAty(){
+        this.finish()
+    }
+
 }
 
 var homeFragment:HomeFragment ?= null
@@ -95,6 +115,7 @@ var createProtocolFragment:CreateProtocolFragment ?= null
 var personFragment:PersonFragment ?= null
 val id_fragmentscontainer = View.generateViewId()
 var mfragmentManager:FragmentManager ?= null
+lateinit var sharedPreferences: SharedPreferences
 
 class MainActivityUI: AnkoComponent<MainActivity>{
 

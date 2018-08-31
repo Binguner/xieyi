@@ -1,6 +1,7 @@
 package com.binguner.xieyi.beans
 
 
+
 data class DoLoginBean(
     val code: Int,
     val message: String,
@@ -13,5 +14,7 @@ data class Data2(
     val phone: String,
     val password: String,
     val protocols: List<String>,
-    val state: Int
+    val nickname: Any,
+    val sex: Any,
+    val email: String
 )

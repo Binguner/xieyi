@@ -32,6 +32,7 @@ import java.util.concurrent.TimeUnit
  *      password
  *      phonenumber
  *      user_id
+ *      email
  */
 class HttpClient(context: Context){
 
@@ -132,6 +133,7 @@ class HttpClient(context: Context){
                 .observeOn(io.reactivex.android.schedulers.AndroidSchedulers.mainThread())
                 .subscribe({
                     //Log.d("fmosanfaus",it.message)
+                    //editor.putBoolean("isLoging",true)
                     editor.putString("username", username)
                     editor.putString("password", password)
                     editor.putString("phonenumber", phone)
@@ -160,10 +162,12 @@ class HttpClient(context: Context){
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
+                    //editor.putBoolean("isLoging",true)
                     editor.putString("username", it.data.username)
                     editor.putString("password", password)
                     editor.putString("phonenumber", it.data.phone)
                     editor.putString("user_id", it.data._id)
+                    //editor.putString("email", it.data.email)
                     editor.commit()
 
                     dbUtils.insertOldUserInfo(it)
@@ -171,10 +175,10 @@ class HttpClient(context: Context){
                     Log.d(HttpClientTag,"onNext : ${it.message}")
                 },{
                     Log.d(HttpClientTag,"onError : ${it.message}")
-                    resultListener.postResullt(ResultListener.errorType,it.message!!)
+                    //resultListener.postResullt(ResultListener.errorType,it.message!!)
                 },{
                     Log.d(HttpClientTag,"onComplete : ")
-                    resultListener.postResullt(ResultListener.succeedType,"")
+                    //resultListener.postResullt(ResultListener.succeedType,"")
                 })
     }
 }

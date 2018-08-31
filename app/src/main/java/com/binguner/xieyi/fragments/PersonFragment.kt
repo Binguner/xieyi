@@ -10,10 +10,12 @@ import android.os.Bundle
 import android.support.constraint.ConstraintSet.PARENT_ID
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.binguner.xieyi.MainActivity
 
 import com.binguner.xieyi.R
 import com.binguner.xieyi.activities.SettingActivity
@@ -24,7 +26,7 @@ import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.ctx
 
-lateinit var personActivity: Activity
+lateinit var personActivity: MainActivity
 
 class PersonFragment : Fragment() {
 
@@ -50,7 +52,7 @@ class PersonFragment : Fragment() {
         fun onFragmentInteraction(uri: Uri)
     }
 
-    fun attachAty(activity: Activity){
+    fun attachAty(activity: MainActivity){
         personActivity = activity
     }
 
@@ -66,6 +68,7 @@ class PersonFragment : Fragment() {
 
 }
 
+lateinit var sharedPreferences :SharedPreferences
 class PersonFragmentUI: AnkoComponent<PersonFragment>{
 
     val id_person_toolbar = View.generateViewId()
@@ -83,6 +86,7 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
     val id_person_setting= View.generateViewId()
     lateinit var dbUtils:DBUtils
     lateinit var sharedPreferences: SharedPreferences
+    lateinit var editor: SharedPreferences.Editor
 
     override fun createView(ui: AnkoContext<PersonFragment>) = with(ui) {
         constraintLayout {
@@ -91,6 +95,7 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
 
             dbUtils = DBUtils(ctx)
             sharedPreferences = ctx.getSharedPreferences("UserData",Context.MODE_PRIVATE)
+            editor = ctx.getSharedPreferences("UserData", Context.MODE_PRIVATE).edit()
 
             include<View>(R.layout.toolbar_layout){
                 id = id_person_toolbar
@@ -234,9 +239,13 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
                 id = id_person_logout
                 backgroundColor = ContextCompat.getColor(ctx, R.color.colorWhite)
                 onClick {
+                    //Log.d("tetete",sharedPreferences.getString("username",""))
                     dbUtils.deleteAccout(sharedPreferences.getString("username",""))
                     toast("退出成功")
-                    personActivity.finish()
+                    editor.putBoolean("isLoging",false)
+                    editor.commit()
+                    Log.d("tetete", "${personActivity}")
+                    personActivity.finishAty()
 
                 }
             }.lparams(width = matchParent, height = dip(40)){

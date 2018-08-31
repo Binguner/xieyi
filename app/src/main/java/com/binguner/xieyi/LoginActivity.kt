@@ -1,5 +1,7 @@
 package com.binguner.xieyi
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.constraint.ConstraintSet.PARENT_ID
@@ -7,6 +9,7 @@ import android.support.v4.content.ContextCompat
 import android.text.InputType
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
+import android.util.Log
 import android.view.View
 import com.binguner.xieyi.RxUtils.HttpClient
 import com.binguner.xieyi.databases.DBUtils
@@ -52,12 +55,14 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
     val type_username = 1
     val type_passwor = 2
     var type_flag = -1
+    lateinit var editor :SharedPreferences.Editor
 
     override fun createView(ui: AnkoContext<LoginActivity>) = with(ui) {
 
         val db = ctx.database.writableDatabase
         type_flag = type_phone
         httpClient = HttpClient(ctx)
+        editor = ctx.getSharedPreferences("UserData",Context.MODE_PRIVATE).edit()
 
         constraintLayout {
 
@@ -272,6 +277,13 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                                                     ResultListener.nextType -> {
                                                        // if(!msg.equals("")){
                                                             toast(msg)
+                                                        if (msg.equals("注册成功")) {
+                                                            toast(msg)
+                                                            startActivity<MainActivity>()
+                                                            editor.putBoolean("isLoging",true)
+                                                            editor.commit()
+                                                            owner.finish()
+                                                        }
                                                         //}else if(msg.contains("登录失败")){
                                                           //  toast("登陆失败，请检查用户名和密码是否正确!")
                                                         //}
@@ -281,6 +293,8 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                                                         Thread.sleep(1000)
                                                         if (msg.equals("注册成功")) {
                                                             toast(msg)
+                                                            editor.putBoolean("isLoging",true)
+                                                            editor.commit()
                                                             startActivity<MainActivity>()
                                                             owner.finish()
                                                         }
@@ -299,9 +313,26 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                                             override fun postResullt(resultType: Int, msg: String) {
                                                 when (resultType){
                                                     ResultListener.nextType ->{
-                                                        Thread.sleep(1000)
-                                                        startActivity<MainActivity>()
-                                                        owner.finish()
+                                                        if(msg.equals("登录成功")){
+                                                            Thread.sleep(1000)
+                                                            editor.putBoolean("isLoging",true)
+                                                            editor.commit()
+                                                            startActivity<MainActivity>()
+                                                            owner.finish()
+                                                        }else if(msg.equals("登录失败")){
+                                                            toast("登陆失败，请检查用户名和密码！")
+                                                        }
+                                                    }
+                                                    ResultListener.succeedType ->{
+                                                        if(msg.equals("登录成功")){
+
+                                                        //}else if(){
+
+                                                        }
+                                                    }
+                                                    ResultListener.errorType ->{
+
+                                                        toast(msg)
                                                     }
                                                 }
                                             }
