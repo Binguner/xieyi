@@ -15,6 +15,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.binguner.xieyi.LoginActivity
 import com.binguner.xieyi.MainActivity
 
 import com.binguner.xieyi.R
@@ -52,7 +53,7 @@ class PersonFragment : Fragment() {
         fun onFragmentInteraction(uri: Uri)
     }
 
-    fun attachAty(activity: MainActivity){
+    fun attachAtyy(activity: MainActivity){
         personActivity = activity
     }
 
@@ -244,8 +245,9 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
                     toast("退出成功")
                     editor.putBoolean("isLoging",false)
                     editor.commit()
-                    Log.d("tetete", "${personActivity}")
+                    //Log.d("tetete", "${personActivity}")
                     personActivity.finishAty()
+                    startActivity<LoginActivity>()
 
                 }
             }.lparams(width = matchParent, height = dip(40)){

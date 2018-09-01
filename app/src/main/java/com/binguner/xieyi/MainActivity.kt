@@ -90,8 +90,8 @@ class MainActivity : AppCompatActivity() {
         }
         if(personFragment == null){
             personFragment = PersonFragment.newInstance()
-            Log.d("tetete","isAttaching")
-            personFragment!!.attachAty(this!!)
+            //Log.d("tetete","isAttaching")
+            personFragment!!.attachAtyy(this!!)
         }
         mfragmentManager = supportFragmentManager
         mfragmentManager?.beginTransaction()?.add(id_fragmentscontainer, homeFragment)?.add(id_fragmentscontainer, createProtocolFragment)?.add(id_fragmentscontainer, personFragment)?.commit()
@@ -104,7 +104,8 @@ class MainActivity : AppCompatActivity() {
         //StatusBarUtil.transparentStatusBar(this)
     }
 
-    public fun finishAty(){
+    fun finishAty(){
+        Log.d("tetete","finishAty")
         this.finish()
     }
 

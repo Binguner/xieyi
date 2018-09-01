@@ -31,6 +31,10 @@ class LoginActivity : AppCompatActivity() {
         StatusBarUtil.setStatusBarTextBalck(this)
         userType = newUser
     }
+
+    override fun onBackPressed() {
+        this.finish()
+    }
 }
 val newUser = 0
 val oldUser = 1
