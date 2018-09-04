@@ -242,13 +242,12 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
                 onClick {
                     //Log.d("tetete",sharedPreferences.getString("username",""))
                     dbUtils.deleteAccout(sharedPreferences.getString("username",""))
-                    toast("退出成功")
+                    //toast("退出成功")
                     editor.putBoolean("isLoging",false)
                     editor.commit()
                     //Log.d("tetete", "${personActivity}")
                     personActivity.finishAty()
-                    startActivity<LoginActivity>()
-
+                    //startActivity<LoginActivity>()
                 }
             }.lparams(width = matchParent, height = dip(40)){
                 topToBottom = id_person_help

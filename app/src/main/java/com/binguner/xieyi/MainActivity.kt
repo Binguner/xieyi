@@ -2,6 +2,7 @@ package com.binguner.xieyi
 
 import android.Manifest
 import android.app.Activity
+import android.app.NativeActivity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -105,8 +106,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun finishAty(){
-        Log.d("tetete","finishAty")
+        /*Log.d("tetete","finishAty")
+        mfragmentManager?.beginTransaction()?.detach(personFragment)?.commit()
+        mfragmentManager?.beginTransaction()?.detach(homeFragment)?.commit()
+        mfragmentManager?.beginTransaction()?.detach(createProtocolFragment)?.commit()
+        personFragment!!.onDetach()
+        homeFragment!!.onDetach()
+        createProtocolFragment!!.onDetach()*/
+        //this.onBackPressed()
         this.finish()
+        Log.d("tetete","finished")
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        Log.d("tetete","onBackPressed!")
     }
 
 }
