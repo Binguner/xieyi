@@ -1,7 +1,9 @@
 package com.binguner.xieyi.RxUtils
 
 import com.binguner.xieyi.beans.DoLoginBean
+import com.binguner.xieyi.beans.DoProtocolBean
 import com.binguner.xieyi.beans.DoRegisterBean
+import com.binguner.xieyi.beans.FeedBackBean
 import io.reactivex.Observable
 import retrofit2.http.*
 import java.util.*
@@ -29,7 +31,7 @@ interface ApiServices{
     // Create Protocol
     @POST("doProtocol")
     @FormUrlEncoded
-    fun createProtocol(@Field("title") title:String, content:String, signatoryNum:String, username:String)
+    fun createProtocol(@Field("title") title:String, @Field("content")content:String, @Field("ignatoryNum")ignatoryNum:String, @Field("username")username:String):Observable<DoProtocolBean>
 
     // Create doFloater
     @POST("doFloater")
@@ -39,7 +41,7 @@ interface ApiServices{
     // send feedback
     @POST("feedback")
     @FormUrlEncoded
-    fun giveFeedback(@Field("content") content: String, @Field("qq") qq: String, @Field("phone") phone: String, @Field("weixin") weixin: String)
+    fun giveFeedback(@Field("content") content: String, @Field("qq") qq: String, @Field("phone") phone: String, @Field("weixin") weixin: String):Observable<FeedBackBean>
 
     // sign Protocol
     @POST("signProtocol")

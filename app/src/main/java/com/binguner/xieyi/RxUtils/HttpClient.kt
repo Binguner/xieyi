@@ -6,7 +6,7 @@ import android.util.Log
 import com.binguner.xieyi.BuildConfig
 import com.binguner.xieyi.databases.DBUtils
 import com.binguner.xieyi.listeners.ResultListener
-import com.binguner.xieyi.phoneNumber
+import com.binguner.xieyi.sharedPreferences
 import com.binguner.xieyi.utils.NetworkUtil
 
 import com.google.gson.Gson
@@ -15,9 +15,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 
 import okhttp3.*
 import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import io.reactivex.schedulers.Schedulers
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -39,10 +37,12 @@ class HttpClient(context: Context){
     val HttpClientTag = "HttpTagTag"
     lateinit var retrofit:Retrofit
     lateinit var editor: SharedPreferences.Editor
+    lateinit var sp :SharedPreferences
     var dbUtils = DBUtils(context)
     init {
 
         editor = context.getSharedPreferences("UserData",Context.MODE_PRIVATE).edit()
+        sp = context.getSharedPreferences("UserData",Context.MODE_PRIVATE)
 
         val gson:Gson = GsonBuilder()
                 .setLenient()
@@ -156,7 +156,7 @@ class HttpClient(context: Context){
     }
 
     fun doLogin(username: String, password: String, resultListener: ResultListener){
-        Log.d("erwr", "username is $username, password id $password")
+        //Log.d("erwr", "username is $username, password id $password")
         services.doLogin(username, password)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -179,6 +179,23 @@ class HttpClient(context: Context){
                 },{
                     Log.d(HttpClientTag,"onComplete : ")
                     //resultListener.postResullt(ResultListener.succeedType,"")
+                })
+    }
+
+    fun doProtocol(title:String, content:String, signatoryNum:String, username:String,resultListener: ResultListener){
+        services.createProtocol(title,content,signatoryNum,username)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if(it.message.equals("创建成功")){
+                        resultListener.postResullt(ResultListener.succeedType,it.message)
+                        dbUtils.insertNormalProtocol(sp.getString("user_id",""),it.data.id,title,content,signatoryNum,username)
+                    }
+                },{
+
+                },{
+
                 })
     }
 }

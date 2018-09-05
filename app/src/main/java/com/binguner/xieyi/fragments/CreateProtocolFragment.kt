@@ -1,6 +1,7 @@
 package com.binguner.xieyi.fragments
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.support.constraint.ConstraintSet.PARENT_ID
@@ -14,18 +15,26 @@ import android.widget.ArrayAdapter
 import android.widget.EditText
 import org.jetbrains.anko.constraint.layout.ConstraintSetBuilder.Side.*
 import com.binguner.xieyi.R
+import com.binguner.xieyi.RxUtils.HttpClient
+import com.binguner.xieyi.databases.DBUtils
+import com.binguner.xieyi.httpClient
+import com.binguner.xieyi.listeners.ResultListener
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.applyConstraintSet
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.constraint.layout.matchConstraint
 import org.jetbrains.anko.custom.style
+import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.support.v4.ctx
 
-
+lateinit var mhttpClient: HttpClient
 class CreateProtocolFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        msharedPreferences = context!!.getSharedPreferences("UserData",Context.MODE_PRIVATE)
+        mhttpClient = HttpClient(context!!)
+        dbUtils = DBUtils(context!!)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -54,6 +63,8 @@ class CreateProtocolFragment : Fragment() {
                 }
     }
 }
+lateinit var msharedPreferences :SharedPreferences
+lateinit var dbUtils: DBUtils
 
 class CreateProtocolFragmentUI:AnkoComponent<CreateProtocolFragment>{
 
@@ -66,6 +77,13 @@ class CreateProtocolFragmentUI:AnkoComponent<CreateProtocolFragment>{
     val id_choosePeopleNum = View.generateViewId()
     val id_createPro_finish_btn = View.generateViewId()
     val items = arrayOf("  1  ", "  2  ", "  3  ", "  4  ", "  5  ")
+
+    lateinit var title:String
+    lateinit var mcontent:String
+    lateinit var signatoryNum:String
+    lateinit var username:String
+
+
 
     override fun createView(ui: AnkoContext<CreateProtocolFragment>) = with(ui) {
         constraintLayout(){
@@ -143,6 +161,26 @@ class CreateProtocolFragmentUI:AnkoComponent<CreateProtocolFragment>{
                 id = id_createPro_finish_btn
                 textSize = 14f
                 background = ContextCompat.getDrawable(ctx, R.drawable.protocol_publish_btn)
+
+                onClick {
+                    title = createPro_ed_title.text.toString()
+                    mcontent = createPro_ed_content.text.toString()
+                    signatoryNum = choosePeopleNum.selectedItem.toString()
+                    username = msharedPreferences.getString("username","")
+                    mhttpClient.doProtocol(title,mcontent,signatoryNum,username,object :ResultListener{
+                        override fun postResullt(resultType: Int, msg: String) {
+                            if(resultType == ResultListener.succeedType){
+                                toast(msg)
+                                createPro_ed_title.setText("")
+                                createPro_ed_content.setText("")
+                                choosePeopleNum.setSelection(0)
+                            }else{
+                                toast(msg)
+                            }
+                        }
+
+                    })
+                }
             }.lparams(height = dip(35)){
                 topToTop = id_choosePeopleNum
                 bottomToBottom = id_choosePeopleNum

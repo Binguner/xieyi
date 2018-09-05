@@ -60,6 +60,9 @@ class Setting_Feedback_Fragment : Fragment() {
 }
 
 lateinit var feedbackAty:Activity
+lateinit var feedContent:String
+lateinit var feedPhoneNnmber:String
+lateinit var feedQQ:String
 
 class SettingFeedbackFragmentUI:AnkoComponent<Setting_Feedback_Fragment>{
     override fun createView(ui: AnkoContext<Setting_Feedback_Fragment>) = with(ui){
@@ -180,8 +183,18 @@ class SettingFeedbackFragmentUI:AnkoComponent<Setting_Feedback_Fragment>{
                 id = id_feed_ok
                 text = "反馈"
                 onClick {
-                    toast("Send")
+                    if(!feed_content.text.toString().equals("")){
+                        feedContent = feed_content.text.toString()
+                    }
+                    if(!feed_phone.text.toString().equals("")){
+                        feedPhoneNnmber = feed_phone.text.toString()
+                    }
+                    if(!feed_qq.text.toString().equals("")){
+                        feedQQ = feed_qq.text.toString()
+                    }
+
                 }
+
                 setBackgroundResource(R.drawable.protocol_publish_btn)
             }.lparams(){
                 topToBottom = id_feed_qq
