@@ -33,6 +33,7 @@ import android.widget.TableLayout
 import com.binguner.xieyi.activities.type
 import com.binguner.xieyi.fragments.CreateProtocolFragment
 import com.binguner.xieyi.fragments.HomeFragment
+import com.binguner.xieyi.fragments.OnSelectToFinishCallback
 import com.binguner.xieyi.fragments.PersonFragment
 import com.binguner.xieyi.utils.StatusBarUtil
 import org.jetbrains.anko.*
@@ -41,7 +42,10 @@ import org.jetbrains.anko.design.tabItem
 import org.jetbrains.anko.design.tabLayout
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(),OnSelectToFinishCallback {
+    override fun selected() {
+        this.finish()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

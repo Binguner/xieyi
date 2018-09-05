@@ -29,6 +29,9 @@ import org.jetbrains.anko.support.v4.ctx
 
 lateinit var personActivity: MainActivity
 
+
+lateinit var onselected2finishAty : OnSelectToFinishCallback
+
 class PersonFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +46,12 @@ class PersonFragment : Fragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        if (context is OnSelectToFinishCallback){
+            onselected2finishAty = context
+        }
     }
+
+
 
     override fun onDetach() {
         super.onDetach()
@@ -246,8 +254,9 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
                     editor.putBoolean("isLoging",false)
                     editor.commit()
                     //Log.d("tetete", "${personActivity}")
-                    personActivity.finishAty()
-                    //startActivity<LoginActivity>()
+                    //personActivity.finishAty()
+                    onselected2finishAty.selected()
+                    startActivity<LoginActivity>()
                 }
             }.lparams(width = matchParent, height = dip(40)){
                 topToBottom = id_person_help
@@ -257,4 +266,9 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
         }
     }
 
+}
+
+public interface OnSelectToFinishCallback{
+
+    fun selected()
 }
