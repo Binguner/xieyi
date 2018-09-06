@@ -121,9 +121,6 @@ class HttpClient(context: Context){
         this.retrofit = retrofit
     }
 
-
-
-
     val services = retrofit.create(ApiServices::class.java)
 
     fun doRegister(phone:String, username:String, password:String, resultListener:ResultListener){
@@ -172,12 +169,18 @@ class HttpClient(context: Context){
 
                     dbUtils.insertOldUserInfo(it)
                     resultListener.postResullt(ResultListener.nextType,it.message)
-                    Log.d(HttpClientTag,"onNext : ${it.message}")
+                    //Log.d(HttpClientTag,"onNext : ${it.message}")
+                    if(it.message.equals("登录成功")){
+                        it.data.protocols.forEach {
+                            Log.d(HttpClientTag,it)
+                        }
+                    }
+
                 },{
-                    Log.d(HttpClientTag,"onError : ${it.message}")
+                    //Log.d(HttpClientTag,"onError : ${it.message}")
                     //resultListener.postResullt(ResultListener.errorType,it.message!!)
                 },{
-                    Log.d(HttpClientTag,"onComplete : ")
+                    //Log.d(HttpClientTag,"onComplete : ")
                     //resultListener.postResullt(ResultListener.succeedType,"")
                 })
     }
