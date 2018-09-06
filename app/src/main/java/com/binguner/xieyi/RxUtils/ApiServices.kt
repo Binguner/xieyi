@@ -1,9 +1,6 @@
 package com.binguner.xieyi.RxUtils
 
-import com.binguner.xieyi.beans.DoLoginBean
-import com.binguner.xieyi.beans.DoProtocolBean
-import com.binguner.xieyi.beans.DoRegisterBean
-import com.binguner.xieyi.beans.FeedBackBean
+import com.binguner.xieyi.beans.*
 import io.reactivex.Observable
 import retrofit2.http.*
 import java.util.*
@@ -36,7 +33,7 @@ interface ApiServices{
     // Create doFloater
     @POST("doFloater")
     @FormUrlEncoded
-    fun createFloater(@Field("title") title: String, @Field("content") content: String, @Field("region") region: String, @Field("username") username: String)
+    fun createFloater(@Field("username") username: String, @Field("title") title: String, @Field("content") content: String, @Field("region") region: String):Observable<MakeFloaterBean>
 
     // send feedback
     @POST("feedback")
@@ -60,5 +57,9 @@ interface ApiServices{
     // get the floater information
     @GET("getFloater")
     fun getFloaterInformation(@Query("id") protocolId: String)
+
+    // modifyUserInfo
+    @POST("modifyinfo")
+    fun modifyUserInfo(@Query("id")user_id: String,@Query("nickname")nickname:String,@Query("avatar") avatar_url:String,@Query("phone")phoneNumber:String,@Query("email")email:String):Observable<ModifyinfoBean>
 
 }

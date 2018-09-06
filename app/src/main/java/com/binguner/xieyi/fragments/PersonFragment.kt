@@ -141,7 +141,7 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
                 leftMargin = dip(20)
             }
 
-            val person_username = textView("Binguner"){
+            val person_username = textView(sharedPreferences.getString("username","null")){
                 id = id_person_username
                 textSize = 20f
                 textColor = ContextCompat.getColor(ctx, R.color.colorBlack)
@@ -152,7 +152,7 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
                 topMargin = dip(10)
             }
 
-            val person_email = textView("478718805@qq.com"){
+            val person_email = textView(sharedPreferences.getString("email","请到设置页面设置邮箱地址！")){
                 id = id_person_email
 
             }.lparams(height = dip(60)){

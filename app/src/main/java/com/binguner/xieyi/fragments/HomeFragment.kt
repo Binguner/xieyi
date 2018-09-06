@@ -21,6 +21,7 @@ import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import com.binguner.xieyi.MainActivityUI
 import com.binguner.xieyi.activities.CreateProtocolActivity
+import com.binguner.xieyi.activities.SettingActivity
 import org.jetbrains.anko.*
 import org.jetbrains.anko.design.tabItem
 import org.jetbrains.anko.recyclerview.v7.recyclerView
@@ -152,7 +153,8 @@ class HomeFragmentUI:AnkoComponent<HomeFragment>{
                     when(current_page){
                         0 -> {
                             //toast("Create Shake Protocol")
-                            startActivity<CreateProtocolActivity>("Type" to 0)
+                            //startActivity<CreateProtocolActivity>("Type" to 0)
+                            startActivity<SettingActivity>("flag" to 1)
                         }
                         1 -> {
                             //toast("Create Floater Protocol")

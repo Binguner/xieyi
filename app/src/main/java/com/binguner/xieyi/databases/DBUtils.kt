@@ -86,4 +86,14 @@ class DBUtils(context: Context){
         }catch (e:Exception){}
     }
 
+    fun insertFloaterProtocol(protocol_id:String, user_id:String, username:String){
+        contentValues.put("protocol_id",protocol_id)
+        contentValues.put("user_id",user_id)
+        contentValues.put("username",username)
+        try {
+            db.insert("floater_protocol",null,contentValues)
+        }catch (e:Exception){ }
+        contentValues.clear()
+    }
+
 }

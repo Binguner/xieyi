@@ -164,6 +164,9 @@ class HttpClient(context: Context){
                     editor.putString("password", password)
                     editor.putString("phonenumber", it.data.phone)
                     editor.putString("user_id", it.data._id)
+                    try {
+                        editor.putString("email", it.data.email)
+                    }catch (e:Exception){}
                     //editor.putString("email", it.data.email)
                     editor.commit()
 
@@ -194,6 +197,38 @@ class HttpClient(context: Context){
                     if(it.message.equals("创建成功")){
                         resultListener.postResullt(ResultListener.succeedType,it.message)
                         dbUtils.insertNormalProtocol(sp.getString("user_id",""),it.data.id,title,content,signatoryNum,username)
+                    }
+                },{
+
+                },{
+
+                })
+    }
+
+    fun giveFeedback(content:String, qqNumber:String, phoneNumber:String, wechatId:String, resultListener: ResultListener){
+        services.giveFeedback(content,qqNumber,phoneNumber,wechatId)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if(it.message.equals("意见反馈成功")){
+                        resultListener.postResullt(ResultListener.succeedType,it.message)
+                    }
+                },{
+
+                },{
+
+                })
+    }
+
+    fun  createFloater(username:String, title:String, content:String,region:String,resultListener: ResultListener){
+        services.createFloater(username,title,content,region)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if(it.message.equals("漂流瓶创建成功")){
+                        resultListener.postResullt(ResultListener.succeedType,it.message)
                     }
                 },{
 

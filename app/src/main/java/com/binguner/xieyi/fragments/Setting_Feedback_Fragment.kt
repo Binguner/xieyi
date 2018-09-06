@@ -15,6 +15,8 @@ import android.view.View
 import android.view.ViewGroup
 
 import com.binguner.xieyi.R
+import com.binguner.xieyi.RxUtils.HttpClient
+import com.binguner.xieyi.listeners.ResultListener
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -60,9 +62,9 @@ class Setting_Feedback_Fragment : Fragment() {
 }
 
 lateinit var feedbackAty:Activity
-lateinit var feedContent:String
-lateinit var feedPhoneNnmber:String
-lateinit var feedQQ:String
+var feedContent:String = ""
+var feedPhoneNnmber:String = ""
+var feedQQ:String = ""
 
 class SettingFeedbackFragmentUI:AnkoComponent<Setting_Feedback_Fragment>{
     override fun createView(ui: AnkoContext<Setting_Feedback_Fragment>) = with(ui){
@@ -74,6 +76,7 @@ class SettingFeedbackFragmentUI:AnkoComponent<Setting_Feedback_Fragment>{
         val id_feed_qq= View.generateViewId()
         val id_feed_phone= View.generateViewId()
         val id_feed_ok= View.generateViewId()
+        val httpClient = HttpClient(ctx)
 
         constraintLayout {
             backgroundColor = ContextCompat.getColor(ctx,R.color.colorNormalBack)
@@ -183,14 +186,29 @@ class SettingFeedbackFragmentUI:AnkoComponent<Setting_Feedback_Fragment>{
                 id = id_feed_ok
                 text = "反馈"
                 onClick {
-                    if(!feed_content.text.toString().equals("")){
+                    if (feed_content.text.toString().equals("")) {
+                        toast("请输入反馈内容")
+                    } else {
                         feedContent = feed_content.text.toString()
-                    }
-                    if(!feed_phone.text.toString().equals("")){
                         feedPhoneNnmber = feed_phone.text.toString()
-                    }
-                    if(!feed_qq.text.toString().equals("")){
                         feedQQ = feed_qq.text.toString()
+                        if (!feedContent.equals("")) {
+                            httpClient.giveFeedback(feedContent, feedQQ, feedPhoneNnmber, "", object : ResultListener {
+                                override fun postResullt(resultType: Int, msg: String) {
+                                    when (resultType) {
+                                        ResultListener.succeedType -> {
+                                            toast(msg)
+                                            feed_content.setText("")
+                                            feed_phone.setText("")
+                                            feed_qq.setText("")
+                                        }
+                                    }
+                                }
+
+                            })
+                        } /*else {
+                            toast("反馈内容不能为空！")
+                        }*/
                     }
 
                 }

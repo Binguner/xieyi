@@ -7,10 +7,12 @@ import android.os.Bundle
 import android.support.constraint.ConstraintSet.PARENT_ID
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import org.jetbrains.anko.constraint.layout.ConstraintSetBuilder.Side.*
@@ -167,19 +169,30 @@ class CreateProtocolFragmentUI:AnkoComponent<CreateProtocolFragment>{
                     mcontent = createPro_ed_content.text.toString()
                     signatoryNum = choosePeopleNum.selectedItem.toString()
                     username = msharedPreferences.getString("username","")
-                    mhttpClient.doProtocol(title,mcontent,signatoryNum,username,object :ResultListener{
-                        override fun postResullt(resultType: Int, msg: String) {
-                            if(resultType == ResultListener.succeedType){
-                                toast(msg)
-                                createPro_ed_title.setText("")
-                                createPro_ed_content.setText("")
-                                choosePeopleNum.setSelection(0)
-                            }else{
-                                toast(msg)
-                            }
-                        }
 
-                    })
+                    if(title.equals("")){
+                        toast("请输入协议标题！")
+                    }else if(mcontent.equals("")){
+                        toast("请输入协议内容！")
+                    }else {
+                        mhttpClient.doProtocol(title, mcontent, signatoryNum, username, object : ResultListener {
+                            override fun postResullt(resultType: Int, msg: String) {
+                                if (resultType == ResultListener.succeedType) {
+                                    toast(msg)
+                                    createPro_ed_title.setText("")
+                                    createPro_ed_content.setText("")
+                                    choosePeopleNum.setSelection(0)
+                                } else {
+                                    toast(msg)
+                                }
+                                val imm = ctx.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                //Log.d("tetete","try to close")
+                                imm.hideSoftInputFromWindow(this@button.windowToken,0)
+
+                            }
+
+                        })
+                    }
                 }
             }.lparams(height = dip(35)){
                 topToTop = id_choosePeopleNum

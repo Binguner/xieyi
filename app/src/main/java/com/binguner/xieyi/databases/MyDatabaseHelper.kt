@@ -38,6 +38,12 @@ class MyDatabaseHelper(context: Context):ManagedSQLiteOpenHelper(context,"Xieyie
                 "choosePeopleNum" to TEXT,
                 "username" to TEXT
         )
+
+        db?.createTable("floater_protocol",true,
+                "protocol_id" to TEXT + PRIMARY_KEY + UNIQUE,
+                "user_id" to TEXT,
+                "username" to TEXT
+                )
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -112,8 +113,13 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
     lateinit var email:String
     lateinit var password:String
     lateinit var passwordAgain:String
+    lateinit var sharedPreferences: SharedPreferences
+    lateinit var editor: SharedPreferences.Editor
 
     override fun createView(ui: AnkoContext<Setting_Person_Fragment>) = with(ui) {
+
+        sharedPreferences = ctx.getSharedPreferences("UserData",Context.MODE_PRIVATE)
+        editor = ctx.getSharedPreferences("UserData",Context.MODE_PRIVATE).edit()
 
         constraintLayout(){
 
@@ -229,7 +235,7 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
 
                 // username
                 val set_person_username = textView(){
-                    text = "Binguenr"
+                    text = sharedPreferences.getString("username","null")
                     id = id_set_person_username
                 }.lparams(){
                     topToTop = PARENT_ID
@@ -342,7 +348,7 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                 // phone number
                  val set_person_phonenumber = textView(){
                     id = id_set_person_phonenumber
-                    text = "123123123123"
+                    text = sharedPreferences.getString("phonenumber",null)
                 }.lparams(){
                     topToTop = PARENT_ID
                     bottomToBottom = PARENT_ID
@@ -448,7 +454,7 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                 //  email
                 val set_person_email = textView(){
                     id = id_set_person_email
-                    text = "478718805@qq.com"
+                    text = sharedPreferences.getString("email","点击修改邮箱")
 
                 }.lparams(){
                     topToTop = PARENT_ID
