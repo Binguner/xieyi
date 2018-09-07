@@ -141,7 +141,7 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
                 leftMargin = dip(20)
             }
 
-            val person_username = textView(sharedPreferences.getString("username","null")){
+            val person_username = textView(sharedPreferences.getString("nickname","请设置昵称")){
                 id = id_person_username
                 textSize = 20f
                 textColor = ContextCompat.getColor(ctx, R.color.colorBlack)

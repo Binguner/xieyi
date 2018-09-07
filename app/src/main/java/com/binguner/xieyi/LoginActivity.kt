@@ -278,7 +278,7 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                                         httpClient.doRegister(phoneNumber, username, password,object: ResultListener {
                                             override fun postResullt(resultType: Int, msg: String) {
                                                 when (resultType) {
-                                                    ResultListener.nextType -> {
+                                                    /*ResultListener.nextType -> {
                                                        // if(!msg.equals("")){
                                                             toast(msg)
                                                         if (msg.equals("注册成功")) {
@@ -291,10 +291,10 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                                                         //}else if(msg.contains("登录失败")){
                                                           //  toast("登陆失败，请检查用户名和密码是否正确!")
                                                         //}
-                                                    }
+                                                    }*/
                                                     ResultListener.succeedType -> {
                                                         //123toast(msg)
-                                                        Thread.sleep(1000)
+                                                        //Thread.sleep(1000)
                                                         if (msg.equals("注册成功")) {
                                                             toast(msg)
                                                             editor.putBoolean("isLoging",true)
@@ -305,7 +305,7 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                                                     }
                                                     ResultListener.errorType -> {
                                                         if (!msg.equals("")) {
-                                                            toast("登陆失败，请检查用户名和密码是否正确!")
+                                                            toast(msg)
                                                         }
                                                     }
                                                 }
@@ -317,22 +317,26 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                                             override fun postResullt(resultType: Int, msg: String) {
                                                 when (resultType){
                                                     ResultListener.nextType ->{
-                                                        if(msg.equals("登录成功")){
-                                                            Thread.sleep(1000)
+                                                        /*if(msg.equals("登录成功")){
+                                                            //Thread.sleep(1000)
                                                             editor.putBoolean("isLoging",true)
                                                             editor.commit()
                                                             startActivity<MainActivity>()
                                                             owner.finish()
                                                         }else if(msg.equals("登录失败")){
                                                             toast("登陆失败，请检查用户名和密码！")
-                                                        }
+                                                        }*/
                                                     }
                                                     ResultListener.succeedType ->{
                                                         if(msg.equals("登录成功")){
-
-                                                        //}else if(){
-
+                                                            editor.putBoolean("isLoging",true)
+                                                            editor.commit()
+                                                            startActivity<MainActivity>()
+                                                            owner.finish()
                                                         }
+                                                    }
+                                                    ResultListener.failedType -> {
+                                                        toast("登录失败,请检查用户名和密码是否正确")
                                                     }
                                                     ResultListener.errorType ->{
 

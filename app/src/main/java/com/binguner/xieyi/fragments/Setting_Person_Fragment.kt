@@ -27,7 +27,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 
 import com.binguner.xieyi.R
+import com.binguner.xieyi.RxUtils.HttpClient
 import com.binguner.xieyi.beans.FloaterBean
+import com.binguner.xieyi.listeners.ResultListener
 import com.binguner.xieyi.utils.MyImageLoader
 import com.lzy.imagepicker.ImagePicker
 import com.lzy.imagepicker.ui.ImageGridActivity
@@ -79,9 +81,10 @@ class Setting_Person_Fragment : Fragment() {
 }
 
 class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
-
     val id_set_person_toolbar = View.generateViewId()
     val id_set_person_shadow= View.generateViewId()
+
+
     val id_set_person_back= View.generateViewId()
     val id_set_person_avator_layout= View.generateViewId()
     val id_set_person_avator= View.generateViewId()
@@ -99,27 +102,30 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
     val id_set_person_alert_content_ed_password_again= View.generateViewId()
     val id_set_person_alert_custom_title= View.generateViewId()
     val id_set_person_alert_custom_title_phonenumber= View.generateViewId()
-
     var person_settting_dialog_username : DialogInterface ?= null
     var person_settting_dialog_phonenumber : DialogInterface ?= null
+
     var person_settting_dialog_email : DialogInterface ?= null
     var person_settting_dialog_password : DialogInterface ?= null
     val id_set_recycler_view = View.generateViewId()
     var items = mutableListOf<FloaterBean>()
     val choosePhotoslists = listOf<String>("从相册中选择","拍一张")
-
     lateinit var usernmae:String
+
     lateinit var phonenumber:String
     lateinit var email:String
     lateinit var password:String
     lateinit var passwordAgain:String
     lateinit var sharedPreferences: SharedPreferences
     lateinit var editor: SharedPreferences.Editor
+    lateinit var httpClient: HttpClient
 
     override fun createView(ui: AnkoContext<Setting_Person_Fragment>) = with(ui) {
 
         sharedPreferences = ctx.getSharedPreferences("UserData",Context.MODE_PRIVATE)
         editor = ctx.getSharedPreferences("UserData",Context.MODE_PRIVATE).edit()
+
+        httpClient = HttpClient(ctx)
 
         constraintLayout(){
 
@@ -233,9 +239,9 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                     leftMargin = dip(20)
                 }
 
-                // username
+                // nickname
                 val set_person_username = textView(){
-                    text = sharedPreferences.getString("username","null")
+                    text = sharedPreferences.getString("nickname","请设置昵称")
                     id = id_set_person_username
                 }.lparams(){
                     topToTop = PARENT_ID
@@ -293,6 +299,19 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
 
                                     onClick {
                                         person_settting_dialog_username?.dismiss()
+                                        httpClient.modifyInfo(sharedPreferences.getString("user_id",""),usernmae,null,null,null,object :ResultListener{
+                                            override fun postResullt(resultType: Int, msg: String) {
+                                                when(resultType){
+                                                    ResultListener.succeedType -> {
+
+                                                    }
+                                                    ResultListener.failedType -> {
+
+                                                    }
+                                                }
+                                            }
+
+                                        })
                                     }
                                 }.lparams(width = dip(0)){
                                     topToBottom = id_set_person_alert_content_ed
@@ -724,8 +743,6 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
 
         var i = Intent(context,ImageGridActivity::class.java)
         activity.startActivityForResult(i,123)
-
-
 
     }
 

@@ -27,7 +27,8 @@ class MyDatabaseHelper(context: Context):ManagedSQLiteOpenHelper(context,"Xieyie
                 "user_password" to TEXT,
                 "user_phonenumber" to TEXT,
                 "user_avatar" to TEXT,
-                "email" to TEXT
+                "email" to TEXT,
+                "nickname" to TEXT
         )
 
         db?.createTable("normal_protocol",true,

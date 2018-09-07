@@ -6,6 +6,7 @@ import android.util.Log
 import com.binguner.xieyi.BuildConfig
 import com.binguner.xieyi.databases.DBUtils
 import com.binguner.xieyi.listeners.ResultListener
+import com.binguner.xieyi.password
 import com.binguner.xieyi.sharedPreferences
 import com.binguner.xieyi.utils.NetworkUtil
 
@@ -31,6 +32,7 @@ import java.util.concurrent.TimeUnit
  *      phonenumber
  *      user_id
  *      email
+ *      nickname
  */
 class HttpClient(context: Context){
 
@@ -131,23 +133,27 @@ class HttpClient(context: Context){
                 .subscribe({
                     //Log.d("fmosanfaus",it.message)
                     //editor.putBoolean("isLoging",true)
-                    editor.putString("username", username)
-                    editor.putString("password", password)
-                    editor.putString("phonenumber", phone)
-                    editor.putString("user_id", it.data.id)
-                    editor.commit()
+                    if(it.message.equals("注册成功")) {
+                        editor.putString("username", username)
+                        editor.putString("password", password)
+                        editor.putString("phonenumber", phone)
+                        editor.putString("user_id", it.data.id)
+                        editor.putString("nickname", "请设置昵称")
+                        editor.commit()
 
-                    dbUtils.insertNewUserInfo(phone,username,password,it.data.id,"" )
+                        dbUtils.insertNewUserInfo(phone, username, password, it.data.id, "","请设置昵称")
 
-                    //Log.d("Whatsinsp","phontnumber is $phoneNumber, username is $username , password is $password")
-                    resultListener.postResullt(ResultListener.nextType,it.message)
-
+                        //Log.d("Whatsinsp","phontnumber is $phoneNumber, username is $username , password is $password")
+                        resultListener.postResullt(ResultListener.succeedType, it.message)
+                    }else{
+                        resultListener.postResullt(ResultListener.failedType, it.message)
+                    }
                 },{
                     //Log.d("fmosanfaus",it.toString())
-                    resultListener.postResullt(ResultListener.errorType,it.message!!)
+                    //resultListener.postResullt(ResultListener.errorType,it.message!!)
                 }, {
                     //Log.d("fmosanfaus","onCompliated")
-                    resultListener.postResullt(ResultListener.succeedType, "")
+                    //resultListener.postResullt(ResultListener.succeedType, "")
                 })
 
     }
@@ -160,23 +166,29 @@ class HttpClient(context: Context){
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     //editor.putBoolean("isLoging",true)
-                    editor.putString("username", it.data.username)
-                    editor.putString("password", password)
-                    editor.putString("phonenumber", it.data.phone)
-                    editor.putString("user_id", it.data._id)
-                    try {
-                        editor.putString("email", it.data.email)
-                    }catch (e:Exception){}
-                    //editor.putString("email", it.data.email)
-                    editor.commit()
-
-                    dbUtils.insertOldUserInfo(it)
-                    resultListener.postResullt(ResultListener.nextType,it.message)
-                    //Log.d(HttpClientTag,"onNext : ${it.message}")
-                    if(it.message.equals("登录成功")){
-                        it.data.protocols.forEach {
-                            Log.d(HttpClientTag,it)
+                    if(it.message.equals("登录成功")) {
+                        editor.putString("username", it.data.username)
+                        editor.putString("password", password)
+                        editor.putString("phonenumber", it.data.phone)
+                        editor.putString("user_id", it.data._id)
+                        editor.putString("nickname", it.data.nickname)
+                        try {
+                            editor.putString("email", it.data.email)
+                        } catch (e: Exception) {
                         }
+                        //editor.putString("email", it.data.email)
+                        editor.commit()
+                        dbUtils.insertOldUserInfo(it)
+                        resultListener.postResullt(ResultListener.succeedType, it.message)
+                        //Log.d(HttpClientTag,"onNext : ${it.message}")
+
+                        if (it.message.equals("登录成功")) {
+                            it.data.protocols.forEach {
+                                Log.d(HttpClientTag, it)
+                            }
+                        }
+                    }else{
+                        resultListener.postResullt(ResultListener.failedType, it.message)
                     }
 
                 },{
@@ -236,4 +248,44 @@ class HttpClient(context: Context){
 
                 })
     }
+
+
+    fun modifyInfo(user_id:String, nickname:String?, avatar_url:String?, phoneNumber:String?, email:String?, newPassword:String, resultListener: ResultListener){
+        services.modifyUserInfo(user_id, nickname, avatar_url, phoneNumber, email, newPassword)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if(it.message.equals("修改学生信息成功") && it.data.nModified != null){
+                        resultListener.postResullt(ResultListener.succeedType, it.message)
+                        if (nickname.equals("") && null != nickname) {
+                            editor.putString("nickname",nickname)
+                            editor.commit()
+                        }
+                        if(!phoneNumber.equals("") && phoneNumber != null){
+                            editor.putString("phonenumber",phoneNumber)
+                            editor.commit()
+                        }
+                        if(!email.equals("") && null != email){
+                            editor.putString("email",email)
+                            editor.commit()
+                        }
+                        if(!newPassword.equals("") && null != newPassword){
+                            editor.putString("password", newPassword)
+                            editor.commit()
+                        }
+                    }else{
+                        resultListener.postResullt(ResultListener.failedType,"修改学生信息失败")
+                    }
+                },{
+
+                },{
+
+                })
+    }
+
+
+
+
+
 }

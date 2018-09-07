@@ -60,6 +60,6 @@ interface ApiServices{
 
     // modifyUserInfo
     @POST("modifyinfo")
-    fun modifyUserInfo(@Query("id")user_id: String,@Query("nickname")nickname:String,@Query("avatar") avatar_url:String,@Query("phone")phoneNumber:String,@Query("email")email:String):Observable<ModifyinfoBean>
+    fun modifyUserInfo(@Query("id")user_id: String,@Query("nickname")nickname:String?, @Query("avatar") avatar_url:String?,@Query("phone")phoneNumber:String?,@Query("email")email:String?,@Query("password")newPassword:String?):Observable<ModifyinfoBean>
 
 }

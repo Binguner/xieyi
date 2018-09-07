@@ -9,6 +9,14 @@ import com.binguner.xieyi.beans.DoLoginBean
 import com.binguner.xieyi.username
 
 class DBUtils(context: Context){
+
+    companion object {
+        val TypeNickname = 0
+        val TypePassword = 1
+        val TypeEmail = 2
+        val TypePhoneNumber = 3
+        val TypeAvatar = 4
+    }
     var db:SQLiteDatabase
     val contentValues = ContentValues()
     init {
@@ -16,12 +24,13 @@ class DBUtils(context: Context){
     }
 
     // register
-    fun insertNewUserInfo(phonenumber: String, username: String, password: String, user_id: String?, user_avator_url:String?) {
+    fun insertNewUserInfo(phonenumber: String, username: String, password: String, user_id: String?, user_avator_url:String?, nickname:String) {
         contentValues.put("user_id",user_id)
         contentValues.put("user_name",username)
         contentValues.put("user_phonenumber",phonenumber)
         contentValues.put("user_password",password)
         contentValues.put("user_avatar",user_avator_url)
+        contentValues.put("nickname",nickname)
         try {
             db.insert("User_info",null,contentValues)
         }catch (e: Exception){ }
@@ -84,6 +93,11 @@ class DBUtils(context: Context){
             db.insert("normal_protocol",null,contentValues)
             contentValues.clear()
         }catch (e:Exception){}
+    }
+
+
+    fun updateUserInfo(changeType:Int,any: Any){
+
     }
 
     fun insertFloaterProtocol(protocol_id:String, user_id:String, username:String){

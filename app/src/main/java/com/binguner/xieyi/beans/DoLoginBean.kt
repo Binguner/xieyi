@@ -14,7 +14,7 @@ data class Data2(
     val phone: String,
     val password: String,
     val protocols: List<String>,
-    val nickname: Any,
+    val nickname: String,
     val sex: Any,
     val email: String
 )
