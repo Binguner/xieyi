@@ -29,6 +29,7 @@ import android.widget.Toast
 import com.binguner.xieyi.R
 import com.binguner.xieyi.RxUtils.HttpClient
 import com.binguner.xieyi.beans.FloaterBean
+import com.binguner.xieyi.databases.DBUtils
 import com.binguner.xieyi.listeners.ResultListener
 import com.binguner.xieyi.utils.MyImageLoader
 import com.lzy.imagepicker.ImagePicker
@@ -293,25 +294,14 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                                     rightMargin = dip(20)
                                 }
 
+                                // nickename cancel button
                                 button(){
                                     text = "Cancel"
                                     id = id_set_person_alert_cancel
 
                                     onClick {
                                         person_settting_dialog_username?.dismiss()
-                                        httpClient.modifyInfo(sharedPreferences.getString("user_id",""),usernmae,null,null,null,object :ResultListener{
-                                            override fun postResullt(resultType: Int, msg: String) {
-                                                when(resultType){
-                                                    ResultListener.succeedType -> {
 
-                                                    }
-                                                    ResultListener.failedType -> {
-
-                                                    }
-                                                }
-                                            }
-
-                                        })
                                     }
                                 }.lparams(width = dip(0)){
                                     topToBottom = id_set_person_alert_content_ed
@@ -321,11 +311,27 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                                     startToStart = PARENT_ID
                                 }
 
+                                // nickname ok button
                                 button(){
                                     text = "OK"
                                     id = id_set_person_alert_ok
                                     onClick {
-                                        set_person_username.text = usernmae
+                                        httpClient.modifyInfo(sharedPreferences.getString("user_id",""),usernmae,"","","","","","","",object :ResultListener{
+                                            override fun postResullt(resultType: Int, msg: String) {
+                                                when(resultType){
+                                                    ResultListener.succeedType -> {
+                                                        editor.putString("nickname",usernmae)
+                                                        editor.commit()
+                                                        dbUtils.updateUserInfo(sharedPreferences.getString("user_id",""),DBUtils.TypeNickname,usernmae)
+                                                        set_person_username.setText(usernmae)
+                                                    }
+                                                    ResultListener.failedType -> {
+                                                        toast(msg)
+                                                    }
+                                                }
+                                            }
+
+                                        })
                                         person_settting_dialog_username?.dismiss()
                                     }
                                 }.lparams(width = dip(0)){

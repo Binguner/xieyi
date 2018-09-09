@@ -76,7 +76,7 @@ class DBUtils(context: Context){
         }
     }
 
-    // delete this accoutn
+    // delete this accoutn/
     fun deleteAccout(user_name:String){
         val isDelete = db.delete("User_info","user_name like ?", arrayOf(user_name))
     }
@@ -96,8 +96,30 @@ class DBUtils(context: Context){
     }
 
 
-    fun updateUserInfo(changeType:Int,any: Any){
-
+    fun updateUserInfo(user_id: String, changeType:Int,any: Any){
+        when (changeType){
+            DBUtils.TypeNickname -> {
+                contentValues.put("nickname",any as String)
+                db.update("User_info",contentValues,"user_id like ?", arrayOf(user_id))
+                //Log.d("tetete","inserted")
+                contentValues.clear()
+            }
+            DBUtils.TypePhoneNumber -> {
+                contentValues.put("user_phonenumber",any as String)
+                db.update("User_info", contentValues, "user_id like ?", arrayOf(user_id))
+                contentValues.clear()
+            }
+            DBUtils.TypeEmail -> {
+                contentValues.put("email", any as String)
+                db.update("User_info", contentValues,"user_id like?", arrayOf(user_id))
+                contentValues.clear()
+            }
+            DBUtils.TypePassword -> {
+                contentValues.put("user_password",any as String)
+                db.update("User_info",contentValues,"user_id like?", arrayOf(user_id))
+                contentValues.clear()
+            }
+        }
     }
 
     fun insertFloaterProtocol(protocol_id:String, user_id:String, username:String){

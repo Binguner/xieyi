@@ -250,8 +250,8 @@ class HttpClient(context: Context){
     }
 
 
-    fun modifyInfo(user_id:String, nickname:String?, avatar_url:String?, phoneNumber:String?, email:String?, newPassword:String, resultListener: ResultListener){
-        services.modifyUserInfo(user_id, nickname, avatar_url, phoneNumber, email, newPassword)
+    fun modifyInfo(user_id:String, nickname:String?, avatar_url:String?,sex:String?, career:String?, region: String?, phoneNumber:String?, email:String?, newPassword:String?, resultListener: ResultListener){
+        services.modifyUserInfo(user_id, nickname, avatar_url, sex,career,region,phoneNumber, email, newPassword)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -274,11 +274,9 @@ class HttpClient(context: Context){
                             editor.putString("password", newPassword)
                             editor.commit()
                         }
-                    }else{
-                        resultListener.postResullt(ResultListener.failedType,"修改学生信息失败")
                     }
                 },{
-
+                    resultListener.postResullt(ResultListener.failedType,"修改学生信息失败!")
                 },{
 
                 })
