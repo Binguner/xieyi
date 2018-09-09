@@ -98,10 +98,9 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
     lateinit var editor: SharedPreferences.Editor
 
     override fun createView(ui: AnkoContext<PersonFragment>) = with(ui) {
+
         constraintLayout {
-
             backgroundColor = ContextCompat.getColor(ctx,R.color.colorNormalBack)
-
             dbUtils = DBUtils(ctx)
             sharedPreferences = ctx.getSharedPreferences("UserData",Context.MODE_PRIVATE)
             editor = ctx.getSharedPreferences("UserData", Context.MODE_PRIVATE).edit()
@@ -268,7 +267,7 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
 
 }
 
-public interface OnSelectToFinishCallback{
-
+interface OnSelectToFinishCallback{
     fun selected()
 }
+

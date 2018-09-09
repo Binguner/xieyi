@@ -324,6 +324,7 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                                                         editor.commit()
                                                         dbUtils.updateUserInfo(sharedPreferences.getString("user_id",""),DBUtils.TypeNickname,usernmae)
                                                         set_person_username.setText(usernmae)
+                                                        toast(msg)
                                                     }
                                                     ResultListener.failedType -> {
                                                         toast(msg)
@@ -544,7 +545,22 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                                     text = "OK"
                                     id = id_set_person_alert_ok
                                     onClick {
+                                        httpClient.modifyInfo(sharedPreferences.getString("user_id",""),"","","","","","",email,"",object :ResultListener{
+                                            override fun postResullt(resultType: Int, msg: String) {
+                                                when(resultType){
+                                                    ResultListener.succeedType -> {
+                                                        //editor.
+                                                    }
+                                                    ResultListener.failedType -> {
+
+                                                    }
+                                                }
+                                            }
+
+                                        })
+
                                         set_person_email.text = email
+
                                         person_settting_dialog_email?.dismiss()
                                     }
                                 }.lparams(width = dip(0)){
@@ -751,5 +767,8 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
         activity.startActivityForResult(i,123)
 
     }
+}
 
+interface changeTextListener{
+    fun textChangeed(textType:String,newString: String)
 }

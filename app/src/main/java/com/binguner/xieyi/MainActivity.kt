@@ -31,10 +31,7 @@ import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TableLayout
 import com.binguner.xieyi.activities.type
-import com.binguner.xieyi.fragments.CreateProtocolFragment
-import com.binguner.xieyi.fragments.HomeFragment
-import com.binguner.xieyi.fragments.OnSelectToFinishCallback
-import com.binguner.xieyi.fragments.PersonFragment
+import com.binguner.xieyi.fragments.*
 import com.binguner.xieyi.utils.StatusBarUtil
 import org.jetbrains.anko.*
 import org.jetbrains.anko.custom.ankoView
@@ -42,7 +39,12 @@ import org.jetbrains.anko.design.tabItem
 import org.jetbrains.anko.design.tabLayout
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
-class MainActivity : AppCompatActivity(),OnSelectToFinishCallback {
+class MainActivity : AppCompatActivity(),OnSelectToFinishCallback,changeTextListener{
+
+    override fun textChangeed(textType: String, newString: String) {
+
+    }
+
     override fun selected() {
         this.finish()
     }
@@ -119,12 +121,12 @@ class MainActivity : AppCompatActivity(),OnSelectToFinishCallback {
         createProtocolFragment!!.onDetach()*/
         //this.onBackPressed()
         this.finish()
-        Log.d("tetete","finished")
+        //og.d("tetete","finished")
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
-        Log.d("tetete","onBackPressed!")
+        //Log.d("tetete","onBackPressed!")
     }
 
 }

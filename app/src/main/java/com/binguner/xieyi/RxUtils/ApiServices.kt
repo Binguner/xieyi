@@ -61,8 +61,8 @@ interface ApiServices{
     // modifyUserInfo
     @POST("modifyinfo")
     @FormUrlEncoded
-    fun modifyUserInfo(@Query("id")user_id: String, @Query("nickname")nickname:String?, @Query("avatar") avatar_url:String?, @Query("sex")sex:String?,
-                       @Query("career")career:String?, @Query("region")region:String?, @Query("phone")phoneNumber:String?, @Query("email")email:String?,
-                       @Query("password")newPassword:String?):Observable<ModifyinfoBean>
+    fun modifyUserInfo(@Field("id")user_id: String, @Field("nickname")nickname:String?, @Field("avatar") avatar_url:String?, @Field("sex")sex:String?,
+                       @Field("career")career:String?, @Field("region")region:String?, @Field("phone")phoneNumber:String?, @Field("email")email:String?,
+                       @Field("password")newPassword:String?):Observable<ModifyinfoBean>
 
 }
