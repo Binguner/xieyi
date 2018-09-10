@@ -15,6 +15,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.binguner.xieyi.LoginActivity
 import com.binguner.xieyi.MainActivity
 
@@ -74,9 +75,11 @@ class PersonFragment : Fragment() {
                 }
     }
 
-
 }
 
+
+lateinit var person_username:TextView
+lateinit var person_email :TextView
 lateinit var sharedPreferences :SharedPreferences
 class PersonFragmentUI: AnkoComponent<PersonFragment>{
 
@@ -140,7 +143,7 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
                 leftMargin = dip(20)
             }
 
-            val person_username = textView(sharedPreferences.getString("nickname","请设置昵称")){
+            person_username = textView(sharedPreferences.getString("nickname","请设置昵称")){
                 id = id_person_username
                 textSize = 20f
                 textColor = ContextCompat.getColor(ctx, R.color.colorBlack)
@@ -151,9 +154,8 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
                 topMargin = dip(10)
             }
 
-            val person_email = textView(sharedPreferences.getString("email","请到设置页面设置邮箱地址！")){
+            person_email = textView(sharedPreferences.getString("email","请到设置页面设置邮箱地址！")){
                 id = id_person_email
-
             }.lparams(height = dip(60)){
                 startToEnd = id_person_avator
                 leftMargin = dip(20)
@@ -166,7 +168,9 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
                 imageResource = R.drawable.ic_settings_cyan_400_24dp
                 onClick {
                     //toast("Setting")
-                    startActivity<SettingActivity>("flag" to 0)
+                    //startActivity<SettingActivity>("flag" to 0)
+                    
+
                 }
             }.lparams(){
                 endToEnd = PARENT_ID
@@ -178,7 +182,6 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
             button("我的协议"){
                 id = id_person_my_protocol
                 backgroundColor = ContextCompat.getColor(ctx, R.color.colorWhite)
-
                 //gravity = Gravity.CENTER_VERTICAL
 
                 onClick {

@@ -33,6 +33,8 @@ import java.util.concurrent.TimeUnit
  *      user_id
  *      email
  *      nickname
+ *      avatar_url
+ *      sex
  */
 class HttpClient(context: Context){
 
@@ -151,6 +153,8 @@ class HttpClient(context: Context){
                 },{
                     //Log.d("fmosanfaus",it.toString())
                     //resultListener.postResullt(ResultListener.errorType,it.message!!)
+                    //resultListener.postResullt(ResultListener.failedType, it.message)
+
                 }, {
                     //Log.d("fmosanfaus","onCompliated")
                     //resultListener.postResullt(ResultListener.succeedType, "")
@@ -170,6 +174,7 @@ class HttpClient(context: Context){
                         editor.putString("username", it.data.username)
                         editor.putString("password", password)
                         editor.putString("phonenumber", it.data.phone)
+                        //Log.d("tetete",password)
                         editor.putString("user_id", it.data._id)
                         editor.putString("nickname", it.data.nickname)
                         try {
@@ -184,16 +189,18 @@ class HttpClient(context: Context){
 
                         if (it.message.equals("登录成功")) {
                             it.data.protocols.forEach {
-                                Log.d(HttpClientTag, it)
+                                //Log.d(HttpClientTag, it)
                             }
                         }
                     }else{
-                        resultListener.postResullt(ResultListener.failedType, it.message)
+                        //resultListener.postResullt(ResultListener.failedType, it.message)
                     }
 
                 },{
                     //Log.d(HttpClientTag,"onError : ${it.message}")
                     //resultListener.postResullt(ResultListener.errorType,it.message!!)
+                    resultListener.postResullt(ResultListener.failedType, "登录失败，请检查用户名和密码。")
+
                 },{
                     //Log.d(HttpClientTag,"onComplete : ")
                     //resultListener.postResullt(ResultListener.succeedType,"")

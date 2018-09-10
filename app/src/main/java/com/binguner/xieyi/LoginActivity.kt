@@ -308,6 +308,9 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                                                             toast(msg)
                                                         }
                                                     }
+                                                    ResultListener.failedType -> {
+                                                        toast(msg)
+                                                    }
                                                 }
                                             }
                                         })
@@ -329,6 +332,7 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                                                     }
                                                     ResultListener.succeedType ->{
                                                         if(msg.equals("登录成功")){
+                                                            toast(msg)
                                                             editor.putBoolean("isLoging",true)
                                                             editor.commit()
                                                             startActivity<MainActivity>()

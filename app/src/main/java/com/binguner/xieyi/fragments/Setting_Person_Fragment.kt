@@ -316,7 +316,15 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                                     text = "OK"
                                     id = id_set_person_alert_ok
                                     onClick {
-                                        httpClient.modifyInfo(sharedPreferences.getString("user_id",""),usernmae,"","","","","","","",object :ResultListener{
+                                        httpClient.modifyInfo(sharedPreferences.getString("user_id",""),
+                                                usernmae,
+                                                sharedPreferences.getString("avatar_url",""),
+                                                sharedPreferences.getString("sex",""),
+                                                sharedPreferences.getString("career",""),
+                                                sharedPreferences.getString("region",""),
+                                                sharedPreferences.getString("phonenumber",""),
+                                                sharedPreferences.getString("email",""),
+                                                sharedPreferences.getString("password",""),object :ResultListener{
                                             override fun postResullt(resultType: Int, msg: String) {
                                                 when(resultType){
                                                     ResultListener.succeedType -> {
@@ -374,7 +382,7 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                 // phone number
                  val set_person_phonenumber = textView(){
                     id = id_set_person_phonenumber
-                    text = sharedPreferences.getString("phonenumber",null)
+                    text = sharedPreferences.getString("phonenumber","请设置手机号！")
                 }.lparams(){
                     topToTop = PARENT_ID
                     bottomToBottom = PARENT_ID
@@ -409,7 +417,11 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                                     singleLine = true
                                     inputType = InputType.TYPE_CLASS_NUMBER
                                     setBackgroundResource(R.drawable.alert_edittext_style)
-                                    phonenumber = this@editText.text.toString()
+                                    textChangedListener {
+                                        afterTextChanged {
+                                            phonenumber = this@editText.text.toString()
+                                        }
+                                    }
                                 }.lparams(width = dip(0), height = dip(35)){
                                     topToBottom = PARENT_ID
                                     startToStart = PARENT_ID
@@ -438,7 +450,35 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                                     text = "OK"
                                     id = id_set_person_alert_ok
                                     onClick {
-                                        set_person_phonenumber.text = phonenumber
+                                        httpClient.modifyInfo(sharedPreferences.getString("user_id",""),
+                                                sharedPreferences.getString("nickname",""),
+                                                sharedPreferences.getString("avatar_url",""),
+                                                sharedPreferences.getString("sex",""),
+                                                sharedPreferences.getString("career",""),
+                                                sharedPreferences.getString("region",""),
+                                                phonenumber,
+                                                sharedPreferences.getString("email",""),
+                                                sharedPreferences.getString("password",""),
+                                                object :ResultListener{
+                                                    override fun postResullt(resultType: Int, msg: String) {
+                                                        toast(msg)
+                                                        when (resultType) {
+                                                            ResultListener.succeedType -> {
+                                                                set_person_phonenumber.setText(phonenumber)
+                                                                editor.putString("phonenumber",phonenumber)
+                                                                editor.commit()
+                                                                //Log.d("tetete","phonenumber is $phonenumber")
+                                                                dbUtils.updateUserInfo(sharedPreferences.getString("user_id",""),DBUtils.TypePhoneNumber,phonenumber)
+                                                            }
+                                                            ResultListener.failedType -> {
+
+                                                            }
+                                                        }
+                                                    }
+
+                                                }
+                                                )
+                                        //set_person_phonenumber.text = phonenumber
                                         person_settting_dialog_phonenumber?.dismiss()
                                     }
                                 }.lparams(width = dip(0)){
@@ -516,7 +556,11 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                                     singleLine = true
                                     inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
                                     setBackgroundResource(R.drawable.alert_edittext_style)
-                                    email = this@editText.text.toString()
+                                    textChangedListener {
+                                        afterTextChanged {
+                                            email = this@editText.text.toString()
+                                        }
+                                    }
                                 }.lparams(width = dip(0), height = dip(35)){
                                     topToBottom = PARENT_ID
                                     startToStart = PARENT_ID
@@ -545,11 +589,23 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                                     text = "OK"
                                     id = id_set_person_alert_ok
                                     onClick {
-                                        httpClient.modifyInfo(sharedPreferences.getString("user_id",""),"","","","","","",email,"",object :ResultListener{
+                                        httpClient.modifyInfo(sharedPreferences.getString("user_id",""),
+                                                sharedPreferences.getString("nickname",""),
+                                                sharedPreferences.getString("avatar_url",""),
+                                                sharedPreferences.getString("sex",""),
+                                                sharedPreferences.getString("career",""),
+                                                sharedPreferences.getString("region",""),
+                                                sharedPreferences.getString("phonenumber",""),
+                                                email,
+                                                sharedPreferences.getString("password",""),object :ResultListener{
                                             override fun postResullt(resultType: Int, msg: String) {
+                                                toast(msg)
                                                 when(resultType){
                                                     ResultListener.succeedType -> {
-                                                        //editor.
+                                                        set_person_email.text = email
+                                                        editor.putString("email",email)
+                                                        editor.commit()
+                                                        dbUtils.updateUserInfo(sharedPreferences.getString("user_id",""),DBUtils.TypeEmail,email)
                                                     }
                                                     ResultListener.failedType -> {
 
@@ -559,7 +615,6 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
 
                                         })
 
-                                        set_person_email.text = email
 
                                         person_settting_dialog_email?.dismiss()
                                     }
@@ -699,7 +754,29 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                                         if(!password.equals(passwordAgain)){
                                             toast("$password and $passwordAgain 两次密码输入不一致，请重试")
                                         }else{
+                                            httpClient.modifyInfo(sharedPreferences.getString("user_id",""),
+                                                    sharedPreferences.getString("nickname",""),
+                                                    sharedPreferences.getString("avatar_url",""),
+                                                    sharedPreferences.getString("sex",""),
+                                                    sharedPreferences.getString("career",""),
+                                                    sharedPreferences.getString("region",""),
+                                                    sharedPreferences.getString("phonenumber",""),
+                                                    sharedPreferences.getString("email",""),
+                                                    password,object :ResultListener{
+                                                override fun postResullt(resultType: Int, msg: String) {
+                                                    toast(msg)
+                                                    when(resultType){
+                                                        ResultListener.succeedType -> {
+                                                            editor.putString("password","")
+                                                            editor.commit()
+                                                        }
+                                                        ResultListener.failedType -> {
 
+                                                        }
+                                                    }
+                                                }
+
+                                            })
                                         }
                                     }
                                 }.lparams(width = dip(0)){
