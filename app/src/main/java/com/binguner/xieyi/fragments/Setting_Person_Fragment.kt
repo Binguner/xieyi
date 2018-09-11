@@ -45,6 +45,8 @@ import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.toast
 
 lateinit var aactivity:Activity
+lateinit var userInfoChangedListener : UserInfoChangedListener
+lateinit var onSelectToFinishCallback: OnSelectToFinishCallback
 class Setting_Person_Fragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -57,9 +59,18 @@ class Setting_Person_Fragment : Fragment() {
         return container
     }
 
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        if(context is UserInfoChangedListener){
+            userInfoChangedListener = context
+        }
+        if(context is OnSelectToFinishCallback){
+            onselected2finishAty = context
+        }
     }
+
+
 
     fun attachAty(activity: Activity){
         aactivity = activity
@@ -68,6 +79,8 @@ class Setting_Person_Fragment : Fragment() {
     override fun onDetach() {
         super.onDetach()
     }
+
+
 
     interface OnFragmentInteractionListener {
         fun onFragmentInteraction(uri: Uri)
@@ -163,9 +176,10 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                 onClick {
                     //Log.d("sjmfoiasjfo;isad","back clicked")
                     //owner.activity?.finish()
-                    if(null != aactivity ){
+                    /*if(null != aactivity ){
                         aactivity?.finish()
-                    }
+                    }*/
+                    onselected2finishAty.selected()
                 }
             }.lparams(){
                 topToTop = id_set_person_toolbar
@@ -332,6 +346,7 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                                                         editor.commit()
                                                         dbUtils.updateUserInfo(sharedPreferences.getString("user_id",""),DBUtils.TypeNickname,usernmae)
                                                         set_person_username.setText(usernmae)
+                                                        userInfoChangedListener.isChanged(1,true)
                                                         toast(msg)
                                                     }
                                                     ResultListener.failedType -> {
@@ -606,6 +621,8 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                                                         editor.putString("email",email)
                                                         editor.commit()
                                                         dbUtils.updateUserInfo(sharedPreferences.getString("user_id",""),DBUtils.TypeEmail,email)
+                                                        userInfoChangedListener.isChanged(2,true)
+
                                                     }
                                                     ResultListener.failedType -> {
 
@@ -798,12 +815,6 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                 topMargin = dip(10)
             }
 
-
-
-
-
-
-
         }
 
     }
@@ -846,6 +857,11 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
     }
 }
 
+interface UserInfoChangedListener{
+    fun isChanged(type:Int,changged:Boolean = false)
+}
+/*
 interface changeTextListener{
     fun textChangeed(textType:String,newString: String)
 }
+*/

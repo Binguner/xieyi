@@ -12,10 +12,7 @@ import android.support.v4.content.ContextCompat
 import android.util.Log
 import android.view.View
 import com.binguner.xieyi.R
-import com.binguner.xieyi.fragments.Setting_Feedback_Fragment
-import com.binguner.xieyi.fragments.Setting_Help_Fragment
-import com.binguner.xieyi.fragments.Setting_MyProFragment
-import com.binguner.xieyi.fragments.Setting_Person_Fragment
+import com.binguner.xieyi.fragments.*
 import com.binguner.xieyi.utils.MyImageLoader
 import com.binguner.xieyi.utils.StatusBarUtil
 import com.lzy.imagepicker.ImagePicker
@@ -33,7 +30,31 @@ var flag:Int = -1
  * 2 feedback
  * 3 help
  */
-class SettingActivity : AppCompatActivity() {
+class SettingActivity : AppCompatActivity() ,UserInfoChangedListener,OnSelectToFinishCallback{
+    override fun isChanged(type: Int, changged: Boolean) {
+        Log.d("tetete","changged + $changged")
+        if(changged){
+            val intent = Intent()
+            when(type){
+                1 -> {
+                    setResult(1,intent)
+                }
+                2 -> {
+                    setResult(2,intent)
+                }
+            }
+        }
+    }
+
+    override fun selected() {
+        finish()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +63,7 @@ class SettingActivity : AppCompatActivity() {
         StatusBarUtil.setStatusBarTextBalck(this)
         //setContentView()
 
-         flag = intent.extras.getInt("flag")
+        flag = intent.extras.getInt("flag")
         initFragments()
     }
 
@@ -75,7 +96,7 @@ class SettingActivity : AppCompatActivity() {
         when(flag){
             0 ->{
                 selectFragment(settingPersonFragment!!)
-                settingPersonFragment?.attachAty(this)
+                settingPersonFragment!!.attachAty(this)
                 //Log.d("tttttt","selectFragment")z
             }
             1 ->{
@@ -131,8 +152,6 @@ class SettingActivityUI:AnkoComponent<SettingActivity>{
                 bottomToBottom = PARENT_ID
             }
         }
-
-
 
     }
 }

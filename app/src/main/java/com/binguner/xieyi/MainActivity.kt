@@ -39,11 +39,9 @@ import org.jetbrains.anko.design.tabItem
 import org.jetbrains.anko.design.tabLayout
 import org.jetbrains.anko.sdk25.coroutines.onClick
 
-class MainActivity : AppCompatActivity(),OnSelectToFinishCallback,changeTextListener{
+class MainActivity : AppCompatActivity(),OnSelectToFinishCallback{
 
-    override fun textChangeed(textType: String, newString: String) {
 
-    }
 
     override fun selected() {
         this.finish()
@@ -64,6 +62,12 @@ class MainActivity : AppCompatActivity(),OnSelectToFinishCallback,changeTextList
         setTransparentStatusbar();
         initFragments()
         askPermission()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        personFragment?.onActivityResult(requestCode,resultCode,data)
+
     }
 
     private fun initId() {

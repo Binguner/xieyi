@@ -163,13 +163,14 @@ class HttpClient(context: Context){
     }
 
     fun doLogin(username: String, password: String, resultListener: ResultListener){
-        //Log.d("erwr", "username is $username, password id $password")
+        Log.d("tetete", "username is $username, password id $password")
         services.doLogin(username, password)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     //editor.putBoolean("isLoging",true)
+                    //Log.d("tetete",it.message)
                     if(it.message.equals("登录成功")) {
                         editor.putString("username", it.data.username)
                         editor.putString("password", password)
@@ -197,12 +198,12 @@ class HttpClient(context: Context){
                     }
 
                 },{
-                    //Log.d(HttpClientTag,"onError : ${it.message}")
+                    //Log.d("tetete","onError : ${it.message}")
                     //resultListener.postResullt(ResultListener.errorType,it.message!!)
                     resultListener.postResullt(ResultListener.failedType, "登录失败，请检查用户名和密码。")
 
                 },{
-                    //Log.d(HttpClientTag,"onComplete : ")
+                    //Log.d("tetete","onComplete : ")
                     //resultListener.postResullt(ResultListener.succeedType,"")
                 })
     }
@@ -215,9 +216,13 @@ class HttpClient(context: Context){
                 .subscribe({
                     if(it.message.equals("创建成功")){
                         resultListener.postResullt(ResultListener.succeedType,it.message)
-                        dbUtils.insertNormalProtocol(sp.getString("user_id",""),it.data.id,title,content,signatoryNum,username)
+                        dbUtils.insertAllProtocol(it.data.id,username,sp.getString("user_id",""),title)
+                        dbUtils.insertNormalProtocol(it.data.id,username,sp.getString("user_id",""),title,signatoryNum)
+                    }else{
+                        resultListener.postResullt(ResultListener.succeedType,it.message)
                     }
                 },{
+                    resultListener.postResullt(ResultListener.failedType,"创建失败，请重试！")
 
                 },{
 
@@ -250,7 +255,7 @@ class HttpClient(context: Context){
                         resultListener.postResullt(ResultListener.succeedType,it.message)
                     }
                 },{
-
+                    resultListener.postResullt(ResultListener.failedType,"创建失败，请重试！")
                 },{
 
                 })

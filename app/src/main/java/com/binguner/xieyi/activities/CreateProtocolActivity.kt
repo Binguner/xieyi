@@ -150,6 +150,9 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                     0 -> text = "发表"
                     1 -> text = "漂流"
                 }
+                onClick {
+                    
+                }
             }.lparams(height = dip(35)){
                 bottomToBottom = id_createPro_from
                 topToTop = id_createPro_from

@@ -81,14 +81,25 @@ class DBUtils(context: Context){
         val isDelete = db.delete("User_info","user_name like ?", arrayOf(user_name))
     }
 
-    // inert normal protocol
-    fun insertNormalProtocol(user_id: String, protocol_id:String, title:String, content:String, peopleNum:String,username:String){
-        contentValues.put("user_id",user_id)
+    // insert all protocols
+    fun insertAllProtocol(protocol_id:String, username: String, user_id: String, createPro_ed_title: String ){
         contentValues.put("protocol_id",protocol_id)
-        contentValues.put("createPro_ed_title",title)
-        contentValues.put("createPro_ed_content",content)
-        contentValues.put("choosePeopleNum",peopleNum)
         contentValues.put("username",username)
+        contentValues.put("user_id",user_id)
+        contentValues.put("createPro_ed_title", createPro_ed_title)
+        try {
+            db.insert("all_protocol",null,contentValues)
+            contentValues.clear()
+        }catch (e:Exception){}
+    }
+
+    // inert normal protocol
+    fun insertNormalProtocol(protocol_id:String, username:String, user_id: String, title:String, peopleNum:String){
+        contentValues.put("protocol_id",protocol_id)
+        contentValues.put("username",username)
+        contentValues.put("user_id",user_id)
+        contentValues.put("createPro_title",title)
+        contentValues.put("choosePeopleNum",peopleNum)
         try {
             db.insert("normal_protocol",null,contentValues)
             contentValues.clear()
@@ -96,6 +107,7 @@ class DBUtils(context: Context){
     }
 
 
+    // update the user information
     fun updateUserInfo(user_id: String, changeType:Int,any: Any){
         when (changeType){
             DBUtils.TypeNickname -> {
@@ -122,10 +134,11 @@ class DBUtils(context: Context){
         }
     }
 
-    fun insertFloaterProtocol(protocol_id:String, user_id:String, username:String){
+    fun insertFloaterProtocol(protocol_id:String, username:String, user_id:String, createPro_ed_title:String){
         contentValues.put("protocol_id",protocol_id)
-        contentValues.put("user_id",user_id)
         contentValues.put("username",username)
+        contentValues.put("user_id",user_id)
+        contentValues.put("createPro_ed_title",createPro_ed_title)
         try {
             db.insert("floater_protocol",null,contentValues)
         }catch (e:Exception){ }

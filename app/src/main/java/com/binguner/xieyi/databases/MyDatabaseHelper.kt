@@ -31,20 +31,30 @@ class MyDatabaseHelper(context: Context):ManagedSQLiteOpenHelper(context,"Xieyie
                 "nickname" to TEXT
         )
 
+        db?.createTable("all_protocol",true,
+                "protocol_id" to TEXT + PRIMARY_KEY + UNIQUE,
+                "username" to TEXT,
+                "user_id" to TEXT,
+                "createPro_ed_title" to TEXT
+
+                )
+
         db?.createTable("normal_protocol",true,
                 "protocol_id" to TEXT + PRIMARY_KEY + UNIQUE,
+                "username" to TEXT,
                 "user_id" to TEXT,
-                "createPro_ed_title" to TEXT,
-                "createPro_ed_content" to TEXT,
-                "choosePeopleNum" to TEXT,
-                "username" to TEXT
+                "createPro_title" to TEXT,
+                "choosePeopleNum" to TEXT
         )
 
         db?.createTable("floater_protocol",true,
                 "protocol_id" to TEXT + PRIMARY_KEY + UNIQUE,
+                "username" to TEXT,
                 "user_id" to TEXT,
-                "username" to TEXT
+                "createPro_ed_title" to TEXT
                 )
+
+
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {

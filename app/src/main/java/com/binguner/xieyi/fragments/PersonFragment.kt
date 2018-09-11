@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.constraint.ConstraintSet.PARENT_ID
+import android.support.v4.app.ActivityCompat.startActivityForResult
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.util.Log
@@ -75,9 +76,36 @@ class PersonFragment : Fragment() {
                 }
     }
 
+    /*override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super
+        Log.d("tetete","here")
+
+        if(requestCode == 111 && resultCode == 1){
+            Log.d("tetete","fafasdf")
+        }
+    }*/
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        Log.d("tetete","hrer")
+        if (requestCode == 111 ) {
+            when(resultCode){
+                1 -> {
+                    person_email.setText(sharedPreferences.getString("email","请到设置页面设置邮箱地址！"))
+                    person_username.setText(sharedPreferences.getString("nickname","请设置昵称"))
+                }
+                2 -> {
+                    person_email.setText(sharedPreferences.getString("email", "请到设置页面设置邮箱地址！"))
+                    person_username.setText(sharedPreferences.getString("nickname","请设置昵称"))
+                }
+            }
+
+        }
+    }
+
 }
 
-
+//lateinit var mainActivity:MainActivity
 lateinit var person_username:TextView
 lateinit var person_email :TextView
 lateinit var sharedPreferences :SharedPreferences
@@ -97,7 +125,7 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
     val id_person_logout= View.generateViewId()
     val id_person_setting= View.generateViewId()
     lateinit var dbUtils:DBUtils
-    lateinit var sharedPreferences: SharedPreferences
+    //lateinit var sharedPreferences: SharedPreferences
     lateinit var editor: SharedPreferences.Editor
 
     override fun createView(ui: AnkoContext<PersonFragment>) = with(ui) {
@@ -168,10 +196,15 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
                 imageResource = R.drawable.ic_settings_cyan_400_24dp
                 onClick {
                     //toast("Setting")
-                    //startActivity<SettingActivity>("flag" to 0)
-                    
-
+                    //\startActivity<SettingActivity>("flag" to 0)
+                    //startActivityForResult<SettingActivity::class.java>(requestCode = 0,"flag" to 0)
+                    val intent = Intent(ctx,SettingActivity::class.java)
+                    intent.putExtra("flag",0)
+                    //if(null != aactivity){
+                    startActivityForResult(personActivity,intent,111,null)
+                    //}
                 }
+
             }.lparams(){
                 endToEnd = PARENT_ID
                 topToTop = id_person_avator
@@ -254,6 +287,8 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
                     dbUtils.deleteAccout(sharedPreferences.getString("username",""))
                     //toast("退出成功")
                     editor.putBoolean("isLoging",false)
+                    editor.putString("nickname", "请设置昵称")
+                    editor.putString("email", "请到设置页面设置邮箱地址！")
                     editor.commit()
                     //Log.d("tetete", "${personActivity}")
                     //personActivity.finishAty()

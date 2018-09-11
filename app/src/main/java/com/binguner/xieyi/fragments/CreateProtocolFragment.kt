@@ -177,14 +177,27 @@ class CreateProtocolFragmentUI:AnkoComponent<CreateProtocolFragment>{
                     }else {
                         mhttpClient.doProtocol(title, mcontent, signatoryNum, username, object : ResultListener {
                             override fun postResullt(resultType: Int, msg: String) {
-                                if (resultType == ResultListener.succeedType) {
+                                Log.d("tetete",msg)
+                                toast(msg)
+
+                                when(resultType){
+                                    ResultListener.succeedType -> {
+                                        createPro_ed_title.setText("")
+                                        createPro_ed_content.setText("")
+                                        choosePeopleNum.setSelection(0)
+                                    }
+                                    ResultListener.failedType -> {
+
+                                    }
+                                }
+                                /*if (resultType == ResultListener.succeedType) {
                                     toast(msg)
                                     createPro_ed_title.setText("")
                                     createPro_ed_content.setText("")
                                     choosePeopleNum.setSelection(0)
                                 } else {
                                     toast(msg)
-                                }
+                                }*/
                                 val imm = ctx.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                                 //Log.d("tetete","try to close")
                                 imm.hideSoftInputFromWindow(this@button.windowToken,0)
