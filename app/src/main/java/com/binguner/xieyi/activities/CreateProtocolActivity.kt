@@ -1,5 +1,7 @@
 package com.binguner.xieyi.activities
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.constraint.ConstraintSet.PARENT_ID
@@ -8,27 +10,37 @@ import android.view.Gravity
 import android.view.View
 import android.widget.ArrayAdapter
 import com.binguner.xieyi.R
+import com.binguner.xieyi.RxUtils.HttpClient
+import com.binguner.xieyi.httpClient
+import com.binguner.xieyi.listeners.ResultListener
+import com.binguner.xieyi.sharedPreferences
 import com.binguner.xieyi.utils.StatusBarUtil
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 
 var type = 3
 class CreateProtocolActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        type = intent.extras.getInt("Type")
-        CreateProtocolActivityUI().setContentView(this)
-        StatusBarUtil.transparentStatusBar(this)
+        //StatusBarUtil.transparentStatusBar(this)
         StatusBarUtil.setStatusBarColor(this,R.color.colorWhite)
         StatusBarUtil.setStatusBarTextBalck(this)
+        type = 1
+        CreateProtocolActivityUI().setContentView(this)
+        //type = intent.extras.getInt("Type")
+        sharedPreferences3 = getSharedPreferences("UserData", Context.MODE_PRIVATE)
+        prohttpClient = HttpClient(this)
     }
 }
 
-class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
+lateinit var sharedPreferences3: SharedPreferences
+lateinit var prohttpClient: HttpClient
 
+class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
     val id_createProToolbar = View.generateViewId()
     val id_createPro_shadow = View.generateViewId()
     val id_createPro_back_btn = View.generateViewId()
@@ -39,6 +51,10 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
     val id_createPro_from = View.generateViewId()
     val id_createPro_fromwhere = View.generateViewId()
     val id_createPro_choosePeoNum = View.generateViewId()
+    lateinit var proTitle:String
+    lateinit var proContent:String
+    lateinit var proFromWhere:String
+
     val items = arrayOf("  1  ", "  2  ", "  3  ", "  4  ", "  5  ")
 
 
@@ -88,6 +104,7 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                 endToEnd = PARENT_ID
             }
 
+            // title
             val createPro_title_ed = editText(){
                 id = id_createPro_title_ed
                 singleLine = true
@@ -100,6 +117,11 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                         hint = "请输入漂流瓶标题："
                     }
                 }
+                textChangedListener {
+                    afterTextChanged {
+                        proTitle = this@editText.text.toString()
+                    }
+                }
                 setBackgroundResource(R.drawable.create_pro_title_edit)
             }.lparams(width = matchParent){
                 topToBottom = id_createPro_shadow
@@ -108,6 +130,7 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                 endToEnd = PARENT_ID
             }
 
+            // content
             val createPro_conten_ed = editText(){
                 id = id_createPro_conten_ed
                 gravity = Gravity.TOP
@@ -117,6 +140,11 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                 }
                 setBackgroundResource(R.drawable.create_pro_content)
                 //singleLine = false
+                textChangedListener {
+                    afterTextChanged {
+                        proContent = this@editText.text.toString()
+                    }
+                }
 
             }.lparams(width = matchParent, height = dip(0)){
                 topToBottom = id_createPro_title_ed
@@ -127,14 +155,14 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                 bottomToTop = id_createPro_from
             }
 
-
-
+            // form where
             val createPrp_from = textView(){
                 id = id_createPro_from
                 when(type){
                     0 -> text = "签署人数"
                     1 -> text = "来自："
                 }
+
             }.lparams(){
                 startToStart = PARENT_ID
                 leftMargin = dip(16)
@@ -151,7 +179,23 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                     1 -> text = "漂流"
                 }
                 onClick {
-                    
+                    when(type){
+                        1 -> {
+                            prohttpClient.createFloater(sharedPreferences3.getString("username",""),proTitle,proContent,proFromWhere,object:ResultListener{
+                                override fun postResullt(resultType: Int, msg: String) {
+                                    toast(msg)
+                                    when(resultType){
+                                        ResultListener.succeedType -> {
+
+                                        }
+                                        ResultListener.failedType -> {
+
+                                        }
+                                    }
+                                }
+                            })
+                        }
+                    }
                 }
             }.lparams(height = dip(35)){
                 bottomToBottom = id_createPro_from
@@ -160,6 +204,7 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                 rightMargin = dip(8)
             }
 
+            // number or from where
             when(type){
                 0 -> {
                     val createProPeoNum = spinner(){
@@ -178,6 +223,11 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                         id = id_createPro_fromwhere
                         setBackgroundResource(R.drawable.create_pro_title_edit)
                         hint = "神秘领域"
+                        textChangedListener {
+                            afterTextChanged {
+                                proFromWhere = this@editText.text.toString()
+                            }
+                        }
                     }.lparams( width = dip(0) ){
                         startToEnd = id_createPro_from
                         leftMargin = dip(16)
@@ -190,10 +240,6 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
 
                 }
             }
-
-
-
-
 
 
 

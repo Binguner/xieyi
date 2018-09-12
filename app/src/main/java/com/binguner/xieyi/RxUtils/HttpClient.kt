@@ -4,7 +4,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
 import com.binguner.xieyi.BuildConfig
+import com.binguner.xieyi.activities.type
 import com.binguner.xieyi.databases.DBUtils
+import com.binguner.xieyi.httpClient
 import com.binguner.xieyi.listeners.ResultListener
 import com.binguner.xieyi.password
 import com.binguner.xieyi.sharedPreferences
@@ -190,7 +192,15 @@ class HttpClient(context: Context){
 
                         if (it.message.equals("登录成功")) {
                             it.data.protocols.forEach {
-                                //Log.d(HttpClientTag, it)
+                                //Log.d(HttpClientTag, it.id)
+                                when(it.type){
+                                    0 -> {
+
+                                    }
+                                    1 -> {
+
+                                    }
+                                }
                             }
                         }
                     }else{
@@ -208,6 +218,7 @@ class HttpClient(context: Context){
                 })
     }
 
+    // create Protocol
     fun doProtocol(title:String, content:String, signatoryNum:String, username:String,resultListener: ResultListener){
         services.createProtocol(title,content,signatoryNum,username)
                 .subscribeOn(Schedulers.io())
@@ -229,6 +240,7 @@ class HttpClient(context: Context){
                 })
     }
 
+    // send feed to us
     fun giveFeedback(content:String, qqNumber:String, phoneNumber:String, wechatId:String, resultListener: ResultListener){
         services.giveFeedback(content,qqNumber,phoneNumber,wechatId)
                 .subscribeOn(Schedulers.io())
@@ -245,7 +257,8 @@ class HttpClient(context: Context){
                 })
     }
 
-    fun  createFloater(username:String, title:String, content:String,region:String,resultListener: ResultListener){
+    // create Floater
+    fun createFloater(username:String, title:String, content:String,region:String,resultListener: ResultListener){
         services.createFloater(username,title,content,region)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -253,6 +266,10 @@ class HttpClient(context: Context){
                 .subscribe({
                     if(it.message.equals("漂流瓶创建成功")){
                         resultListener.postResullt(ResultListener.succeedType,it.message)
+                        try {
+                            dbUtils.insertAllProtocol(it.data.id,username, sharedPreferences.getString("user_id",""),title)
+                            dbUtils.insertFloaterProtocol(it.data.id,username, sharedPreferences.getString("user_id",""),title)
+                        }catch (e:Exception){}
                     }
                 },{
                     resultListener.postResullt(ResultListener.failedType,"创建失败，请重试！")
@@ -262,6 +279,7 @@ class HttpClient(context: Context){
     }
 
 
+    // modify the user information
     fun modifyInfo(user_id:String, nickname:String?, avatar_url:String?,sex:String?, career:String?, region: String?, phoneNumber:String?, email:String?, newPassword:String?, resultListener: ResultListener){
         services.modifyUserInfo(user_id, nickname, avatar_url, sex,career,region,phoneNumber, email, newPassword)
                 .subscribeOn(Schedulers.io())
@@ -295,7 +313,23 @@ class HttpClient(context: Context){
     }
 
 
+    // get normal protocol bean
+    fun getNormalProtocolInfo(floater_id:String,resultListener: ResultListener){
+        services.getNormalProtocolInfo(floater_id)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if(it.message.equals("协议内容获取成功")){
+                        resultListener.postResullt(ResultListener.succeedType,it.message)
+                        dbUtils.insertAllProtocol(it.data.)
+                    }
+                },{
 
+                },{
+
+                })
+    }
 
 
 }

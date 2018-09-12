@@ -31,7 +31,7 @@ interface ApiServices{
     fun createProtocol(@Field("title") title:String, @Field("content")content:String, @Field("ignatoryNum")ignatoryNum:String, @Field("username")username:String):Observable<DoProtocolBean>
 
     // Create doFloater
-    @POST("doFloater")
+    @POST("makefloater")
     @FormUrlEncoded
     fun createFloater(@Field("username") username: String, @Field("title") title: String, @Field("content") content: String, @Field("region") region: String):Observable<MakeFloaterBean>
 
@@ -64,5 +64,8 @@ interface ApiServices{
     fun modifyUserInfo(@Field("id")user_id: String, @Field("nickname")nickname:String?, @Field("avatar") avatar_url:String?, @Field("sex")sex:String?,
                        @Field("career")career:String?, @Field("region")region:String?, @Field("phone")phoneNumber:String?, @Field("email")email:String?,
                        @Field("password")newPassword:String?):Observable<ModifyinfoBean>
+
+    @GET("getProtocol")
+    fun getNormalProtocolInfo(@Query("id")id:String):Observable<FloaterInfoBean>
 
 }

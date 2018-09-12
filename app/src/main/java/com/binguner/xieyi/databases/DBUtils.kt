@@ -17,6 +17,7 @@ class DBUtils(context: Context){
         val TypePhoneNumber = 3
         val TypeAvatar = 4
     }
+
     var db:SQLiteDatabase
     val contentValues = ContentValues()
     init {
@@ -106,6 +107,17 @@ class DBUtils(context: Context){
         }catch (e:Exception){}
     }
 
+    // insert floater protocol
+    fun insertFloaterProtocol(protocol_id:String, username:String, user_id:String, createPro_ed_title:String){
+        contentValues.put("protocol_id",protocol_id)
+        contentValues.put("username",username)
+        contentValues.put("user_id",user_id)
+        contentValues.put("createPro_ed_title",createPro_ed_title)
+        try {
+            db.insert("floater_protocol",null,contentValues)
+        }catch (e:Exception){ }
+        contentValues.clear()
+    }
 
     // update the user information
     fun updateUserInfo(user_id: String, changeType:Int,any: Any){
@@ -134,15 +146,6 @@ class DBUtils(context: Context){
         }
     }
 
-    fun insertFloaterProtocol(protocol_id:String, username:String, user_id:String, createPro_ed_title:String){
-        contentValues.put("protocol_id",protocol_id)
-        contentValues.put("username",username)
-        contentValues.put("user_id",user_id)
-        contentValues.put("createPro_ed_title",createPro_ed_title)
-        try {
-            db.insert("floater_protocol",null,contentValues)
-        }catch (e:Exception){ }
-        contentValues.clear()
-    }
+
 
 }
