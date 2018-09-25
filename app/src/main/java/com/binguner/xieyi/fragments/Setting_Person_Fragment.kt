@@ -769,7 +769,7 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                                     id = id_set_person_alert_ok
                                     onClick {
                                         if(!password.equals(passwordAgain)){
-                                            toast("$password and $passwordAgain 两次密码输入不一致，请重试")
+                                            toast("两次密码输入不一致，请重试")
                                         }else{
                                             httpClient.modifyInfo(sharedPreferences.getString("user_id",""),
                                                     sharedPreferences.getString("nickname",""),
@@ -792,9 +792,9 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                                                         }
                                                     }
                                                 }
-
                                             })
                                         }
+                                        person_settting_dialog_password?.dismiss()
                                     }
                                 }.lparams(width = dip(0)){
                                     topToBottom = id_set_person_alert_content_ed_password_again

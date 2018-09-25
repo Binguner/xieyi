@@ -314,22 +314,22 @@ class HttpClient(context: Context){
 
 
     // get normal protocol bean
-    fun getNormalProtocolInfo(floater_id:String,resultListener: ResultListener){
-        services.getNormalProtocolInfo(floater_id)
-                .subscribeOn(Schedulers.io())
-                .unsubscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    if(it.message.equals("协议内容获取成功")){
-                        resultListener.postResullt(ResultListener.succeedType,it.message)
-                        dbUtils.insertAllProtocol(it.data.)
-                    }
-                },{
-
-                },{
-
-                })
-    }
+//    fun getNormalProtocolInfo(floater_id:String,resultListener: ResultListener){
+//        services.getNormalProtocolInfo(floater_id)
+//                .subscribeOn(Schedulers.io())
+//                .unsubscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe({
+//                    if(it.message.equals("协议内容获取成功")){
+//                        resultListener.postResullt(ResultListener.succeedType,it.message)
+//                        //dbUtils.insertAllProtocol(it.data.)
+//                    }
+//                },{
+//
+//                },{
+//
+//                })
+//    }
 
 
 }

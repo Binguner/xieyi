@@ -65,7 +65,7 @@ interface ApiServices{
                        @Field("career")career:String?, @Field("region")region:String?, @Field("phone")phoneNumber:String?, @Field("email")email:String?,
                        @Field("password")newPassword:String?):Observable<ModifyinfoBean>
 
-    @GET("getProtocol")
-    fun getNormalProtocolInfo(@Query("id")id:String):Observable<FloaterInfoBean>
+//    @GET("getProtocol")
+//    fun getNormalProtocolInfo(@Query("id")id:String):Observable<FloaterInfoBean>
 
 }
