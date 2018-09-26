@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat
 import android.view.Gravity
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.EditText
 import com.binguner.xieyi.R
 import com.binguner.xieyi.RxUtils.HttpClient
 import com.binguner.xieyi.httpClient
@@ -54,6 +55,7 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
     lateinit var proTitle:String
     lateinit var proContent:String
     lateinit var proFromWhere:String
+    lateinit var createProFromWhere:EditText
 
     val items = arrayOf("  1  ", "  2  ", "  3  ", "  4  ", "  5  ")
 
@@ -186,7 +188,9 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                                     toast(msg)
                                     when(resultType){
                                         ResultListener.succeedType -> {
-
+                                            createPro_title_ed.setText("")
+                                            createPro_conten_ed.setText("")
+                                            createProFromWhere.setText("")
                                         }
                                         ResultListener.failedType -> {
 
@@ -219,7 +223,7 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
 
                 }
                 1 -> {
-                    val createProFromWhere = editText(){
+                     createProFromWhere = editText(){
                         id = id_createPro_fromwhere
                         setBackgroundResource(R.drawable.create_pro_title_edit)
                         hint = "神秘领域"

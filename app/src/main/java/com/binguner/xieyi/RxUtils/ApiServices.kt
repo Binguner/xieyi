@@ -28,7 +28,11 @@ interface ApiServices{
     // Create Protocol
     @POST("doProtocol")
     @FormUrlEncoded
-    fun createProtocol(@Field("title") title:String, @Field("content")content:String, @Field("ignatoryNum")ignatoryNum:String, @Field("username")username:String):Observable<DoProtocolBean>
+    fun createProtocol(@Field("title") title:String,
+                       @Field("content")content:String,
+                       @Field("ignatoryNum")ignatoryNum:String,
+                       @Field("username")username:String,
+                       @Field("share")isShared:String):Observable<DoProtocolBean>
 
     // Create doFloater
     @POST("makefloater")
@@ -54,9 +58,7 @@ interface ApiServices{
     @FormUrlEncoded
     fun giveAHeart(@Field("protocol_id") protocol_id: String, @Field("user_id") user_id:String)
 
-    // get the floater information
-    @GET("getFloater")
-    fun getFloaterInformation(@Query("id") protocolId: String)
+
 
     // modifyUserInfo
     @POST("modifyinfo")
@@ -65,7 +67,11 @@ interface ApiServices{
                        @Field("career")career:String?, @Field("region")region:String?, @Field("phone")phoneNumber:String?, @Field("email")email:String?,
                        @Field("password")newPassword:String?):Observable<ModifyinfoBean>
 
-//    @GET("getProtocol")
-//    fun getNormalProtocolInfo(@Query("id")id:String):Observable<FloaterInfoBean>
+    @GET("getProtocol")
+    fun getNormalProtocolInfo(@Query("id")id:String):Observable<NormalProtocolBean>
+
+    // get the floater information
+    @GET("getFloater")
+    fun getFloaterProtocolInfo(@Query("id")id:String):Observable<FloaterProtocolInfoBean>
 
 }

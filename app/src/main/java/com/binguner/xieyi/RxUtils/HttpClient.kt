@@ -193,12 +193,50 @@ class HttpClient(context: Context){
                         if (it.message.equals("登录成功")) {
                             it.data.protocols.forEach {
                                 //Log.d(HttpClientTag, it.id)
+                                dbUtils.insertAllProtocol(it.id,
+                                        sharedPreferences.getString("username","null"),
+                                        sharedPreferences.getString("user_id","null"),
+                                        "null",
+                                        it.type.toString())
                                 when(it.type){
                                     0 -> {
+                                        services.getNormalProtocolInfo(it.id)
+                                                .subscribeOn(Schedulers.io())
+                                                .unsubscribeOn(Schedulers.io())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribe {
+                                                    if(null != it){
+                                                        dbUtils.insertNormalProtocol(it.data._id,
+                                                                sharedPreferences.getString("username","null"),
+                                                                sharedPreferences.getString("user_id","null"),
+                                                                it.data.title,
+                                                                it.data.signatoryNum.toString(),
+                                                                it.data.share.toString(),
+                                                                it.data.content,
+                                                                it.data.created_at)
+                                                    }else{
 
+                                                    }
+                                                }
                                     }
                                     1 -> {
-
+                                        services.getFloaterProtocolInfo(it.id)
+                                                .subscribeOn(Schedulers.io())
+                                                .unsubscribeOn(Schedulers.io())
+                                                .observeOn(AndroidSchedulers.mainThread())
+                                                .subscribe {
+                                                    if(null != it){
+                                                        dbUtils.insertFloaterProtocol(it.data._id,
+                                                                sharedPreferences.getString("username","null"),
+                                                                sharedPreferences.getString("user_id","null"),
+                                                                it.data.title,
+                                                                it.data.content,
+                                                                it.data.created_at,
+                                                                it.data.obtain_at,
+                                                                it.data.region,
+                                                                it.data.state.toString())
+                                                    }
+                                                }
                                     }
                                 }
                             }
@@ -220,15 +258,17 @@ class HttpClient(context: Context){
 
     // create Protocol
     fun doProtocol(title:String, content:String, signatoryNum:String, username:String,resultListener: ResultListener){
-        services.createProtocol(title,content,signatoryNum,username)
+        services.createProtocol(title,content,signatoryNum,username,"0")
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if(it.message.equals("创建成功")){
                         resultListener.postResullt(ResultListener.succeedType,it.message)
-                        dbUtils.insertAllProtocol(it.data.id,username,sp.getString("user_id",""),title)
-                        dbUtils.insertNormalProtocol(it.data.id,username,sp.getString("user_id",""),title,signatoryNum)
+                        // 把找个协议保存到 所有 协议中， 类型为 0 ， 0 是普通协议的意思
+                        dbUtils.insertAllProtocol(it.data.id,username,sp.getString("user_id",""),title,"0")
+                        // 把找个协议保存到普通协议列表，0 是不分享的意思（分享了变成抖协议）
+                        dbUtils.insertNormalProtocol(it.data.id,username,sp.getString("user_id",""),title,signatoryNum,"0",content,System.currentTimeMillis().toString())
                     }else{
                         resultListener.postResullt(ResultListener.succeedType,it.message)
                     }
@@ -267,8 +307,22 @@ class HttpClient(context: Context){
                     if(it.message.equals("漂流瓶创建成功")){
                         resultListener.postResullt(ResultListener.succeedType,it.message)
                         try {
-                            dbUtils.insertAllProtocol(it.data.id,username, sharedPreferences.getString("user_id",""),title)
-                            dbUtils.insertFloaterProtocol(it.data.id,username, sharedPreferences.getString("user_id",""),title)
+                            // 把找个协议保存到 所有 协议中， 类型为 1 ， 1 是漂流瓶的意思
+                            dbUtils.insertAllProtocol(it.data.id,
+                                    username,
+                                    sharedPreferences.getString("user_id",""),
+                                    title,
+                                    "1")
+                            // 保存协议到漂流瓶列表
+                            dbUtils.insertFloaterProtocol(it.data.id,
+                                    username,
+                                    sharedPreferences.getString("user_id",""),
+                                    title,
+                                    content,
+                                    System.currentTimeMillis().toString(),
+                                    "null",
+                                    region,
+                                    "0")
                         }catch (e:Exception){}
                     }
                 },{
@@ -277,7 +331,6 @@ class HttpClient(context: Context){
 
                 })
     }
-
 
     // modify the user information
     fun modifyInfo(user_id:String, nickname:String?, avatar_url:String?,sex:String?, career:String?, region: String?, phoneNumber:String?, email:String?, newPassword:String?, resultListener: ResultListener){
@@ -313,23 +366,6 @@ class HttpClient(context: Context){
     }
 
 
-    // get normal protocol bean
-//    fun getNormalProtocolInfo(floater_id:String,resultListener: ResultListener){
-//        services.getNormalProtocolInfo(floater_id)
-//                .subscribeOn(Schedulers.io())
-//                .unsubscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe({
-//                    if(it.message.equals("协议内容获取成功")){
-//                        resultListener.postResullt(ResultListener.succeedType,it.message)
-//                        //dbUtils.insertAllProtocol(it.data.)
-//                    }
-//                },{
-//
-//                },{
-//
-//                })
-//    }
 
 
 }

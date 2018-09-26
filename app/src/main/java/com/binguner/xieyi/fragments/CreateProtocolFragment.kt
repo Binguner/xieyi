@@ -177,7 +177,7 @@ class CreateProtocolFragmentUI:AnkoComponent<CreateProtocolFragment>{
                     }else {
                         mhttpClient.doProtocol(title, mcontent, signatoryNum, username, object : ResultListener {
                             override fun postResullt(resultType: Int, msg: String) {
-                                Log.d("tetete",msg)
+                                //Log.d("tetete",msg)
                                 toast(msg)
 
                                 when(resultType){

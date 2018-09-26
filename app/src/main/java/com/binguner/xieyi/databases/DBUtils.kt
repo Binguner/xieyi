@@ -83,11 +83,12 @@ class DBUtils(context: Context){
     }
 
     // insert all protocols
-    fun insertAllProtocol(protocol_id:String, username: String, user_id: String, createPro_ed_title: String ){
+    fun insertAllProtocol(protocol_id:String, username: String, user_id: String, createPro_ed_title: String,type :String ){
         contentValues.put("protocol_id",protocol_id)
         contentValues.put("username",username)
         contentValues.put("user_id",user_id)
         contentValues.put("createPro_ed_title", createPro_ed_title)
+        contentValues.put("type", type)
         try {
             db.insert("all_protocol",null,contentValues)
             contentValues.clear()
@@ -95,12 +96,15 @@ class DBUtils(context: Context){
     }
 
     // inert normal protocol
-    fun insertNormalProtocol(protocol_id:String, username:String, user_id: String, title:String, peopleNum:String){
+    fun insertNormalProtocol(protocol_id:String, username:String, user_id: String, title:String, peopleNum:String, isShared:String, pro_content:String, create_at:String){
         contentValues.put("protocol_id",protocol_id)
         contentValues.put("username",username)
         contentValues.put("user_id",user_id)
         contentValues.put("createPro_title",title)
         contentValues.put("choosePeopleNum",peopleNum)
+        contentValues.put("isShared",isShared)
+        contentValues.put("pro_content",pro_content)
+        contentValues.put("create_at",create_at)
         try {
             db.insert("normal_protocol",null,contentValues)
             contentValues.clear()
@@ -108,11 +112,16 @@ class DBUtils(context: Context){
     }
 
     // insert floater protocol
-    fun insertFloaterProtocol(protocol_id:String, username:String, user_id:String, createPro_ed_title:String){
+    fun insertFloaterProtocol(protocol_id:String, username:String, user_id:String, createPro_ed_title:String, pro_content:String, created_at:String,obtain_at:String, region:String, state:String){
         contentValues.put("protocol_id",protocol_id)
         contentValues.put("username",username)
         contentValues.put("user_id",user_id)
         contentValues.put("createPro_ed_title",createPro_ed_title)
+        contentValues.put("pro_content",pro_content)
+        contentValues.put("created_at",created_at)
+        contentValues.put("obtain_at",obtain_at)
+        contentValues.put("region",region)
+        contentValues.put("state",state)
         try {
             db.insert("floater_protocol",null,contentValues)
         }catch (e:Exception){ }

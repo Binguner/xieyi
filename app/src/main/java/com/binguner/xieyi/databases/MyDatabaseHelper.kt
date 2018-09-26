@@ -35,8 +35,8 @@ class MyDatabaseHelper(context: Context):ManagedSQLiteOpenHelper(context,"Xieyie
                 "protocol_id" to TEXT + PRIMARY_KEY + UNIQUE,
                 "username" to TEXT,
                 "user_id" to TEXT,
-                "createPro_ed_title" to TEXT
-
+                "createPro_ed_title" to TEXT,
+                "type" to TEXT
                 )
 
         db?.createTable("normal_protocol",true,
@@ -44,16 +44,23 @@ class MyDatabaseHelper(context: Context):ManagedSQLiteOpenHelper(context,"Xieyie
                 "username" to TEXT,
                 "user_id" to TEXT,
                 "createPro_title" to TEXT,
-                "choosePeopleNum" to TEXT
+                "choosePeopleNum" to TEXT,
+                "isShared" to TEXT,
+                "pro_content" to TEXT,
+                "create_at" to TEXT
         )
 
         db?.createTable("floater_protocol",true,
                 "protocol_id" to TEXT + PRIMARY_KEY + UNIQUE,
                 "username" to TEXT,
                 "user_id" to TEXT,
-                "createPro_ed_title" to TEXT
+                "createPro_ed_title" to TEXT,
+                "pro_content" to TEXT,
+                "created_at" to TEXT,
+                "obtain_at" to TEXT,
+                "region" to TEXT,
+                "state" to TEXT
                 )
-
 
     }
 
