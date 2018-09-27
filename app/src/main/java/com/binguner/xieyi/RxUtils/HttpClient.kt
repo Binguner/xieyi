@@ -232,7 +232,7 @@ class HttpClient(context: Context){
                                                                 it.data.title,
                                                                 it.data.content,
                                                                 it.data.created_at,
-                                                                it.data.obtain_at,
+                                                                it.data.obtain_at!!,
                                                                 it.data.region,
                                                                 it.data.state.toString())
                                                     }

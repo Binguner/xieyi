@@ -318,7 +318,7 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
                                     oldUser ->{
                                         httpClient.doLogin(username, password,object :ResultListener{
                                             override fun postResullt(resultType: Int, msg: String) {
-                                                Log.d("tetete",msg)
+                                                //Log.d("tetete",msg)
                                                 when (resultType){
                                                     ResultListener.nextType ->{
                                                         /*if(msg.equals("登录成功")){

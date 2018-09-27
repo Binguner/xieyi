@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/colorAccent"
     android:layout_marginTop="@dimen/dp_4"
+    android:clickable="true"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"

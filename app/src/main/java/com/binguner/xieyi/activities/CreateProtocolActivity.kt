@@ -156,7 +156,6 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                 bottomMargin = dip(17)
                 bottomToTop = id_createPro_from
             }
-
             // form where
             val createPrp_from = textView(){
                 id = id_createPro_from
@@ -220,7 +219,6 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                         topToTop = id_createPro_from
                         bottomToBottom = id_createPro_from
                     }
-
                 }
                 1 -> {
                      createProFromWhere = editText(){
@@ -239,16 +237,9 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                         topToTop = id_createPro_from
                         endToStart = id_createPro_ok_btn
                         rightMargin = dip(20)
-
                     }
-
                 }
             }
-
-
-
         }
-
     }
-
 }

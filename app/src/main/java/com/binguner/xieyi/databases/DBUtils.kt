@@ -157,24 +157,27 @@ class DBUtils(context: Context){
         }
     }
 
-    // get all floater protocol list
+    // get floater protocol list
     lateinit var bean : Data6
-    fun getAllProtocolList(id: String): MutableList<FloaterProtocolInfoBean> {
-        val list = mutableListOf<FloaterProtocolInfoBean>()
-        val cursor = db.query("floater_protocol",null,null, arrayOf("id"),null,null, null)
-        if(cursor.moveToFirst()){
+    fun getFloaterProtocolList(user_id: String): MutableList<Data6> {
+        val list = mutableListOf<Data6>()
+        val cursor = db.query("floater_protocol",null,"user_id like ?", arrayOf(user_id),null,null, null)
+        if(cursor.moveToLast()){
             do{
                 bean = Data6(
                         cursor.getString(cursor.getColumnIndex("protocol_id")),
                         cursor.getString(cursor.getColumnIndex("createPro_ed_title")),
                         cursor.getString(cursor.getColumnIndex("pro_content")),
-                        cursor.getString(cursor.getColumnIndex("pro_content"))
-
-
+                        null,
+                        cursor.getString(cursor.getColumnIndex("created_at")),
+                        cursor.getString(cursor.getColumnIndex("obtain_at")),
+                        cursor.getString(cursor.getColumnIndex("region")),
+                        cursor.getString(cursor.getColumnIndex("state"))
                 )
-            }
+                list.add(bean)
+            }while (cursor.moveToPrevious())
         }
-
+        cursor.close()
         return list
     }
 

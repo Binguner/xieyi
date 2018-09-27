@@ -11,9 +11,9 @@ data class Data6(
     val _id: String,
     val title: String,
     val content: String,
-    val signatory: List<String>,
+    val signatory: List<String>?,
     val created_at: String,
-    val obtain_at: String,
+    val obtain_at: String?,
     val region: String,
-    val state: Int
+    val state: String
 )
