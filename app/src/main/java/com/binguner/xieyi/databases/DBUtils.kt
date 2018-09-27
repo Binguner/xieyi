@@ -5,7 +5,9 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
+import com.binguner.xieyi.beans.Data6
 import com.binguner.xieyi.beans.DoLoginBean
+import com.binguner.xieyi.beans.FloaterProtocolInfoBean
 import com.binguner.xieyi.username
 
 class DBUtils(context: Context){
@@ -155,6 +157,26 @@ class DBUtils(context: Context){
         }
     }
 
+    // get all floater protocol list
+    lateinit var bean : Data6
+    fun getAllProtocolList(id: String): MutableList<FloaterProtocolInfoBean> {
+        val list = mutableListOf<FloaterProtocolInfoBean>()
+        val cursor = db.query("floater_protocol",null,null, arrayOf("id"),null,null, null)
+        if(cursor.moveToFirst()){
+            do{
+                bean = Data6(
+                        cursor.getString(cursor.getColumnIndex("protocol_id")),
+                        cursor.getString(cursor.getColumnIndex("createPro_ed_title")),
+                        cursor.getString(cursor.getColumnIndex("pro_content")),
+                        cursor.getString(cursor.getColumnIndex("pro_content"))
+
+
+                )
+            }
+        }
+
+        return list
+    }
 
 
 }

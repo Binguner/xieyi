@@ -165,7 +165,7 @@ class HttpClient(context: Context){
     }
 
     fun doLogin(username: String, password: String, resultListener: ResultListener){
-        Log.d("tetete", "username is $username, password id $password")
+        //Log.d("tetete", "username is $username, password id $password")
         services.doLogin(username, password)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())

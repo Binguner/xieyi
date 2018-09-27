@@ -32,7 +32,7 @@ var flag:Int = -1
  */
 class SettingActivity : AppCompatActivity() ,UserInfoChangedListener,OnSelectToFinishCallback{
     override fun isChanged(type: Int, changged: Boolean) {
-        Log.d("tetete","changged + $changged")
+        //Log.d("tetete","changged + $changged")
         if(changged){
             val intent = Intent()
             when(type){
