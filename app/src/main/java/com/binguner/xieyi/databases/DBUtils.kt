@@ -8,6 +8,7 @@ import android.util.Log
 import com.binguner.xieyi.beans.Data6
 import com.binguner.xieyi.beans.DoLoginBean
 import com.binguner.xieyi.beans.FloaterProtocolInfoBean
+import com.binguner.xieyi.beans.ProtocolDetailBean
 import com.binguner.xieyi.username
 
 class DBUtils(context: Context){
@@ -179,6 +180,78 @@ class DBUtils(context: Context){
         }
         cursor.close()
         return list
+    }
+
+    // get all protocols id list
+    fun getAllProtocol_id_List(user_id: String):MutableMap<String,String>{
+        val maplist = mutableMapOf<String,String>()
+        val cursor = db.query("all_protocol",null,"user_id like ?", arrayOf(user_id),null,null,null)
+        if(null != cursor) {
+            if (cursor.moveToLast()) {
+                do {
+                    maplist.put(
+                            cursor.getString(cursor.getColumnIndex("protocol_id")),
+                            cursor.getString(cursor.getColumnIndex("type"))
+                    )
+                } while (cursor.moveToPrevious())
+            }
+            cursor.close()
+        }
+        return maplist
+    }
+
+    // get the normal protocol detail
+    lateinit var protocol:ProtocolDetailBean
+    fun getNormalProtocolDetail(protocol_id: String):ProtocolDetailBean{
+        val cursor = db.query("normal_protocol", null, "protocol_id like ?", arrayOf(protocol_id), null, null, null)
+        if(null != cursor){
+            if(cursor.moveToFirst()){
+                do{
+                    protocol = ProtocolDetailBean(
+                            cursor.getString(cursor.getColumnIndex("protocol_id")),
+                            cursor.getString(cursor.getColumnIndex("createPro_title")),
+                            cursor.getString(cursor.getColumnIndex("pro_content")),
+                            cursor.getString(cursor.getColumnIndex("choosePeopleNum")).toString(),
+                            null,
+                            cursor.getString(cursor.getColumnIndex("create_at")),
+                            null,
+                            "0",
+                            null,
+                            cursor.getString(cursor.getColumnIndex("isShared")),
+                            null,
+                            null
+                            )
+                }while (cursor.moveToNext())
+            }
+        }
+        return protocol
+    }
+
+    // get the floater protocol detail
+    fun getFloaterProtocolDetail(protocol_id: String):ProtocolDetailBean{
+        val cursor = db.query("floater_protocol",null,"protocol_id like ?", arrayOf(protocol_id),null,null,null)
+        if(null != cursor){
+            if(cursor.moveToFirst()){
+                do {
+                    protocol = ProtocolDetailBean(
+                           cursor.getString(cursor.getColumnIndex("protocol_id")),
+                           cursor.getString(cursor.getColumnIndex("createPro_ed_title")),
+                           cursor.getString(cursor.getColumnIndex("pro_content")),
+                            null,
+                            null,
+                           cursor.getString(cursor.getColumnIndex("created_at")),
+                           cursor.getString(cursor.getColumnIndex("obtain_at")),
+                           cursor.getString(cursor.getColumnIndex("state")),
+                           cursor.getString(cursor.getColumnIndex("region")),
+                            null,
+                            null,
+                            null
+                    )
+                }while (cursor.moveToNext())
+            }
+        }
+
+        return protocol
     }
 
 
