@@ -85,7 +85,7 @@ class ChildFloaterFragmentUI: AnkoComponent<ChildFloaterFragment>{
 
     fun refreshList(){
         mDatas = dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id","null"))
-        floaterAdapter.notifyDataSetChanged()
+        floaterAdapter.addData(0,dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id","null"))[0])
     }
 
     override fun createView(ui: AnkoContext<ChildFloaterFragment>) = with(ui){

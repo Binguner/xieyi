@@ -86,6 +86,7 @@ class DBUtils(val context: Context){
         db.delete("all_protocol","username like ?", arrayOf(user_name))
         db.delete("normal_protocol","username like ?", arrayOf(user_name))
         db.delete("floater_protocol","username like ?", arrayOf(user_name))
+        db.delete("signatory_list",null,null)
     }
 
     // insert all protocols

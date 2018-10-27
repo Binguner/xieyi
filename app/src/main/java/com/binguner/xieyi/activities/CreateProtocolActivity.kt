@@ -53,9 +53,9 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
     val id_createPro_from = View.generateViewId()
     val id_createPro_fromwhere = View.generateViewId()
     val id_createPro_choosePeoNum = View.generateViewId()
-    lateinit var proTitle:String
+    lateinit var proTitle :String
     lateinit var proContent:String
-    lateinit var proFromWhere:String
+    var proFromWhere = ""
     lateinit var createProFromWhere:EditText
 
     val items = arrayOf("  1  ", "  2  ", "  3  ", "  4  ", "  5  ")
@@ -185,21 +185,28 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                 onClick {
                     when(type){
                         1 -> {
-                            prohttpClient.createFloater(sharedPreferences3.getString("username",""),proTitle,proContent,proFromWhere,object:ResultListener{
-                                override fun postResullt(resultType: Int, msg: String) {
-                                    toast(msg)
-                                    when(resultType){
-                                        ResultListener.succeedType -> {
-                                            createPro_title_ed.setText("")
-                                            createPro_conten_ed.setText("")
-                                            createProFromWhere.setText("")
-                                        }
-                                        ResultListener.failedType -> {
+                            if(null == proTitle && proTitle == ""){
+                                toast("请输入标题！")
+                            }
+                            if(null == proContent && proContent == ""){
+                                toast("请输入内容！")
+                            }else {
+                                prohttpClient.createFloater(sharedPreferences3.getString("username", ""), proTitle, proContent, proFromWhere, object : ResultListener {
+                                    override fun postResullt(resultType: Int, msg: String) {
+                                        toast(msg)
+                                        when (resultType) {
+                                            ResultListener.succeedType -> {
+                                                createPro_title_ed.setText("")
+                                                createPro_conten_ed.setText("")
+                                                createProFromWhere.setText("")
+                                            }
+                                            ResultListener.failedType -> {
 
+                                            }
                                         }
                                     }
-                                }
-                            })
+                                })
+                            }
                         }
                     }
                 }
