@@ -189,7 +189,6 @@ class HttpClient(context: Context){
                         dbUtils.insertOldUserInfo(it)
                         resultListener.postResullt(ResultListener.succeedType, it.message)
                         //Log.d(HttpClientTag,"onNext : ${it.message}")
-
                         if (it.message.equals("登录成功")) {
                             it.data.protocols.forEach {
                                 //Log.d(HttpClientTag, it.id)
@@ -214,6 +213,8 @@ class HttpClient(context: Context){
                                                                 it.data.share.toString(),
                                                                 it.data.content,
                                                                 it.data.created_at)
+                                                        dbUtils.insertSignatoryList(it.data._id,
+                                                                it.data.signatory)
                                                     }else{
 
                                                     }
@@ -235,6 +236,11 @@ class HttpClient(context: Context){
                                                                 it.data.obtain_at!!,
                                                                 it.data.region,
                                                                 it.data.state.toString())
+                                                        try {
+                                                            dbUtils.insertSignatoryList(it.data._id,
+                                                                    it.data.signatory!!)
+                                                        }catch (e:java.lang.Exception){}
+
                                                     }
                                                 }
                                     }

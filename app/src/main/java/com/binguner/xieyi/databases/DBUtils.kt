@@ -11,7 +11,7 @@ import com.binguner.xieyi.beans.FloaterProtocolInfoBean
 import com.binguner.xieyi.beans.ProtocolDetailBean
 import com.binguner.xieyi.username
 
-class DBUtils(context: Context){
+class DBUtils(val context: Context){
 
     companion object {
         val TypeNickname = 0
@@ -83,6 +83,9 @@ class DBUtils(context: Context){
     // delete this accoutn/
     fun deleteAccout(user_name:String){
         val isDelete = db.delete("User_info","user_name like ?", arrayOf(user_name))
+        db.delete("all_protocol","username like ?", arrayOf(user_name))
+        db.delete("normal_protocol","username like ?", arrayOf(user_name))
+        db.delete("floater_protocol","username like ?", arrayOf(user_name))
     }
 
     // insert all protocols
@@ -182,9 +185,29 @@ class DBUtils(context: Context){
         return list
     }
 
-    // get all protocols id list
+    fun insertSignatoryList(protocol_id: String,nameList: List<String>){
+        if ( null != nameList ){
+            val sp = context.getSharedPreferences("UserData",Context.MODE_PRIVATE)
+            val contentValues = ContentValues()
+            for (name in nameList){
+                contentValues.put("protocol_id",protocol_id)
+                contentValues.put("user_id",sp.getString("user_id",""))
+                contentValues.put("signatory_name",name)
+                db.insert("signatory_list",null,contentValues)
+                contentValues.clear()
+            }
+        }
+    }
+
+    /**
+     *  get all protocols id list
+     *  key is id
+     *  value is type
+     *  0 normal
+     *  1 floater
+     */
     fun getAllProtocol_id_List(user_id: String):MutableMap<String,String>{
-        val maplist = mutableMapOf<String,String>()
+        val maplist = linkedMapOf<String,String>()
         val cursor = db.query("all_protocol",null,"user_id like ?", arrayOf(user_id),null,null,null)
         if(null != cursor) {
             if (cursor.moveToLast()) {
@@ -200,7 +223,9 @@ class DBUtils(context: Context){
         return maplist
     }
 
-    // get the normal protocol detail
+    /**
+     * get the normal protocol detail
+     */
     lateinit var protocol:ProtocolDetailBean
     fun getNormalProtocolDetail(protocol_id: String):ProtocolDetailBean{
         val cursor = db.query("normal_protocol", null, "protocol_id like ?", arrayOf(protocol_id), null, null, null)

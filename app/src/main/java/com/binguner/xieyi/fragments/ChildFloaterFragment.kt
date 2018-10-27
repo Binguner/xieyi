@@ -1,6 +1,7 @@
 package com.binguner.xieyi.fragments
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -32,20 +33,28 @@ import org.jetbrains.anko.support.v4.toast
 
 class ChildFloaterFragment : Fragment() {
 
+    private lateinit var childFloaterFragmentUI: ChildFloaterFragmentUI
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        csharedPreferences = context!!.getSharedPreferences("UserData",Context.MODE_PRIVATE);
 
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val mContainer = ChildFloaterFragmentUI().createView(AnkoContext.Companion.create(ctx,ChildFloaterFragment()))
+        childFloaterFragmentUI = ChildFloaterFragmentUI()
+        val mContainer = childFloaterFragmentUI.createView(AnkoContext.Companion.create(ctx,ChildFloaterFragment()))
         //mAdapter.setOnItemClickListener { adapter, view, position -> toast("You clicked $position") }
         return mContainer
 
     }
 
     fun onButtonPressed(uri: Uri) {
+    }
+
+    override fun onResume() {
+        super.onResume()
+        childFloaterFragmentUI.refreshList()
     }
 
     override fun onAttach(context: Context) {
@@ -64,12 +73,20 @@ class ChildFloaterFragment : Fragment() {
     }
 }
 //lateinit var mAdapter :FloaterAdapter
+private lateinit var csharedPreferences :SharedPreferences
 class ChildFloaterFragmentUI: AnkoComponent<ChildFloaterFragment>{
 
+    lateinit var floaterAdapter: FloaterAdapter
     val id_floater_constraintlayout = View.generateViewId()
     val id_floater_recyclerview = View.generateViewId()
 
-    var mDatas = mutableListOf<Data6>()
+    //var mDatas = mutableListOf<Data6>()
+    var mDatas = dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id","null"))
+
+    fun refreshList(){
+        mDatas = dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id","null"))
+        floaterAdapter.notifyDataSetChanged()
+    }
 
     override fun createView(ui: AnkoContext<ChildFloaterFragment>) = with(ui){
 
@@ -79,26 +96,17 @@ class ChildFloaterFragmentUI: AnkoComponent<ChildFloaterFragment>{
             val floater_recyclerview = recyclerView {
                 id = id_floater_recyclerview
                 for(i in 1..10){
-                    var bean = Data6("I am a title","2013 3 3","Taiyuan",null,"","","","")
-                    mDatas.add(bean)
+                    //var bean = Data6("I am a title","2013 3 3","Taiyuan",null,"","","","")
+                    //mDatas.add(bean)
                 }
                 backgroundColor = ContextCompat.getColor(ctx,R.color.colorNormalBack)
                 layoutManager = LinearLayoutManager(ctx,LinearLayoutManager.VERTICAL,false)
-                adapter = FloaterAdapter(ctx, R.layout.floater_item_layout, mDatas)
-                /*mAdapter.setOnItemChildClickListener(object :BaseQuickAdapter.OnItemChildClickListener{
-                    override fun onItemChildClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {
-                        toast("sdf")
-                    }
-                })*/
-                ///Log.d("tetete","here")
+                floaterAdapter = FloaterAdapter(ctx, R.layout.floater_item_layout, mDatas)
+                adapter = floaterAdapter
 
-
-                //Log.d("tetete","here!")
 
             }.lparams(width = matchParent, height = matchParent)
             //mAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN)
-
-
 
         }
 

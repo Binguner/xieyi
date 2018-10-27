@@ -61,6 +61,11 @@ class MyDatabaseHelper(context: Context):ManagedSQLiteOpenHelper(context,"Xieyie
                 "region" to TEXT,
                 "state" to TEXT
                 )
+        db?.createTable("signatory_list",true,
+                "id" to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
+                "protocol_id" to TEXT,
+                "user_id" to TEXT,
+                "signatory_name" to TEXT)
 
     }
 

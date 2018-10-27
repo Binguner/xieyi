@@ -137,7 +137,7 @@ class CreateProtocolFragmentUI:AnkoComponent<CreateProtocolFragment>{
                 gravity = Gravity.TOP
                 hint = "请输入协议内容"
                 setBackgroundResource(R.drawable.create_pro_content)
-            }.lparams(width = matchParent, height = dip(0    ))
+            }.lparams(width = matchParent, height = dip(0))
 
             val createPro_peo_num = textView(){
                 id = id_createPro_peo_num

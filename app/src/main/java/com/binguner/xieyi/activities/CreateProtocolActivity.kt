@@ -8,6 +8,7 @@ import android.support.constraint.ConstraintSet.PARENT_ID
 import android.support.v4.content.ContextCompat
 import android.view.Gravity
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.ArrayAdapter
 import android.widget.EditText
 import com.binguner.xieyi.R
@@ -84,6 +85,8 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                 id = id_createPro_back_btn
                 setImageResource(R.drawable.ic_arrow_back_black_24dp)
                 onClick {
+                    val imm = ctx.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    imm.hideSoftInputFromWindow(this@imageView.windowToken,0)
                     owner.finish()
                 }
             }.lparams(){
@@ -222,14 +225,15 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                 }
                 1 -> {
                      createProFromWhere = editText(){
-                        id = id_createPro_fromwhere
-                        setBackgroundResource(R.drawable.create_pro_title_edit)
-                        hint = "神秘领域"
-                        textChangedListener {
-                            afterTextChanged {
-                                proFromWhere = this@editText.text.toString()
-                            }
-                        }
+                         id = id_createPro_fromwhere
+
+                         setBackgroundResource(R.drawable.create_pro_title_edit)
+                         hint = "神秘领域"
+                         textChangedListener {
+                             afterTextChanged {
+                                 proFromWhere = this@editText.text.toString()
+                             }
+                         }
                     }.lparams( width = dip(0) ){
                         startToEnd = id_createPro_from
                         leftMargin = dip(16)

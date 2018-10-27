@@ -14,8 +14,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.binguner.xieyi.R
+import com.binguner.xieyi.adapters.AllProtocolAdapter
 import com.binguner.xieyi.adapters.FloaterAdapter
 import com.binguner.xieyi.beans.FloaterBean
+import com.binguner.xieyi.beans.ProtocolDetailBean
 import com.binguner.xieyi.databases.DBUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import org.jetbrains.anko.*
@@ -116,7 +118,29 @@ class SettingMyProFragmentUI:AnkoComponent<Setting_MyProFragment>{
 
             var set_recycler_view = recyclerView {
                 id = id_myPro_recycler_view
-                val list = dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id","null"))
+                //val list = dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id", "null"))
+                val list = mutableListOf<ProtocolDetailBean>()
+                val protocolMap = dbUtils.getAllProtocol_id_List(sharedPreferences.getString("user_id","null")).toSortedMap(compareBy {
+                    it
+                })
+                for((key,value) in protocolMap){
+                    when(value){
+                        "0" -> {
+                            // normal
+                            list.add(dbUtils.getNormalProtocolDetail(key))
+                        }
+                        "1" ->{
+                            // floater
+                            list.add(dbUtils.getFloaterProtocolDetail(key))
+                        }
+                    }
+                }
+                /*for(values in protocolMap.values){
+                    Log.d("sdnfasidnf",values)
+                }
+                for (key in protocolMap.keys){
+                    Log.d("sdnfasidnf",key + " !")
+                }*/
                 if (null != list) {
 
                 }
@@ -125,7 +149,8 @@ class SettingMyProFragmentUI:AnkoComponent<Setting_MyProFragment>{
                     items.add(data)
                 }
                 layoutManager = LinearLayoutManager(ctx,LinearLayoutManager.VERTICAL,false)
-                val myAdapter = FloaterAdapter(ctx, R.layout.floater_item_layout, list)
+                //val myAdapter = FloaterAdapter(ctx, R.layout.floater_item_layout, list)
+                val myAdapter = AllProtocolAdapter(ctx, R.layout.floater_item_layout, list)
                 myAdapter.setOnItemClickListener { adapter, view, position ->  toast("You clicked $position") }
                 adapter = myAdapter
                 /*dapter.setOnItemClickListener(object : BaseQuickAdapter.OnItemClickListener {
@@ -134,7 +159,6 @@ class SettingMyProFragmentUI:AnkoComponent<Setting_MyProFragment>{
                         toast("You clicked $position")
                     }
                 })*/
-
             }.lparams(width = matchParent, height = dip(0)){
                 topToBottom = id_myPro_shadow
                 startToStart = PARENT_ID

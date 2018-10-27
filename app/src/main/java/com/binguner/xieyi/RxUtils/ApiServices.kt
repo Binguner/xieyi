@@ -30,7 +30,7 @@ interface ApiServices{
     @FormUrlEncoded
     fun createProtocol(@Field("title") title:String,
                        @Field("content")content:String,
-                       @Field("ignatoryNum")ignatoryNum:String,
+                       @Field("signatoryNum")signatoryNum:String,
                        @Field("username")username:String,
                        @Field("share")isShared:String):Observable<DoProtocolBean>
 

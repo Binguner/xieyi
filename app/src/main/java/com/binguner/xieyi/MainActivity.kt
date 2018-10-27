@@ -28,6 +28,7 @@ import android.text.Layout
 import android.util.Log
 import android.view.ViewManager
 import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TableLayout
 import com.binguner.xieyi.activities.type
@@ -153,8 +154,10 @@ class MainActivityUI: AnkoComponent<MainActivity>{
     val id_switch_tab1 = View.generateViewId()
     val id_switch_tab2 = View.generateViewId()
     var mtablayout: View ?= null
+    lateinit var imm : InputMethodManager
 
     override fun createView(ui: AnkoContext<MainActivity>) = with(ui) {
+        imm = ctx.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         constraintLayout(){
             backgroundColor = getColor(ctx,R.color.colorNormalBack)
 
@@ -195,6 +198,7 @@ class MainActivityUI: AnkoComponent<MainActivity>{
                 backgroundColor = ContextCompat.getColor(ctx,R.color.colorWhite)
                 padding = dip(5)
                 onClick {
+                    imm.hideSoftInputFromWindow(this@imageView.windowToken,0)
                     selectButton(this@imageView,mBtnList)
                 }
             }.lparams(width = dip(0), height = dip(40)){}
@@ -203,6 +207,7 @@ class MainActivityUI: AnkoComponent<MainActivity>{
                 backgroundColor = ContextCompat.getColor(ctx,R.color.colorWhite)
                 padding = dip(5)
                 onClick {
+                    imm.hideSoftInputFromWindow(this@imageView.windowToken,0)
                     selectButton(this@imageView,mBtnList)
                 }
             }.lparams(width = dip(0), height = dip(40)){}
@@ -211,6 +216,7 @@ class MainActivityUI: AnkoComponent<MainActivity>{
                 backgroundColor = ContextCompat.getColor(ctx,R.color.colorWhite)
                 padding = dip(5)
                 onClick {
+                    imm.hideSoftInputFromWindow(this@imageView.windowToken,0)
                     selectButton(this@imageView,mBtnList)
                 }
             }.lparams(width = dip(0), height = dip(40)){}
