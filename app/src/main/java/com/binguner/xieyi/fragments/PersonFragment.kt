@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.constraint.ConstraintSet.PARENT_ID
 import android.support.v4.app.ActivityCompat.startActivityForResult
 import android.support.v4.app.Fragment
@@ -87,7 +88,6 @@ class PersonFragment : Fragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        Log.d("tetete","hrer")
         if (requestCode == 111 ) {
             when(resultCode){
                 1 -> {

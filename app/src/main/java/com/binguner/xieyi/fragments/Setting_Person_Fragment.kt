@@ -28,6 +28,7 @@ import android.widget.Toast
 
 import com.binguner.xieyi.R
 import com.binguner.xieyi.RxUtils.HttpClient
+import com.binguner.xieyi.activities.SettingActivity
 import com.binguner.xieyi.beans.FloaterBean
 import com.binguner.xieyi.databases.DBUtils
 import com.binguner.xieyi.listeners.ResultListener
@@ -44,13 +45,14 @@ import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.toast
 
-lateinit var aactivity:Activity
+lateinit var aactivity:SettingActivity
 lateinit var userInfoChangedListener : UserInfoChangedListener
 lateinit var onSelectToFinishCallback: OnSelectToFinishCallback
 class Setting_Person_Fragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        aactivity = activity as SettingActivity
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -73,7 +75,7 @@ class Setting_Person_Fragment : Fragment() {
 
 
     fun attachAty(activity: Activity){
-        aactivity = activity
+        aactivity = activity as SettingActivity
     }
 
     override fun onDetach() {
@@ -346,6 +348,7 @@ class Setting_Person_FragmengUI:AnkoComponent<Setting_Person_Fragment>{
                                                         editor.commit()
                                                         dbUtils.updateUserInfo(sharedPreferences.getString("user_id",""),DBUtils.TypeNickname,usernmae)
                                                         set_person_username.setText(usernmae)
+                                                                //aactivity.hand
                                                         userInfoChangedListener.isChanged(1,true)
                                                         toast(msg)
                                                     }

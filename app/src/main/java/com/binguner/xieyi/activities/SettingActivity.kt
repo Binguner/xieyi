@@ -4,6 +4,8 @@ import android.content.Intent
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.print.PageRange
 import android.support.constraint.ConstraintSet.PARENT_ID
 import android.support.v4.app.Fragment
@@ -31,15 +33,19 @@ var flag:Int = -1
  * 3 help
  */
 class SettingActivity : AppCompatActivity() ,UserInfoChangedListener,OnSelectToFinishCallback{
+
+
     override fun isChanged(type: Int, changged: Boolean) {
         //Log.d("tetete","changged + $changged")
         if(changged){
             val intent = Intent()
             when(type){
                 1 -> {
+                    //Log.d("wqerwe","Change nickname")
                     setResult(1,intent)
                 }
                 2 -> {
+                    //Log.d("wqerwe","change email")
                     setResult(2,intent)
                 }
             }
@@ -97,7 +103,6 @@ class SettingActivity : AppCompatActivity() ,UserInfoChangedListener,OnSelectToF
             0 ->{
                 selectFragment(settingPersonFragment!!)
                 settingPersonFragment!!.attachAty(this)
-                //Log.d("tttttt","selectFragment")z
             }
             1 ->{
                 selectFragment(settingMyProFragment!!)
@@ -124,6 +129,7 @@ class SettingActivity : AppCompatActivity() ,UserInfoChangedListener,OnSelectToF
                 .show(fragment)
                 .commit()
     }
+
 }
 
 var settingPersonFragment : Setting_Person_Fragment ?= null
@@ -154,4 +160,6 @@ class SettingActivityUI:AnkoComponent<SettingActivity>{
         }
 
     }
+
+
 }
