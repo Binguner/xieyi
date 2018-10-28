@@ -53,9 +53,9 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
     val id_createPro_from = View.generateViewId()
     val id_createPro_fromwhere = View.generateViewId()
     val id_createPro_choosePeoNum = View.generateViewId()
-    lateinit var proTitle :String
-    lateinit var proContent:String
-    var proFromWhere = ""
+    var proTitle :String = ""
+    var proContent:String = ""
+    var proFromWhere = "神秘领域"
     lateinit var createProFromWhere:EditText
 
     val items = arrayOf("  1  ", "  2  ", "  3  ", "  4  ", "  5  ")
@@ -64,6 +64,7 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
     override fun createView(ui: AnkoContext<CreateProtocolActivity>)= with(ui) {
 
         constraintLayout(){
+            fitsSystemWindows = true
             background = ContextCompat.getDrawable(ctx, R.color.colorNormalBack)
             val createProToolbar = include<View>(R.layout.toolbar_layout){
                 id = id_createProToolbar
@@ -185,12 +186,12 @@ class CreateProtocolActivityUI:AnkoComponent<CreateProtocolActivity>{
                 onClick {
                     when(type){
                         1 -> {
-                            if(null == proTitle && proTitle == ""){
+                            if(proTitle == "" || null == proTitle ){
                                 toast("请输入标题！")
-                            }
-                            if(null == proContent && proContent == ""){
+                            }else if(proContent == "" || null == proContent){
                                 toast("请输入内容！")
-                            }else {
+                            }
+                            if (null != proTitle && null != proContent && "" != proTitle && "" != proContent){
                                 prohttpClient.createFloater(sharedPreferences3.getString("username", ""), proTitle, proContent, proFromWhere, object : ResultListener {
                                     override fun postResullt(resultType: Int, msg: String) {
                                         toast(msg)

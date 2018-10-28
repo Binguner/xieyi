@@ -9,6 +9,7 @@ import android.support.constraint.ConstraintSet.PARENT_ID
 import android.support.v4.app.Fragment
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -33,6 +34,7 @@ import org.jetbrains.anko.support.v4.toast
 
 class ChildFloaterFragment : Fragment() {
 
+    private var flag = false
     private lateinit var childFloaterFragmentUI: ChildFloaterFragmentUI
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,7 +56,11 @@ class ChildFloaterFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        childFloaterFragmentUI.refreshList()
+        Log.d("dfrv",flag.toString())
+        if (flag){
+            childFloaterFragmentUI.refreshList()
+        }
+        flag = true
     }
 
     override fun onAttach(context: Context) {
@@ -79,13 +85,18 @@ class ChildFloaterFragmentUI: AnkoComponent<ChildFloaterFragment>{
     lateinit var floaterAdapter: FloaterAdapter
     val id_floater_constraintlayout = View.generateViewId()
     val id_floater_recyclerview = View.generateViewId()
-
+    lateinit var floater_recyclerview :RecyclerView
     //var mDatas = mutableListOf<Data6>()
     var mDatas = dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id","null"))
+    var oldSize = mDatas.size
 
     fun refreshList(){
-        mDatas = dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id","null"))
-        floaterAdapter.addData(0,dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id","null"))[0])
+        if(dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id","null")).size > oldSize){
+            floaterAdapter.addData(0, dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id", "null"))[0])
+            floater_recyclerview.scrollToPosition(0)
+            oldSize++
+        }
+        //mDatas = dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id","null"))
     }
 
     override fun createView(ui: AnkoContext<ChildFloaterFragment>) = with(ui){
@@ -93,17 +104,13 @@ class ChildFloaterFragmentUI: AnkoComponent<ChildFloaterFragment>{
         constraintLayout{
             id = id_floater_constraintlayout
 
-            val floater_recyclerview = recyclerView {
+            floater_recyclerview = recyclerView {
                 id = id_floater_recyclerview
-                for(i in 1..10){
-                    //var bean = Data6("I am a title","2013 3 3","Taiyuan",null,"","","","")
-                    //mDatas.add(bean)
-                }
+
                 backgroundColor = ContextCompat.getColor(ctx,R.color.colorNormalBack)
                 layoutManager = LinearLayoutManager(ctx,LinearLayoutManager.VERTICAL,false)
-                floaterAdapter = FloaterAdapter(ctx, R.layout.floater_item_layout, mDatas)
+                floaterAdapter = FloaterAdapter(ctx, R.layout.all_prtocol_layout, mDatas)
                 adapter = floaterAdapter
-
 
             }.lparams(width = matchParent, height = matchParent)
             //mAdapter.openLoadAnimation(BaseQuickAdapter.ALPHAIN)

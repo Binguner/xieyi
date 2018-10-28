@@ -69,7 +69,7 @@ class LoginActitivyUI:AnkoComponent<LoginActivity>{
         editor = ctx.getSharedPreferences("UserData",Context.MODE_PRIVATE).edit()
 
         constraintLayout {
-
+            fitsSystemWindows = true
             backgroundColor = ContextCompat.getColor(ctx, R.color.colorNormalBack)
             textView(){
                 text = "「协易」"

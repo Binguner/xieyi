@@ -23,6 +23,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import io.reactivex.schedulers.Schedulers
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import java.io.File
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -44,6 +46,7 @@ class HttpClient(context: Context){
     lateinit var retrofit:Retrofit
     lateinit var editor: SharedPreferences.Editor
     lateinit var sp :SharedPreferences
+    private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss:SSSZZ")
     var dbUtils = DBUtils(context)
     init {
 
@@ -126,6 +129,7 @@ class HttpClient(context: Context){
 
         this.retrofit = retrofit
     }
+
 
     val services = retrofit.create(ApiServices::class.java)
 
@@ -274,7 +278,15 @@ class HttpClient(context: Context){
                         // 把找个协议保存到 所有 协议中， 类型为 0 ， 0 是普通协议的意思
                         dbUtils.insertAllProtocol(it.data.id,username,sp.getString("user_id",""),title,"0")
                         // 把找个协议保存到普通协议列表，0 是不分享的意思（分享了变成抖协议）
-                        dbUtils.insertNormalProtocol(it.data.id,username,sp.getString("user_id",""),title,signatoryNum,"0",content,System.currentTimeMillis().toString())
+                        dbUtils.insertNormalProtocol(
+                                it.data.id,username,
+                                sp.getString("user_id",""),
+                                title,
+                                signatoryNum,
+                                "0",
+                                content,
+                                dateFormat.format(Date())
+                        )
                     }else{
                         resultListener.postResullt(ResultListener.succeedType,it.message)
                     }
@@ -305,6 +317,7 @@ class HttpClient(context: Context){
 
     // create Floater
     fun createFloater(username:String, title:String, content:String,region:String,resultListener: ResultListener){
+
         services.createFloater(username,title,content,region)
                 .subscribeOn(Schedulers.io())
                 .unsubscribeOn(Schedulers.io())
@@ -322,10 +335,11 @@ class HttpClient(context: Context){
                             // 保存协议到漂流瓶列表
                             dbUtils.insertFloaterProtocol(it.data.id,
                                     username,
-                                    sharedPreferences.getString("user_id",""),
+                                    sharedPreferences.getString("user_id", ""),
                                     title,
                                     content,
-                                    System.currentTimeMillis().toString(),
+                                    //System.currentTimeMillis().toString(),
+                                    dateFormat.format(Date()),
                                     "null",
                                     region,
                                     "0")

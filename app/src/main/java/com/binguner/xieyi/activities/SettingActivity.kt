@@ -147,7 +147,7 @@ class SettingActivityUI:AnkoComponent<SettingActivity>{
     override fun createView(ui: AnkoContext<SettingActivity>) = with(ui){
 
         constraintLayout {
-
+            fitsSystemWindows = true
             val set_framelayout = frameLayout {
                 id = containerid
                 backgroundColor = ContextCompat.getColor(ctx, R.color.colorNormalBack)

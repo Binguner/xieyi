@@ -19,6 +19,7 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
+import android.widget.ImageView
 import com.binguner.xieyi.MainActivityUI
 import com.binguner.xieyi.activities.CreateProtocolActivity
 import com.binguner.xieyi.activities.SettingActivity
@@ -84,6 +85,7 @@ class HomeFragmentUI:AnkoComponent<HomeFragment>{
     val id_home_TabLayout = View.generateViewId()
     val id_recyclerview = View.generateViewId()
     val id_add_new_shake_protocol = View.generateViewId()
+    lateinit var add_new_shake_protocol:ImageView
 
 
     override fun createView(ui: AnkoContext<HomeFragment>)= with(ui) {
@@ -92,6 +94,7 @@ class HomeFragmentUI:AnkoComponent<HomeFragment>{
 
             val home_toolbar = include<View>(R.layout.toolbar_layout) {
                 id = id_home_toolbar
+                //fitsSystemWindows = true
             }.lparams(width = matchParent, height = wrapContent){
                 topToTop = PARENT_ID
                 bottomToTop = id_home_shadow
@@ -111,8 +114,14 @@ class HomeFragmentUI:AnkoComponent<HomeFragment>{
                     //toast("#postion")
                     onPageSelected {
                         when (it){
-                            0 -> current_page = 0
-                            1 -> current_page = 1
+                            0 -> {
+                                current_page = 0
+                                add_new_shake_protocol.setImageResource(R.drawable.ic_assignment_black_24dp)
+                            }
+                            1 ->{
+                                current_page = 1
+                                add_new_shake_protocol.setImageResource(R.drawable.ic_add_black_24dp)
+                            }
                         }
 
                     }
@@ -146,8 +155,8 @@ class HomeFragmentUI:AnkoComponent<HomeFragment>{
                 endToEnd = id_home_toolbar
             }
 
-            val add_new_shake_protocol = imageView(){
-                imageResource = R.drawable.ic_add_black_24dp
+            add_new_shake_protocol = imageView(){
+                imageResource = R.drawable.ic_assignment_black_24dp
 
                 onClick {
                     when(current_page){

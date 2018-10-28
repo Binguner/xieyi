@@ -12,7 +12,7 @@ class FloaterAdapter(val ctx:Context, layoutid:Int,data: MutableList<Data6>?) : 
 
     override fun convert(helper: Floater_viewholder?, item: Data6?) {
         helper?.floater_title?.setText(item?.title)
-        helper?.floater_date?.setText(item?.created_at)
+        helper?.floater_date?.setText(item?.created_at!!.split("T")[0].replace("-","."))
         helper?.floater_from_where?.setText(item?.region)
     }
 

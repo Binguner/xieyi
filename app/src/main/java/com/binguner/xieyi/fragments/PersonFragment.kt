@@ -138,6 +138,7 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
 
             include<View>(R.layout.toolbar_layout){
                 id = id_person_toolbar
+                fitsSystemWindows = true
             }.lparams(width = matchParent, height = wrapContent){
                 topToTop = PARENT_ID
                 startToStart = PARENT_ID

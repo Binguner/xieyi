@@ -13,5 +13,6 @@ data class ProtocolDetailBean(
     val region: String?,
     val share: String?,
     val comments: List<Any>?,
-    val protocol_praise: List<Any>?
+    val protocol_praise: List<Any>?,
+    val type: Int   // 0 normal     1 floater
 )

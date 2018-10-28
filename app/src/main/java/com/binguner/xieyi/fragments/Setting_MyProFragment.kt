@@ -8,12 +8,14 @@ import android.os.Bundle
 import android.support.constraint.ConstraintSet.PARENT_ID
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.binguner.xieyi.R
+import com.binguner.xieyi.activities.ProrocolDetial
 import com.binguner.xieyi.adapters.AllProtocolAdapter
 import com.binguner.xieyi.adapters.FloaterAdapter
 import com.binguner.xieyi.beans.FloaterBean
@@ -75,11 +77,16 @@ class SettingMyProFragmentUI:AnkoComponent<Setting_MyProFragment>{
     private val dbUtils = DBUtils(mpcontext)
     private val sharedPreferences = mpcontext.getSharedPreferences("UserData", Context.MODE_PRIVATE)
 
+    lateinit var set_recycler_view :RecyclerView
+
     override fun createView(ui: AnkoContext<Setting_MyProFragment>)= with(ui) {
 
         constraintLayout {
+            fitsSystemWindows = true
             val myPro_toolbar = include<View>(R.layout.toolbar_layout){
                 id = id_myPro_toolbar
+                //fitsSystemWindows = true
+
             }.lparams(width = matchParent){
                 topToTop = PARENT_ID
                 startToStart = PARENT_ID
@@ -96,6 +103,9 @@ class SettingMyProFragmentUI:AnkoComponent<Setting_MyProFragment>{
 
             textView(){
                 text = "我的协议"
+                onClick {
+                    set_recycler_view.scrollToPosition(0)
+                }
             }.lparams(){
                 topToTop = id_myPro_toolbar
                 bottomToBottom = id_myPro_toolbar
@@ -116,7 +126,7 @@ class SettingMyProFragmentUI:AnkoComponent<Setting_MyProFragment>{
                 leftMargin = dip(10)
             }
 
-            var set_recycler_view = recyclerView {
+            set_recycler_view = recyclerView {
                 id = id_myPro_recycler_view
                 //val list = dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id", "null"))
                 val list = mutableListOf<ProtocolDetailBean>()
@@ -150,8 +160,12 @@ class SettingMyProFragmentUI:AnkoComponent<Setting_MyProFragment>{
                 }
                 layoutManager = LinearLayoutManager(ctx,LinearLayoutManager.VERTICAL,false)
                 //val myAdapter = FloaterAdapter(ctx, R.layout.floater_item_layout, list)
-                val myAdapter = AllProtocolAdapter(ctx, R.layout.floater_item_layout, list)
-                myAdapter.setOnItemClickListener { adapter, view, position ->  toast("You clicked $position") }
+                val reversedList = list.reversed().toMutableList()
+                val myAdapter = AllProtocolAdapter(ctx, R.layout.all_prtocol_layout, reversedList)
+                myAdapter.setOnItemClickListener {
+                    adapter, view, position ->  toast("You clicked $position")
+                    startActivity<ProrocolDetial>()
+                }
                 adapter = myAdapter
                 /*dapter.setOnItemClickListener(object : BaseQuickAdapter.OnItemClickListener {
                     override fun onItemClick(adapter: BaseQuickAdapter<*, *>?, view: View?, position: Int) {

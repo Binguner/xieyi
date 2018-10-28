@@ -245,7 +245,8 @@ class DBUtils(val context: Context){
                             null,
                             cursor.getString(cursor.getColumnIndex("isShared")),
                             null,
-                            null
+                            null,
+                            0
                             )
                 }while (cursor.moveToNext())
             }
@@ -271,7 +272,8 @@ class DBUtils(val context: Context){
                            cursor.getString(cursor.getColumnIndex("region")),
                             null,
                             null,
-                            null
+                            null,
+                            1
                     )
                 }while (cursor.moveToNext())
             }

@@ -111,8 +111,10 @@ class MainActivity : AppCompatActivity(),OnSelectToFinishCallback{
     }
 
     private fun setTransparentStatusbar() {
-        StatusBarUtil.setStatusBarColor(this,R.color.colorWhite)
-        StatusBarUtil.setStatusBarTextBalck(this)
+        StatusBarUtil.setStatusBarColor(this, R.color.colorWhite)
+        if(Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT){
+            StatusBarUtil.setStatusBarTextBalck(this)
+        }
         //StatusBarUtil.transparentStatusBar(this)
     }
 
@@ -224,6 +226,8 @@ class MainActivityUI: AnkoComponent<MainActivity>{
             val fragmentContainer = frameLayout {
                 id = id_fragmentscontainer
                 backgroundColor = Color.TRANSPARENT
+                fitsSystemWindows = true
+
             }.lparams(width = matchParent, height = dip(0)){
                 //topToBottom = id_shadow_line
                 bottomToTop = id_btn3

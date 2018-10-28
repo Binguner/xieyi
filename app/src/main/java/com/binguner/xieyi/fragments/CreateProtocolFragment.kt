@@ -89,11 +89,13 @@ class CreateProtocolFragmentUI:AnkoComponent<CreateProtocolFragment>{
 
     override fun createView(ui: AnkoContext<CreateProtocolFragment>) = with(ui) {
         constraintLayout(){
-
+            fitsSystemWindows = true
             backgroundColor = ContextCompat.getColor(ctx,R.color.colorNormalBack)
 
             include<View>(R.layout.toolbar_layout){
                 id = id_createPro_toolbar
+                fitsSystemWindows = true
+
             }.lparams(width = matchParent, height = wrapContent){
                 topToTop = PARENT_ID
                 startToStart = PARENT_ID
@@ -172,7 +174,8 @@ class CreateProtocolFragmentUI:AnkoComponent<CreateProtocolFragment>{
 
                     if(title.equals("")){
                         toast("请输入协议标题！")
-                    }else if(mcontent.equals("")){
+                    }
+                    if(mcontent.equals("")){
                         toast("请输入协议内容！")
                     }else {
                         mhttpClient.doProtocol(title, mcontent, signatoryNum, username, object : ResultListener {

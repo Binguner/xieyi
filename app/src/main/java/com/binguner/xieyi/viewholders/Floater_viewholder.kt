@@ -15,9 +15,9 @@ class Floater_viewholder(view: View?) : BaseViewHolder(view),View.OnClickListene
     lateinit var floater_date:TextView
 
     init {
-        floater_title = view!!.find(R.id.floater_title)
-        floater_from_where = view!!.find(R.id.floater_from_where)
-        floater_date = view!!.find(R.id.floater_date)
+        floater_title = view!!.find(R.id.all_pro_title)
+        floater_from_where = view!!.find(R.id.all_pro_region_share)
+        floater_date = view!!.find(R.id.all_pro_time)
     }
 
     override fun onClick(v: View?) {
