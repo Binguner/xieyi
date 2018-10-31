@@ -3,6 +3,7 @@ package com.binguner.xieyi.RxUtils
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import android.widget.Toast
 import com.binguner.xieyi.BuildConfig
 import com.binguner.xieyi.activities.type
 import com.binguner.xieyi.databases.DBUtils
@@ -40,7 +41,7 @@ import java.util.concurrent.TimeUnit
  *      avatar_url
  *      sex
  */
-class HttpClient(context: Context){
+class HttpClient(val context: Context){
 
     val HttpClientTag = "HttpTagTag"
     lateinit var retrofit:Retrofit
@@ -48,11 +49,10 @@ class HttpClient(context: Context){
     lateinit var sp :SharedPreferences
     private val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss:SSSZZ")
     var dbUtils = DBUtils(context)
-    init {
 
+    init {
         editor = context.getSharedPreferences("UserData",Context.MODE_PRIVATE).edit()
         sp = context.getSharedPreferences("UserData",Context.MODE_PRIVATE)
-
         val gson:Gson = GsonBuilder()
                 .setLenient()
                 .create()
@@ -160,12 +160,10 @@ class HttpClient(context: Context){
                     //Log.d("fmosanfaus",it.toString())
                     //resultListener.postResullt(ResultListener.errorType,it.message!!)
                     //resultListener.postResullt(ResultListener.failedType, it.message)
-
                 }, {
                     //Log.d("fmosanfaus","onCompliated")
                     //resultListener.postResullt(ResultListener.succeedType, "")
                 })
-
     }
 
     fun doLogin(username: String, password: String, resultListener: ResultListener){
@@ -210,7 +208,8 @@ class HttpClient(context: Context){
                                                 .subscribe {
                                                     if(null != it){
                                                         dbUtils.insertNormalProtocol(it.data._id,
-                                                                sharedPreferences.getString("username","null"),
+                                                                //sharedPreferences.getString("username","null"),
+                                                                it.data.signatory[0],
                                                                 sharedPreferences.getString("user_id","null"),
                                                                 it.data.title,
                                                                 it.data.signatoryNum.toString(),
@@ -232,7 +231,8 @@ class HttpClient(context: Context){
                                                 .subscribe {
                                                     if(null != it){
                                                         dbUtils.insertFloaterProtocol(it.data._id,
-                                                                sharedPreferences.getString("username","null"),
+                                                                //sharedPreferences.getString("username","null"),
+                                                                it.data.signatory!![0],
                                                                 sharedPreferences.getString("user_id","null"),
                                                                 it.data.title,
                                                                 it.data.content,
@@ -279,7 +279,8 @@ class HttpClient(context: Context){
                         dbUtils.insertAllProtocol(it.data.id,username,sp.getString("user_id",""),title,"0")
                         // 把找个协议保存到普通协议列表，0 是不分享的意思（分享了变成抖协议）
                         dbUtils.insertNormalProtocol(
-                                it.data.id,username,
+                                it.data.id,
+                                username,
                                 sp.getString("user_id",""),
                                 title,
                                 signatoryNum,
@@ -287,6 +288,8 @@ class HttpClient(context: Context){
                                 content,
                                 dateFormat.format(Date())
                         )
+                        val l = listOf<String>(sp.getString("user_id","null"))
+                        dbUtils.insertSignatoryList(it.data.id,l)
                     }else{
                         resultListener.postResullt(ResultListener.succeedType,it.message)
                     }
@@ -343,6 +346,8 @@ class HttpClient(context: Context){
                                     "null",
                                     region,
                                     "0")
+                            val l = listOf<String>(sp.getString("user_id","null"))
+                            dbUtils.insertSignatoryList(it.data.id,l)
                         }catch (e:Exception){}
                     }
                 },{
@@ -380,6 +385,57 @@ class HttpClient(context: Context){
                     }
                 },{
                     resultListener.postResullt(ResultListener.failedType,"修改学生信息失败!")
+                },{
+
+                })
+    }
+
+    fun getRandomFloater(resultListener: ResultListener){
+        services.getRandomFloater()
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (it.code == 1 && it.message.equals("获取信息成功")){
+
+                        // 获得到了本用户到漂流瓶 || 漂流瓶数据库中已经有了这个
+                        if(it.data.signatory[0].equals(sp.getString("username","null")) || dbUtils.isExistThisFloaterInDB(it.data._id)){
+                            Log.d("gettherepeteaed","gettherepeteaed")
+                            resultListener.postResullt(11,"wrong")
+                        // 不是本用户到漂流瓶
+                        }else{
+                            if(it!=null){
+                                Log.d("gettherepeteaed","insert")
+                                dbUtils.insertAllProtocol(
+                                        it.data._id
+                                        ,it.data.signatory[0],
+                                        sp.getString("user_id","null"),
+                                        it.data.title,
+                                        "1"
+                                )
+                                dbUtils.insertFloaterProtocol(
+                                        it.data._id,
+                                        it.data.signatory[0],
+                                        sp.getString("user_id","null"),
+                                        it.data.title,
+                                        it.data.content,
+                                        it.data.created_at,
+                                        it.data.obtain_at,
+                                        it.data.region,
+                                        it.data.state.toString()
+                                )
+                            }
+                            if(it != null){
+                                dbUtils.insertSignatoryList(it.data._id,it.data.signatory)
+                            }
+                            resultListener.postResullt(it.code,it.message)
+                        }
+
+                    }else{
+                        resultListener.postResullt(it.code,it.message)
+                    }
+                },{
+                    resultListener.postResullt(1,"wrong")
                 },{
 
                 })

@@ -27,7 +27,8 @@ class StatusBarUtil{
         fun setStatusBarColor(activity: Activity, color:Int){
             if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
                 var window = activity.window
-                window.statusBarColor = activity.getResources().getColor(color)
+                window.statusBarColor = ContextCompat.getColor(activity,color)
+                        //activity.getResources().getColor(color)
             }else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
                 transparentStatusBar(activity)
                 val contentView = activity.findViewById<ViewGroup>(android.R.id.content)

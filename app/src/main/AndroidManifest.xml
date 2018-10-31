@@ -28,7 +28,8 @@
             android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity android:name=".activities.SettingActivity" />
         <activity android:name=".LoginActivity" />
-        <activity android:name=".activities.ProrocolDetial"></activity>
+        <activity android:name=".activities.ProrocolDetial" />
+        <activity android:name=".activities.ProtocolDetial"></activity>
     </application>
 
 </manifest>

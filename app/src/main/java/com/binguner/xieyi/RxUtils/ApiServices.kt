@@ -74,4 +74,8 @@ interface ApiServices{
     @GET("getFloater")
     fun getFloaterProtocolInfo(@Query("id")id:String):Observable<FloaterProtocolInfoBean>
 
+    // xyapi.lzhu.top/api/v1/getRandomFloater
+    @GET("getRandomFloater")
+    fun getRandomFloater():Observable<RandomFloaterBean>
+
 }

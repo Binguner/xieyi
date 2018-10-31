@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:layout_height="match_parent"
+    tools:context=".activities.ProtocolDetial">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/pro_detial_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize">
+
+        <ImageView
+            android:id="@+id/pro_detial_back"
+            android:src="@drawable/ic_arrow_back_black_24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_gravity="center"
+            android:id="@+id/pro_detial_title"
+            android:text="协议详情"
+            android:textColor="@color/colorBlack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </android.support.v7.widget.Toolbar>
+
+    <View
+        android:id="@+id/pro_detial_shadow"
+        app:layout_constraintTop_toBottomOf="@+id/pro_detial_toolbar"
+        android:background="@drawable/shadow_line"
+        android:layout_width="match_parent"
+        android:layout_height="5dp"/>
+
+    <android.support.v4.widget.NestedScrollView
+        app:layout_constraintTop_toBottomOf="@+id/pro_detial_shadow"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/pro_detial_card_type"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_width="match_parent"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardElevation="@dimen/dp_10"
+                app:cardPreventCornerOverlap="false"
+                app:cardCornerRadius="@dimen/dp_10"
+                android:layout_height="150dp">
+
+                <ImageView
+                    android:id="@+id/pro_detial_type"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/floater"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/pro_detial_card_owner"
+                app:layout_constraintTop_toBottomOf="@id/pro_detial_card_type"
+                android:layout_marginTop="@dimen/dp_10"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_goneMarginStart="@dimen/dp_10"
+                app:cardCornerRadius="@dimen/dp_10"
+                app:cardElevation="@dimen/dp_10"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintEnd_toStartOf="@id/pro_detial_card_time"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:background="@color/colorAccent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:padding="@dimen/dp_10"
+                    android:layout_height="match_parent">
+
+
+
+                    <TextView
+                        android:id="@+id/pro_detial_owner"
+                        android:text="发起人"
+                        android:textSize="20sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/pro_detial_owner_ed"
+                        app:layout_constraintTop_toBottomOf="@id/pro_detial_owner"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:text="Binguner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                </android.support.constraint.ConstraintLayout>
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/pro_detial_card_time"
+                app:layout_constraintTop_toTopOf="@id/pro_detial_card_owner"
+                app:layout_constraintStart_toEndOf="@id/pro_detial_card_owner"
+                android:layout_marginEnd="@dimen/dp_10"
+                app:cardCornerRadius="@dimen/dp_10"
+                app:cardElevation="@dimen/dp_10"
+                android:layout_marginStart="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:src="@color/colorAccent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:padding="@dimen/dp_10"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/pro_detial_time"
+                        android:text="创建日期"
+                        android:textSize="20sp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/pro_detial_time_ed"
+                        app:layout_constraintTop_toBottomOf="@id/pro_detial_time"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:text="2018.8.8"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+                </android.support.constraint.ConstraintLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/pro_detial_card_content"
+                app:layout_constraintTop_toBottomOf="@id/pro_detial_card_owner"
+                android:layout_marginTop="@dimen/dp_10"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginStart="@dimen/dp_10"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginEnd="@dimen/dp_10"
+                app:cardCornerRadius="@dimen/dp_10"
+                app:cardElevation="@dimen/dp_4"
+                android:padding="@dimen/dp_10"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:src="@color/colorAccent"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_marginEnd="@dimen/dp_10"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_marginBottom="@dimen/dp_10"
+                        android:id="@+id/pro_detial_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        android:text="史蒂夫会发生史蒂夫会发生史蒂夫会发生史蒂夫会发生史蒂夫会发生史蒂夫会发生史蒂夫会发生史蒂夫会发生史蒂夫会发生史蒂夫会发生史蒂夫会发生史蒂夫会发生史蒂夫会发生"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </android.support.constraint.ConstraintLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/pro_detial_card_signatory"
+                app:layout_constraintTop_toBottomOf="@id/pro_detial_card_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    
+                    <ImageView
+                        android:src="@color/colorAccent"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <TextView
+                        android:id="@+id/pro_detial_signatory"
+                        android:text="签署人员："
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_marginStart="@dimen/dp_10"/>
+
+                    <TextView
+                        android:id="@+id/pro_detial_signatory_had"
+                        android:text="0"
+                        app:layout_constraintStart_toEndOf="@id/pro_detial_signatory"
+                        android:layout_marginStart="@dimen/dp_4"
+                        app:layout_constraintBottom_toBottomOf="@id/pro_detial_signatory"
+                        app:layout_constraintEnd_toStartOf="@id/pro_detial_signatory_gang"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/pro_detial_signatory_gang"
+                        app:layout_constraintBottom_toBottomOf="@id/pro_detial_signatory"
+                        app:layout_constraintStart_toEndOf="@id/pro_detial_signatory_had"
+                        app:layout_constraintEnd_toStartOf="@id/pro_detial_signatory_all"
+                        android:text="/"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/pro_detial_signatory_all"
+                        android:text="10"
+                        app:layout_constraintBottom_toBottomOf="@id/pro_detial_signatory"
+                        app:layout_constraintStart_toEndOf="@id/pro_detial_signatory_gang"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <TextView
+                        android:id="@+id/pro_detial_signatory_list"
+                        android:text="Binguenr、Binguner、Binguner、Binguner、Binguner、Binguner、Binguner、Binguner、Binguner、Binguner、Binguner"
+                        app:layout_constraintTop_toBottomOf="@id/pro_detial_signatory"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        android:layout_marginBottom="@dimen/dp_10"
+                        android:layout_marginStart="@dimen/dp_10"
+                        android:layout_marginEnd="@dimen/dp_10"
+                        android:layout_marginTop="@dimen/dp_10"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+
+                </android.support.constraint.ConstraintLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <Button
+                android:id="@+id/pro_detial_sign"
+                app:layout_constraintTop_toBottomOf="@id/pro_detial_card_signatory"
+                android:layout_marginTop="20dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="@dimen/dp_10"
+                android:background="@drawable/protocol_publish_btn"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:text="我要签约"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+</android.support.constraint.ConstraintLayout>

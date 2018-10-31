@@ -2,26 +2,20 @@ package com.binguner.xieyi.fragments
 
 import android.app.Activity
 import android.content.Context
-import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import android.support.constraint.ConstraintSet.PARENT_ID
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import com.binguner.xieyi.R
-import com.binguner.xieyi.activities.ProrocolDetial
+import com.binguner.xieyi.activities.ProtocolDetial
 import com.binguner.xieyi.adapters.AllProtocolAdapter
-import com.binguner.xieyi.adapters.FloaterAdapter
 import com.binguner.xieyi.beans.FloaterBean
 import com.binguner.xieyi.beans.ProtocolDetailBean
 import com.binguner.xieyi.databases.DBUtils
-import com.chad.library.adapter.base.BaseQuickAdapter
 import org.jetbrains.anko.*
 import org.jetbrains.anko.constraint.layout.constraintLayout
 import org.jetbrains.anko.recyclerview.v7.recyclerView
@@ -65,12 +59,11 @@ class Setting_MyProFragment : Fragment() {
     }
 }
 
-var items = mutableListOf<FloaterBean>()
+//var items = mutableListOf<FloaterBean>()
 
 class SettingMyProFragmentUI:AnkoComponent<Setting_MyProFragment>{
 
     val id_myPro_toolbar = View.generateViewId()
-
     val id_myPro_shadow = View.generateViewId()
     val id_myPro_back = View.generateViewId()
     val id_myPro_recycler_view = View.generateViewId()
@@ -151,20 +144,18 @@ class SettingMyProFragmentUI:AnkoComponent<Setting_MyProFragment>{
                 for (key in protocolMap.keys){
                     Log.d("sdnfasidnf",key + " !")
                 }*/
-                if (null != list) {
-
-                }
-                for(i in 1..10){
+                /*for(i in 1..10){
                     var data = FloaterBean("标题","数据","Home")
                     items.add(data)
-                }
+                }*/
                 layoutManager = LinearLayoutManager(ctx,LinearLayoutManager.VERTICAL,false)
                 //val myAdapter = FloaterAdapter(ctx, R.layout.floater_item_layout, list)
                 val reversedList = list.reversed().toMutableList()
                 val myAdapter = AllProtocolAdapter(ctx, R.layout.all_prtocol_layout, reversedList)
                 myAdapter.setOnItemClickListener {
-                    adapter, view, position ->  toast("You clicked $position")
-                    startActivity<ProrocolDetial>()
+                    adapter, view, position ->
+                    //Rtoast("You clicked $position")
+                    startActivity<ProtocolDetial>("pro_id" to reversedList[position]._id)
                 }
                 adapter = myAdapter
                 /*dapter.setOnItemClickListener(object : BaseQuickAdapter.OnItemClickListener {

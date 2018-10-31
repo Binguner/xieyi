@@ -3,6 +3,7 @@ package com.binguner.xieyi.beans
 
 data class ProtocolDetailBean(
     val _id: String,
+    val owner:String,
     val title: String,
     val content: String,
     val signatoryNum: String?,

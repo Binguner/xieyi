@@ -102,6 +102,23 @@ class DBUtils(val context: Context){
         }catch (e:Exception){}
     }
 
+    /**
+     * 判断 漂流瓶列表中是否存在这个协议
+     * 存在 ： true
+     * 不存在 ： false
+     */
+    fun isExistThisFloaterInDB(protocol_id: String):Boolean{
+        val cursor = db.query("all_protocol",null,"protocol_id like ?", arrayOf(protocol_id),null,null,null)
+        if (cursor.moveToFirst()){
+            do {
+                if(cursor.getString(cursor.getColumnIndex("protocol_id")).equals(protocol_id)){
+                    return true
+                }
+            }while (cursor.moveToNext())
+        }
+        return false
+    }
+
     // inert normal protocol
     fun insertNormalProtocol(protocol_id:String, username:String, user_id: String, title:String, peopleNum:String, isShared:String, pro_content:String, create_at:String){
         contentValues.put("protocol_id",protocol_id)
@@ -201,6 +218,34 @@ class DBUtils(val context: Context){
     }
 
     /**
+     * 获取 protocol_id 的签名个数
+     */
+    fun getTheSignedNumber(protocol_id:String):Int{
+        var num = 0;
+        val cursor = db.query("signatory_list",null,"protocol_id like ?", arrayOf(protocol_id),null,null,null)
+        if (cursor.moveToFirst()){
+            do {
+                if ( protocol_id == cursor.getString(cursor.getColumnIndex("protocol_id"))){
+                    num++
+                }
+            }while (cursor.moveToNext())
+        }
+        return num
+    }
+
+    fun getTheSignedPeopleName(protocol_id:String):String{
+        var name:String = ""
+        val cursor = db.query("signatory_list",null,"protocol_id like ?", arrayOf(protocol_id),null,null,null)
+        if (cursor.moveToFirst()){
+            do {
+                val newName = cursor.getString(cursor.getColumnIndex("signatory_name"))
+                name = name + "  "+ newName
+            }while (cursor.moveToNext())
+        }
+        return  name
+    }
+
+    /**
      *  get all protocols id list
      *  key is id
      *  value is type
@@ -224,6 +269,19 @@ class DBUtils(val context: Context){
         return maplist
     }
 
+    fun  getProType(pro_id:String):String{
+        var type :String = "-1"
+        val cursor = db.query("all_protocol",null,"protocol_id like ?", arrayOf(pro_id),null,null,null)
+        if (null != cursor){
+            if(cursor.moveToFirst()){
+                do {
+                    type = cursor.getString(cursor.getColumnIndex("type"))
+                }while (cursor.moveToNext())
+            }
+        }
+        return type
+    }
+
     /**
      * get the normal protocol detail
      */
@@ -235,6 +293,7 @@ class DBUtils(val context: Context){
                 do{
                     protocol = ProtocolDetailBean(
                             cursor.getString(cursor.getColumnIndex("protocol_id")),
+                            cursor.getString(cursor.getColumnIndex("username")),
                             cursor.getString(cursor.getColumnIndex("createPro_title")),
                             cursor.getString(cursor.getColumnIndex("pro_content")),
                             cursor.getString(cursor.getColumnIndex("choosePeopleNum")).toString(),
@@ -261,15 +320,16 @@ class DBUtils(val context: Context){
             if(cursor.moveToFirst()){
                 do {
                     protocol = ProtocolDetailBean(
-                           cursor.getString(cursor.getColumnIndex("protocol_id")),
-                           cursor.getString(cursor.getColumnIndex("createPro_ed_title")),
-                           cursor.getString(cursor.getColumnIndex("pro_content")),
+                            cursor.getString(cursor.getColumnIndex("protocol_id")),
+                            cursor.getString(cursor.getColumnIndex("username")),
+                            cursor.getString(cursor.getColumnIndex("createPro_ed_title")),
+                            cursor.getString(cursor.getColumnIndex("pro_content")),
                             null,
                             null,
-                           cursor.getString(cursor.getColumnIndex("created_at")),
-                           cursor.getString(cursor.getColumnIndex("obtain_at")),
-                           cursor.getString(cursor.getColumnIndex("state")),
-                           cursor.getString(cursor.getColumnIndex("region")),
+                            cursor.getString(cursor.getColumnIndex("created_at")),
+                            cursor.getString(cursor.getColumnIndex("obtain_at")),
+                            cursor.getString(cursor.getColumnIndex("state")),
+                            cursor.getString(cursor.getColumnIndex("region")),
                             null,
                             null,
                             null,
@@ -281,6 +341,8 @@ class DBUtils(val context: Context){
 
         return protocol
     }
+
+    //fun getSig
 
 
 }
