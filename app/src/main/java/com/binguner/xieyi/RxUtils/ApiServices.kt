@@ -44,10 +44,10 @@ interface ApiServices{
     @FormUrlEncoded
     fun giveFeedback(@Field("content") content: String, @Field("qq") qq: String, @Field("phone") phone: String, @Field("weixin") weixin: String):Observable<FeedBackBean>
 
-    // sign Protocol
+    // sign Protocol //http://xyapi.lzhu.top/api/v1/signProtocol
     @POST("signProtocol")
     @FormUrlEncoded
-    fun sighTheProtocol(@Field("username") username: String, @Field("id") protocolId: String)
+    fun sighProtocol(@Field("username") username: String, @Field("id") protocolId: String):Observable<SignProtocolBean>
 
     // get a Protocol information
     @GET("viewProtocol")

@@ -7,12 +7,17 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.util.Log
+import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import com.binguner.xieyi.R
+import com.binguner.xieyi.RxUtils.HttpClient
 import com.binguner.xieyi.beans.ProtocolDetailBean
 import com.binguner.xieyi.databases.DBUtils
 import com.binguner.xieyi.fragments.dbUtils
+import com.binguner.xieyi.httpClient
+import com.binguner.xieyi.listeners.ResultListener
 import com.binguner.xieyi.utils.StatusBarUtil
 import org.jetbrains.anko.toast
 
@@ -30,12 +35,15 @@ class ProtocolDetial : AppCompatActivity() {
     private lateinit var pro_detial_signatory_list :TextView
     private lateinit var pro_detial_type :ImageView
     private lateinit var pro_detial_back :ImageView
+    private lateinit var pro_detial_sign :Button
+    private lateinit var httpClient: HttpClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_protocol_detial)
         transparentStatusbar()
-        initId();
+        httpClient = HttpClient(this)
+        initId()
         getDatas()
 
     }
@@ -52,6 +60,10 @@ class ProtocolDetial : AppCompatActivity() {
         pro_detial_signatory_had = findViewById(R.id.pro_detial_signatory_had)
         pro_detial_signatory_all = findViewById(R.id.pro_detial_signatory_all)
         pro_detial_signatory_list = findViewById(R.id.pro_detial_signatory_list)
+        pro_detial_sign = findViewById(R.id.pro_detial_sign)
+        pro_detial_sign.setOnClickListener {
+
+        }
     }
 
     fun getDatas(){
@@ -76,27 +88,42 @@ class ProtocolDetial : AppCompatActivity() {
             when(msg?.what){
                 0 -> {
                     pro_detial_type.setImageResource(R.drawable.protocol)
-                    protocolDetialBean = msg.obj as ProtocolDetailBean
+                    if (null != msg.obj){
+                        protocolDetialBean = msg.obj as ProtocolDetailBean
+                    }
                     text_owner.text = protocolDetialBean.owner
                     pro_detial_title.text = protocolDetialBean.title
                     text_content.text = protocolDetialBean.content
                     text_time.text = protocolDetialBean.created_at.split("T")[0].replace("-",".")
-                    pro_detial_signatory_had.text = dbUtils.getTheSignedNumber(protocolDetialBean._id).toString()
-                    pro_detial_signatory_all.text = protocolDetialBean.signatoryNum
+                    val had = dbUtils.getTheSignedNumber(protocolDetialBean._id).replace(" ","")
+                    //pro_detial_signatory_had.text = dbUtils.getTheSignedNumber(protocolDetialBean._id)
+                    pro_detial_signatory_had.text = had
+                    val all = protocolDetialBean.signatoryNum.toString().replace(" ","")
+                    //pro_detial_signatory_all.text = protocolDetialBean.signatoryNum.toString()
+                    pro_detial_signatory_all.text = all
                     pro_detial_signatory_list.text = dbUtils.getTheSignedPeopleName(protocolDetialBean._id)
+                    //Log.d("thesignedNumber" , "normal $pro_detial_signatory_had  $pro_detial_signatory_all")
+                    if(all.contains(had)){
+                        pro_detial_sign.visibility = View.GONE
+                    }
                     //toast("finish")
                 }
                 1 -> {
                     pro_detial_type.setImageResource(R.drawable.floater)
-                    protocolDetialBean = msg.obj as ProtocolDetailBean
+                    if( null != msg.obj){
+                        protocolDetialBean = msg.obj as ProtocolDetailBean
+                    }
                     pro_detial_title.text = protocolDetialBean.title
                     text_owner.text = protocolDetialBean.owner
                     text_content.text = protocolDetialBean.content
-                    pro_detial_signatory_had.text = dbUtils.getTheSignedNumber(protocolDetialBean._id).toString()
+                    pro_detial_signatory_had.text = dbUtils.getTheSignedNumber(protocolDetialBean._id)
                     pro_detial_signatory_all.text = "2"
                     text_time.text = protocolDetialBean.created_at.split("T")[0].replace("-",".")
                     pro_detial_signatory_list.text = dbUtils.getTheSignedPeopleName(protocolDetialBean._id)
-
+                    //Log.d("thesignedNumber" , "floater $pro_detial_signatory_had  $pro_detial_signatory_all")
+                    if(pro_detial_signatory_all.text.contains(pro_detial_signatory_had.text)){
+                        pro_detial_sign.visibility = View.GONE
+                    }
                 }
                 -1 -> {
                     Looper.prepare()
@@ -112,29 +139,47 @@ class ProtocolDetial : AppCompatActivity() {
 
         private val dbUtils = DBUtils(ctx)
         private val sp = ctx.getSharedPreferences("UserData", Context.MODE_PRIVATE)
-        private lateinit var msg: Message
+        private lateinit var mmsg: Message
         private lateinit var bean: ProtocolDetailBean
 
         override fun run() {
             val type = dbUtils.getProType(pro_id)
-            msg = Message()
+            mmsg = Message()
             when (type) {
                 "0" -> {
                     bean = dbUtils.getNormalProtocolDetail(pro_id)
-                    msg.what = 0
-                    msg.obj = bean
+                    mmsg.what = 0
+                    // 每次点开一个协议，自动从后台查询一次协议详情
+                    httpClient.updateFloaterInfo(0,bean._id,object :ResultListener{
+                        override fun postResullt(resultType: Int, msg: String) {
+                            if (resultType == 1){
+                                bean.signatory = dbUtils.getSignatoryList(bean._id)
+                                this@ProtocolDetial.myHandler.handleMessage(mmsg)
+
+                            }
+                        }
+                    })
+                    mmsg.obj = bean
                 }
                 "1" -> {
                     bean = dbUtils.getFloaterProtocolDetail(pro_id)
-                    msg.what = 1
-                    msg.obj = bean
+                    mmsg.what = 1
+                    // 每次点开一个协议，自动从后台查询一次协议详情
+                    httpClient.updateFloaterInfo(1,bean._id,object :ResultListener{
+                        override fun postResullt(resultType: Int, msg: String) {
+                            if (resultType == 1){
+                                bean.signatory = dbUtils.getSignatoryList(bean._id)
+                                this@ProtocolDetial.myHandler.handleMessage(mmsg)
+                            }
+                        }
+                    })
+                    mmsg.obj = bean
                 }
                 else -> {
-                    msg.what = -1
+                    mmsg.what = -1
                 }
             }
-            this@ProtocolDetial.myHandler.handleMessage(msg)
-
+            this@ProtocolDetial.myHandler.handleMessage(mmsg)
         }
 
     }

@@ -9,6 +9,7 @@ import com.binguner.xieyi.beans.Data6
 import com.binguner.xieyi.beans.DoLoginBean
 import com.binguner.xieyi.beans.FloaterProtocolInfoBean
 import com.binguner.xieyi.beans.ProtocolDetailBean
+import com.binguner.xieyi.sharedPreferences
 import com.binguner.xieyi.username
 
 class DBUtils(val context: Context){
@@ -220,7 +221,7 @@ class DBUtils(val context: Context){
     /**
      * 获取 protocol_id 的签名个数
      */
-    fun getTheSignedNumber(protocol_id:String):Int{
+    fun getTheSignedNumber(protocol_id:String):String{
         var num = 0;
         val cursor = db.query("signatory_list",null,"protocol_id like ?", arrayOf(protocol_id),null,null,null)
         if (cursor.moveToFirst()){
@@ -230,7 +231,7 @@ class DBUtils(val context: Context){
                 }
             }while (cursor.moveToNext())
         }
-        return num
+        return num.toString()
     }
 
     fun getTheSignedPeopleName(protocol_id:String):String{
@@ -239,10 +240,14 @@ class DBUtils(val context: Context){
         if (cursor.moveToFirst()){
             do {
                 val newName = cursor.getString(cursor.getColumnIndex("signatory_name"))
-                name = name + "  "+ newName
+                if(name != ""){
+                    name = "$name、$newName"
+                }else{
+                    name = newName
+                }
             }while (cursor.moveToNext())
         }
-        return  name
+        return name
     }
 
     /**
@@ -342,7 +347,43 @@ class DBUtils(val context: Context){
         return protocol
     }
 
-    //fun getSig
+    // insert New Signer
+    fun insertNewSigner(protocol_id: String,list: List<String>):Boolean{
+        db.delete("signatory_list","protocol_id like ?", arrayOf(protocol_id))
+        val sp = context.getSharedPreferences("UserData",Context.MODE_PRIVATE)
+        var contentValues = ContentValues()
+        try {
+            /*list.forEach {
+                contentValues.put("protocol_id",protocol_id)
+                contentValues.put("user_id", sp.getString("user_id","null"))
+                contentValues.put("signatory_name", it)
+                db.insert("signatory_list",null,contentValues)
+                contentValues.clear()
+            }*/
+            for (s in list) {
+                contentValues.put("protocol_id",protocol_id)
+                contentValues.put("user_id", sp.getString("user_id","null"))
+                contentValues.put("signatory_name", s)
+                db.insert("signatory_list",null,contentValues)
+                contentValues.clear()
+            }
+        }catch (e:java.lang.Exception){
+            return false
+        }
+        return true
+    }
+
+    // get the signatory list
+    fun getSignatoryList(protocol_id: String):List<String>{
+        val nameList = mutableListOf<String>()
+        val cursor = db.query("signatory_list",null,"protocol_id like ?", arrayOf(protocol_id),null,null,null)
+        if (cursor.moveToFirst()){
+            do {
+                nameList.add(cursor.getString(cursor.getColumnIndex("protocol_id")))
+            }while (cursor.moveToNext())
+        }
+        return nameList
+    }
 
 
 }

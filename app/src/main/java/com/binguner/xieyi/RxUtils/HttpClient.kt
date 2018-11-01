@@ -288,8 +288,8 @@ class HttpClient(val context: Context){
                                 content,
                                 dateFormat.format(Date())
                         )
-                        val l = listOf<String>(sp.getString("user_id","null"))
-                        dbUtils.insertSignatoryList(it.data.id,l)
+                        val li = listOf<String>(sp.getString("username","null"))
+                        dbUtils.insertSignatoryList(it.data.id,li)
                     }else{
                         resultListener.postResullt(ResultListener.succeedType,it.message)
                     }
@@ -441,7 +441,67 @@ class HttpClient(val context: Context){
                 })
     }
 
+    fun updateFloaterInfo(type:Int,protocol_id:String,resultListener: ResultListener){
+        when(type){
+            0 ->{
+                services.getNormalProtocolInfo(protocol_id)
+                        .subscribeOn(Schedulers.io())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            //Log.d("fndsanbglkjewbf",it.code.toString())
+                            if(null != it){
+                                //Log.d("fndsanbglkjewbf","dsnvsnfal.")
+                                if(dbUtils.insertNewSigner(protocol_id,it.data.signatory!!)){
+                                    resultListener.postResullt(1,"ojbk")
+                                }else{
+                                    resultListener.postResullt(0,"bug")
+                                }
+                            }
+                        },{
+                            resultListener.postResullt(0,it.toString())
+                        },{
+
+                        })
+            }
+
+            1 -> {
+                services.getFloaterProtocolInfo(protocol_id)
+                        .subscribeOn(Schedulers.io())
+                        .unsubscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            if(null != it && it.message == "漂流瓶内容获取成功"){
+                                if(dbUtils.insertNewSigner(protocol_id,it.data.signatory!!)){
+                                    resultListener.postResullt(1,"ojbk")
+                                }else{
+                                    resultListener.postResullt(0,"bug")
+                                }
+                            }
+                        },{
+                            resultListener.postResullt(0,it.toString())
+                        },{
+
+                        })
+            }
+        }
+
+        fun signProtocol(protocol_id: String){
+            services.sighProtocol(sp.getString("username","null"),protocol_id)
+                    .subscribeOn(Schedulers.io())
+                    .unsubscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe({
+                        if (it.code == 1)
+                    },{
+
+                    },{
+
+                    })
+
+        }
 
 
 
+    }
 }

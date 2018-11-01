@@ -7,7 +7,7 @@ data class ProtocolDetailBean(
     val title: String,
     val content: String,
     val signatoryNum: String?,
-    val signatory: List<String>?,
+    var signatory: List<String>?,
     val created_at: String,
     val obtain_at: String?,
     val state: String,
