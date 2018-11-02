@@ -5,13 +5,16 @@ import android.content.Context
 import android.os.Bundle
 import android.support.constraint.ConstraintSet.PARENT_ID
 import android.support.v4.app.Fragment
+import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.binguner.xieyi.R
 import com.binguner.xieyi.activities.ProtocolDetial
+import com.binguner.xieyi.activities.SettingActivity
 import com.binguner.xieyi.adapters.AllProtocolAdapter
 import com.binguner.xieyi.beans.FloaterBean
 import com.binguner.xieyi.beans.ProtocolDetailBean
@@ -24,7 +27,7 @@ import org.jetbrains.anko.support.v4.ctx
 
 lateinit var mactivity: Activity
 lateinit var mpcontext: Context
-
+private var justNormalProtocol = false
 class Setting_MyProFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,6 +40,10 @@ class Setting_MyProFragment : Fragment() {
         return container
     }
 
+    fun isJustNormalProtocol(yesOrNo:Boolean){
+        justNormalProtocol = yesOrNo
+    }
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -47,8 +54,8 @@ class Setting_MyProFragment : Fragment() {
         super.onDetach()
     }
 
-    fun attachActivity(activity: Activity){
-        mactivity = activity
+    fun attachActivity(activity: SettingActivity){
+        mactivity = activity as SettingActivity
     }
 
     companion object {
@@ -96,6 +103,7 @@ class SettingMyProFragmentUI:AnkoComponent<Setting_MyProFragment>{
 
             textView(){
                 text = "我的协议"
+                textColor = ContextCompat.getColor(ctx,R.color.colorBlack)
                 onClick {
                     set_recycler_view.scrollToPosition(0)
                 }
@@ -110,7 +118,7 @@ class SettingMyProFragmentUI:AnkoComponent<Setting_MyProFragment>{
                 id = id_myPro_back
                 setImageResource(R.drawable.ic_arrow_back_black_24dp)
                 onClick {
-                    mactivity.finish()
+                        mactivity.finish()
                 }
             }.lparams(){
                 topToTop = id_myPro_toolbar
@@ -123,9 +131,10 @@ class SettingMyProFragmentUI:AnkoComponent<Setting_MyProFragment>{
                 id = id_myPro_recycler_view
                 //val list = dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id", "null"))
                 val list = mutableListOf<ProtocolDetailBean>()
-                val protocolMap = dbUtils.getAllProtocol_id_List(sharedPreferences.getString("user_id","null")).toSortedMap(compareBy {
+                val protocolMap = dbUtils.getAllProtocol_id_List(sharedPreferences.getString("user_id","null"))
+                        /*.toSortedMap(compareBy {
                     it
-                })
+                })*/
                 for((key,value) in protocolMap){
                     when(value){
                         "0" -> {
@@ -134,7 +143,9 @@ class SettingMyProFragmentUI:AnkoComponent<Setting_MyProFragment>{
                         }
                         "1" ->{
                             // floater
-                            list.add(dbUtils.getFloaterProtocolDetail(key))
+                            if (!justNormalProtocol){
+                                list.add(dbUtils.getFloaterProtocolDetail(key))
+                            }
                         }
                     }
                 }
@@ -150,12 +161,12 @@ class SettingMyProFragmentUI:AnkoComponent<Setting_MyProFragment>{
                 }*/
                 layoutManager = LinearLayoutManager(ctx,LinearLayoutManager.VERTICAL,false)
                 //val myAdapter = FloaterAdapter(ctx, R.layout.floater_item_layout, list)
-                val reversedList = list.reversed().toMutableList()
-                val myAdapter = AllProtocolAdapter(ctx, R.layout.all_prtocol_layout, reversedList)
+                //val reversedList = list.reversed().toMutableList()
+                val myAdapter = AllProtocolAdapter(ctx, R.layout.all_prtocol_layout, list)
                 myAdapter.setOnItemClickListener {
                     adapter, view, position ->
                     //Rtoast("You clicked $position")
-                    startActivity<ProtocolDetial>("pro_id" to reversedList[position]._id)
+                    startActivity<ProtocolDetial>("pro_id" to list[position]._id)
                 }
                 adapter = myAdapter
                 /*dapter.setOnItemClickListener(object : BaseQuickAdapter.OnItemClickListener {

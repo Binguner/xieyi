@@ -11,6 +11,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import com.binguner.xieyi.R
 import com.binguner.xieyi.RxUtils.HttpClient
 import com.binguner.xieyi.beans.ProtocolDetailBean
@@ -25,7 +26,7 @@ class ProtocolDetial : AppCompatActivity() {
 
     private lateinit var pro_id : String
     private lateinit var  myThread : CheckProtocolThread
-    private val myHandler = SetProHandler()
+    private lateinit var myHandler :SetProHandler
     private lateinit var text_owner :TextView
     private lateinit var text_time :TextView
     private lateinit var text_content :TextView
@@ -35,17 +36,40 @@ class ProtocolDetial : AppCompatActivity() {
     private lateinit var pro_detial_signatory_list :TextView
     private lateinit var pro_detial_type :ImageView
     private lateinit var pro_detial_back :ImageView
+    private lateinit var pro_detial_share :ImageView
+    private lateinit var pro_detial_radio :ImageView
     private lateinit var pro_detial_sign :Button
     private lateinit var httpClient: HttpClient
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_protocol_detial)
+        myHandler = SetProHandler()
         transparentStatusbar()
         httpClient = HttpClient(this)
         initId()
         getDatas()
+        initViews()
 
+    }
+
+    fun initViews(){
+        when(dbUtils.getProType(pro_id)){
+            "0"->{
+                pro_detial_radio.visibility = View.VISIBLE
+            }
+            "1"->{
+                pro_detial_radio.visibility = View.GONE
+            }
+        }
+        when (dbUtils.getProtocolState(pro_id)){
+            "0" -> {
+                this@ProtocolDetial.pro_detial_radio.setImageResource(R.drawable.ic_radio_deep_orange_600_24dp)
+            }
+            "1" -> {
+                this@ProtocolDetial.pro_detial_radio.setImageResource(R.drawable.ic_radio_black_24dp)
+            }
+        }
     }
     fun initId(){
         text_owner = findViewById(R.id.pro_detial_owner_ed)
@@ -62,7 +86,85 @@ class ProtocolDetial : AppCompatActivity() {
         pro_detial_signatory_list = findViewById(R.id.pro_detial_signatory_list)
         pro_detial_sign = findViewById(R.id.pro_detial_sign)
         pro_detial_sign.setOnClickListener {
+            when(dbUtils.getProType(pro_id)){
+                "0" -> {
+                    httpClient.signProtocol(pro_id,object :ResultListener{
+                        override fun postResullt(resultType: Int, msg: String) {
+                            toast(msg)
+                            when(resultType){
+                                1 -> {
+                                    val checkThred = CheckProtocolThread(this@ProtocolDetial,pro_id)
+                                    Thread(checkThred).start()
+                                }
+                                0 -> {
+                                    val checkThred = CheckProtocolThread(this@ProtocolDetial,pro_id)
+                                    Thread(checkThred).start()
+                                }
+                                else -> {
+                                }
+                            }
+                        }
 
+                    })
+                }
+                "1" -> {
+                    httpClient.signFloater(pro_id,object :ResultListener{
+                        override fun postResullt(resultType: Int, msg: String) {
+                            toast(msg)
+                            when(resultType){
+                                1 -> {
+                                    val checkThred = CheckProtocolThread(this@ProtocolDetial,pro_id)
+                                    Thread(checkThred).start()
+                                }
+                                0 -> {
+                                    val checkThred = CheckProtocolThread(this@ProtocolDetial,pro_id)
+                                    Thread(checkThred).start()
+                                }
+                                else -> {
+                                }
+                            }
+                        }
+                    })
+                }
+            }
+
+        }
+
+        pro_detial_radio = findViewById(R.id.pro_detial_radio)
+        pro_detial_radio.setOnClickListener {
+            when(dbUtils.getTheProState(pro_id)){
+                // no shared, go to share
+                "0" -> {
+                    httpClient.changeProtocolState(pro_id,object :ResultListener{
+                        override fun postResullt(resultType: Int, msg: String) {
+                            if(msg.equals("修改状态成功")) {
+                                Toast.makeText(this@ProtocolDetial, "已发布到广场", Toast.LENGTH_SHORT).show()
+                            }
+                            if (resultType == 1){
+                                this@ProtocolDetial.pro_detial_radio.setImageResource(R.drawable.ic_radio_black_24dp)
+                            }
+                        }
+                    })
+                }
+                // shared, go to no share
+                "1" -> {
+                    httpClient.changeProtocolState(pro_id,object :ResultListener{
+                        override fun postResullt(resultType: Int, msg: String) {
+                            if(msg.equals("修改状态成功")) {
+                                Toast.makeText(this@ProtocolDetial, "已取消发布到广场", Toast.LENGTH_SHORT).show()
+                            }
+                            if (resultType == 1){
+                                this@ProtocolDetial.pro_detial_radio.setImageResource(R.drawable.ic_radio_deep_orange_600_24dp)
+
+                            }
+                        }
+                    })
+                }
+            }
+        }
+        pro_detial_share = findViewById(R.id.pro_detial_share)
+        pro_detial_share.setOnClickListener {
+            Toast.makeText(this@ProtocolDetial,"share",Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -87,6 +189,7 @@ class ProtocolDetial : AppCompatActivity() {
             super.handleMessage(msg)
             when(msg?.what){
                 0 -> {
+                    //Log.d("ProtocolDetialTag0",Thread.currentThread().name.toString())
                     pro_detial_type.setImageResource(R.drawable.protocol)
                     if (null != msg.obj){
                         protocolDetialBean = msg.obj as ProtocolDetailBean
@@ -95,6 +198,7 @@ class ProtocolDetial : AppCompatActivity() {
                     pro_detial_title.text = protocolDetialBean.title
                     text_content.text = protocolDetialBean.content
                     text_time.text = protocolDetialBean.created_at.split("T")[0].replace("-",".")
+
                     val had = dbUtils.getTheSignedNumber(protocolDetialBean._id).replace(" ","")
                     //pro_detial_signatory_had.text = dbUtils.getTheSignedNumber(protocolDetialBean._id)
                     pro_detial_signatory_had.text = had
@@ -109,6 +213,7 @@ class ProtocolDetial : AppCompatActivity() {
                     //toast("finish")
                 }
                 1 -> {
+                    //Log.d("ProtocolDetialTag1",Thread.currentThread().name.toString())
                     pro_detial_type.setImageResource(R.drawable.floater)
                     if( null != msg.obj){
                         protocolDetialBean = msg.obj as ProtocolDetailBean
@@ -177,9 +282,10 @@ class ProtocolDetial : AppCompatActivity() {
                 }
                 else -> {
                     mmsg.what = -1
+                    this@ProtocolDetial.myHandler.handleMessage(mmsg)
                 }
             }
-            this@ProtocolDetial.myHandler.handleMessage(mmsg)
+            //this@ProtocolDetial.myHandler.handleMessage(mmsg)
         }
 
     }

@@ -188,12 +188,12 @@ class ChildFloaterFragmentUI: AnkoComponent<ChildFloaterFragment>{
     fun getAFloater(context: Context){
         httpClient.getRandomFloater(object :ResultListener{
             override fun postResullt(resultType: Int, msg: String) {
-                Toast.makeText(context,msg,Toast.LENGTH_SHORT).show()
                 if(resultType == 11){
                     getAFloater(context)
                 }else if (resultType == 1) {
                     this@ChildFloaterFragmentUI.floaterAdapter.addData(0, dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id", "null"))[0])
                     this@ChildFloaterFragmentUI.floater_recyclerview.scrollToPosition(0)
+                    Toast.makeText(context,msg,Toast.LENGTH_SHORT).show()
                 }
             }
         })

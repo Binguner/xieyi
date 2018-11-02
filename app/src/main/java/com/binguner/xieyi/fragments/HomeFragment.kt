@@ -100,6 +100,20 @@ class HomeFragmentUI:AnkoComponent<HomeFragment>{
                 bottomToTop = id_home_shadow
             }
 
+            imageView {
+                imageResource = R.drawable.ic_search_black_24dp
+                onClick {
+                    toast("Search")
+                }
+                leftPadding = dip(10)
+                rightPadding = dip(10)
+            }.lparams(){
+                topToTop = id_home_toolbar
+                bottomToBottom = id_home_toolbar
+                startToStart = id_home_toolbar
+
+            }
+
             val home_shadow_line = include<View>(R.layout.shadow_line){
                 id = id_home_shadow
             }.lparams(width = matchParent){
@@ -163,7 +177,7 @@ class HomeFragmentUI:AnkoComponent<HomeFragment>{
                         0 -> {
                             //toast("Create Shake Protocol")
                             //startActivity<CreateProtocolActivity>("Type" to 0)
-                            startActivity<SettingActivity>("flag" to 1)
+                            startActivity<SettingActivity>("flag" to 1,"justNormalProtocol" to true)
                         }
                         1 -> {
                             //toast("Create Floater Protocol")

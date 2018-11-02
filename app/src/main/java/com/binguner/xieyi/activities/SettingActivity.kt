@@ -25,6 +25,7 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
 
 
 var flag:Int = -1
+private var justNormalProtocol = false
 
 /**
  * 0 seting
@@ -70,6 +71,8 @@ class SettingActivity : AppCompatActivity() ,UserInfoChangedListener,OnSelectToF
         //setContentView()
 
         flag = intent.extras.getInt("flag")
+        justNormalProtocol = intent.extras.getBoolean("justNormalProtocol")
+        //Log.d("justNormalProtocol",justNormalProtocol.toString())
         initFragments()
     }
 
@@ -91,6 +94,8 @@ class SettingActivity : AppCompatActivity() ,UserInfoChangedListener,OnSelectToF
         }
         if(null == settingMyProFragment){
             settingMyProFragment = Setting_MyProFragment.newInstance()
+            //settingMyProFragment.is
+            //rsettingMyProFragment?.isJustNormalProtocol(justNormalProtocol)
         }
         if(null == setting_Feedback_Fragment){
             setting_Feedback_Fragment = Setting_Feedback_Fragment.newInstance()
@@ -106,6 +111,7 @@ class SettingActivity : AppCompatActivity() ,UserInfoChangedListener,OnSelectToF
             }
             1 ->{
                 selectFragment(settingMyProFragment!!)
+                settingMyProFragment?.isJustNormalProtocol(justNormalProtocol)
                 settingMyProFragment?.attachActivity(this)
             }
             2 ->{

@@ -220,7 +220,7 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
 
                 onClick {
                     //toast("My Protocol")
-                    startActivity<SettingActivity>("flag" to 1)
+                    startActivity<SettingActivity>("flag" to 1,"justNormalProtocol" to false)
                 }
             }.lparams(width = matchParent, height = dip(40)){
                 topToBottom = id_person_avator

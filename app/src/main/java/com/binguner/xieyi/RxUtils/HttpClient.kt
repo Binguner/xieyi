@@ -397,7 +397,6 @@ class HttpClient(val context: Context){
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
                     if (it.code == 1 && it.message.equals("获取信息成功")){
-
                         // 获得到了本用户到漂流瓶 || 漂流瓶数据库中已经有了这个
                         if(it.data.signatory[0].equals(sp.getString("username","null")) || dbUtils.isExistThisFloaterInDB(it.data._id)){
                             Log.d("gettherepeteaed","gettherepeteaed")
@@ -407,8 +406,8 @@ class HttpClient(val context: Context){
                             if(it!=null){
                                 Log.d("gettherepeteaed","insert")
                                 dbUtils.insertAllProtocol(
-                                        it.data._id
-                                        ,it.data.signatory[0],
+                                        it.data._id,
+                                        it.data.signatory[0],
                                         sp.getString("user_id","null"),
                                         it.data.title,
                                         "1"
@@ -424,9 +423,8 @@ class HttpClient(val context: Context){
                                         it.data.region,
                                         it.data.state.toString()
                                 )
-                            }
-                            if(it != null){
                                 dbUtils.insertSignatoryList(it.data._id,it.data.signatory)
+
                             }
                             resultListener.postResullt(it.code,it.message)
                         }
@@ -485,23 +483,58 @@ class HttpClient(val context: Context){
                         })
             }
         }
+    }
+    fun signProtocol(protocol_id: String,resultListener: ResultListener){
+        services.sighProtocol(sp.getString("username","null"),protocol_id)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (it.code == 1 ){
+                        resultListener.postResullt(1,it.message)
+                    }else{
+                        resultListener.postResullt(0,it.message)
+                    }
+                },{
+                    resultListener.postResullt(0,it.toString())
+                },{
 
-        fun signProtocol(protocol_id: String){
-            services.sighProtocol(sp.getString("username","null"),protocol_id)
-                    .subscribeOn(Schedulers.io())
-                    .unsubscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({
-                        if (it.code == 1)
-                    },{
+                })
 
-                    },{
+    }
 
-                    })
+    fun signFloater(protocol_id: String,resultListener: ResultListener){
+        services.sighFloater(sp.getString("username","null"),protocol_id)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if(it.code == 1 && it.message.contains("漂流瓶签署成功")){
+                        resultListener.postResullt(1,it.message)
+                    }else{
+                        resultListener.postResullt(0,it.message)
+                    }
+                },{
+                    resultListener.postResullt(0,it.toString())
+                },{
 
-        }
+                })
+    }
 
+    fun changeProtocolState(protocol_id: String,resultListener: ResultListener){
+        services.changeProtocolState(protocol_id)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    resultListener.postResullt(it.code,it.message)
+                    if(null != it && it.code == 1 && it.message.contains("成功")){
+                        dbUtils.changeProtocolState(protocol_id)
+                    }
+                },{
+                    resultListener.postResullt(0,it.toString())
+                },{
 
-
+                })
     }
 }

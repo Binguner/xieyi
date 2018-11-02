@@ -49,6 +49,10 @@ interface ApiServices{
     @FormUrlEncoded
     fun sighProtocol(@Field("username") username: String, @Field("id") protocolId: String):Observable<SignProtocolBean>
 
+    @POST("signFloater")
+    @FormUrlEncoded
+    fun sighFloater(@Field("username") username: String,@Field("id") id: String):Observable<SIgnFloaterBean>
+
     // get a Protocol information
     @GET("viewProtocol")
     fun getOneProtocolInfo(@Query("id") protocolId: String)
@@ -57,7 +61,6 @@ interface ApiServices{
     @POST("protocol-parise")
     @FormUrlEncoded
     fun giveAHeart(@Field("protocol_id") protocol_id: String, @Field("user_id") user_id:String)
-
 
 
     // modifyUserInfo
@@ -77,5 +80,10 @@ interface ApiServices{
     // xyapi.lzhu.top/api/v1/getRandomFloater
     @GET("getRandomFloater")
     fun getRandomFloater():Observable<RandomFloaterBean>
+
+    // xyapi.lzhu.top/api/v1/changeProtocolState
+    @POST("changeProtocolState")
+    @FormUrlEncoded
+    fun changeProtocolState(@Field("id")protocolId: String):Observable<ChangeProtocolBean>
 
 }

@@ -9,6 +9,7 @@ import com.binguner.xieyi.beans.Data6
 import com.binguner.xieyi.beans.DoLoginBean
 import com.binguner.xieyi.beans.FloaterProtocolInfoBean
 import com.binguner.xieyi.beans.ProtocolDetailBean
+import com.binguner.xieyi.fragments.dbUtils
 import com.binguner.xieyi.sharedPreferences
 import com.binguner.xieyi.username
 
@@ -274,6 +275,25 @@ class DBUtils(val context: Context){
         return maplist
     }
 
+    /**
+     * Get the Protocol isShared pro
+     * 1 shared
+     * 0 no shared
+     */
+    fun getTheProState(protocol_id: String):String{
+        var isShared:String = "0"
+        val cursor = db.query("normal_protocol",null,"protocol_id like ?", arrayOf(protocol_id),null,null,null)
+        if (cursor.moveToFirst()){
+            do {
+                isShared = cursor.getString(cursor.getColumnIndex("isShared"))
+            }while (cursor.moveToNext())
+        }
+        return isShared
+    }
+
+    /**
+     * Get The protocol Type
+     */
     fun  getProType(pro_id:String):String{
         var type :String = "-1"
         val cursor = db.query("all_protocol",null,"protocol_id like ?", arrayOf(pro_id),null,null,null)
@@ -383,6 +403,31 @@ class DBUtils(val context: Context){
             }while (cursor.moveToNext())
         }
         return nameList
+    }
+
+    fun getProtocolState(protocol_id: String):String{
+        var state = "0"
+        val cursor = db.query("normal_protocol",null,"protocol_id like ?", arrayOf(protocol_id),null,null,null)
+        if(cursor.moveToFirst()){
+            do {
+                state = cursor.getString(cursor.getColumnIndex("isShared"))
+            }while (cursor.moveToNext())
+        }
+        cursor.close()
+        return state
+    }
+
+    fun changeProtocolState(protocol_id: String) {
+        var state = "0"
+        var contentValues = ContentValues()
+        val oldState = dbUtils.getProtocolState(protocol_id)
+        when(oldState){
+            "0" -> state = "1"
+            "1" -> state = "0"
+        }
+        contentValues.put("isShared",state)
+        db.update("normal_protocol",contentValues,"protocol_id like ?", arrayOf(protocol_id))
+        contentValues.clear()
     }
 
 
