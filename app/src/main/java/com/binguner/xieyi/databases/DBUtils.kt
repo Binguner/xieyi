@@ -5,10 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.util.Log
-import com.binguner.xieyi.beans.Data6
-import com.binguner.xieyi.beans.DoLoginBean
-import com.binguner.xieyi.beans.FloaterProtocolInfoBean
-import com.binguner.xieyi.beans.ProtocolDetailBean
+import com.binguner.xieyi.beans.*
 import com.binguner.xieyi.fragments.dbUtils
 import com.binguner.xieyi.sharedPreferences
 import com.binguner.xieyi.username
@@ -428,6 +425,124 @@ class DBUtils(val context: Context){
         contentValues.put("isShared",state)
         db.update("normal_protocol",contentValues,"protocol_id like ?", arrayOf(protocol_id))
         contentValues.clear()
+    }
+
+    fun insertProtocolList(pageNumber:String,list:List<ProtocolListBeanData>):Boolean{
+        val sp = context.getSharedPreferences("UserData",Context.MODE_PRIVATE)
+        var contentValues = ContentValues()
+        //Log.d("ChildShakeProtentTag","list's size is ${list.size}")
+        try {
+            list.forEach {
+                if(null != it){
+                    insertProtocolListSign(it._id,it.signatory)
+                    contentValues.put("protocol_id",it._id)
+                    contentValues.put("user_id",sp.getString("user_id","null"))
+                    if (it.signatory != null && !it.signatory.isEmpty()){
+                        contentValues.put("owner",it.signatory[0])
+                    }else{
+                        contentValues.put("owner","无名氏")
+                    }
+                    contentValues.put("signatoryNum",it.signatoryNum)
+                    contentValues.put("title",it.title)
+                    contentValues.put("content",it.content)
+                    contentValues.put("createAt",it.created_at)
+                    contentValues.put("pageNumber",pageNumber)
+                    val flag = db.insert("protocolList",null,contentValues)
+                    contentValues.clear()
+                }
+            }
+        }catch (e:java.lang.Exception){
+            return false
+        }
+        return true
+    }
+
+    fun insertProtocolListSign(protocol_id: String,list: List<String>){
+        var ContentValues = ContentValues()
+        val sp = context.getSharedPreferences("UserData",Context.MODE_PRIVATE)
+        list.forEach {
+            if(null != it){
+                contentValues.put("protocol_id",protocol_id)
+                contentValues.put("user_id",sp.getString("user_id","null"))
+                contentValues.put("signatory_name",it)
+                db.insert("protocolList_sign",null,contentValues)
+                contentValues.clear()
+            }
+        }
+    }
+
+    fun clearProtocolList(user_id: String){
+        db.delete("protocolList","user_id like ?", arrayOf(user_id))
+        db.delete("protocolList_sign","user_id like ?", arrayOf(user_id))
+    }
+
+    /**
+     * get a protocol detail from protocolList
+     */
+    fun getAProtocolFromProtocolList(protocol_id: String):ProtocolDetailBean{
+        val cursor = db.query("protocolList",null,"protocol_id like ?", arrayOf(protocol_id),null,null,null)
+        if(cursor.moveToFirst()){
+            do {
+                protocol = ProtocolDetailBean(
+                        cursor.getString(cursor.getColumnIndex("protocol_id")),
+                        cursor.getString(cursor.getColumnIndex("owner")),
+                        cursor.getString(cursor.getColumnIndex("title")),
+                        cursor.getString(cursor.getColumnIndex("content")),
+                        null,
+                        null,
+                        cursor.getString(cursor.getColumnIndex("createAt")),
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        0
+                )
+            }while (cursor.moveToNext())
+        }
+        return protocol
+    }
+
+    /**
+     * get all protocol from protocolList
+     */
+    fun getProtocolList(user_id: String,pageNumber: String):List<ProtocolListBeanData>{
+        val list = mutableListOf<ProtocolListBeanData>()
+        val cursor = db.query("protocolList",null,"user_id like ? and pageNumber like ?", arrayOf(user_id,pageNumber),null,null,null)
+        if (cursor.moveToFirst()){
+            do {
+               val bean = ProtocolListBeanData(
+                        cursor.getString(cursor.getColumnIndex("protocol_id")),
+                       null,
+                        cursor.getString(cursor.getColumnIndex("content")),
+                        cursor.getString(cursor.getColumnIndex("createAt")),
+                       null,
+                       "1",
+                        getProtocolListSign(cursor.getString(cursor.getColumnIndex("protocol_id"))),
+                        cursor.getString(cursor.getColumnIndex("signatoryNum")),
+                       "1",
+                        cursor.getString(cursor.getColumnIndex("title"))
+                )
+                list.add(bean)
+            }while (cursor.moveToNext())
+        }
+        return list
+    }
+
+    /**
+     * get the signed people from protocolList
+     */
+    fun getProtocolListSign(protocol_id: String):List<String>{
+        val list = mutableListOf<String>()
+        val cursor = db.query("protocolList_sign",null,"protocol_id like ?", arrayOf(protocol_id),null,null,null)
+        if (cursor.moveToFirst()){
+            do {
+                list.add(cursor.getString(cursor.getColumnIndex("signatory_name")))
+            }while (cursor.moveToNext())
+        }
+        return list
+
     }
 
 

@@ -5,7 +5,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import android.widget.Toast
 import com.binguner.xieyi.BuildConfig
-import com.binguner.xieyi.activities.type
+//import com.binguner.xieyi.activities.type
 import com.binguner.xieyi.databases.DBUtils
 import com.binguner.xieyi.httpClient
 import com.binguner.xieyi.listeners.ResultListener
@@ -439,7 +439,13 @@ class HttpClient(val context: Context){
                 })
     }
 
+    /**
+     * 0 normal
+     * 1 floater
+     * 2 normal or floater
+     */
     fun updateFloaterInfo(type:Int,protocol_id:String,resultListener: ResultListener){
+        val sp = context.getSharedPreferences("UserData",Context.MODE_PRIVATE)
         when(type){
             0 ->{
                 services.getNormalProtocolInfo(protocol_id)
@@ -480,6 +486,83 @@ class HttpClient(val context: Context){
                             resultListener.postResullt(0,it.toString())
                         },{
 
+                        })
+            }
+
+            2 -> {
+                services.getNormalProtocolInfo(protocol_id)
+                        .subscribeOn(Schedulers.io())
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe({
+                            //Log.d("sdfasdf",it.code.toString())
+                            if (it.code != 1){
+                                // floater
+
+
+                            }else{
+                                // normal
+                                try {
+                                    dbUtils.insertAllProtocol(protocol_id,
+                                            it.data.signatory[0],
+                                            sp.getString("user_id","null"),
+                                            it.data.title,
+                                            "0")
+                                    dbUtils.insertNormalProtocol(
+                                            protocol_id,
+                                            it.data.signatory[0],
+                                            sp.getString("user_id","null"),
+                                            it.data.title,
+                                            it.data.signatoryNum.toString(),
+                                            it.data.share.toString(),
+                                            it.data.content,
+                                            it.data.created_at
+                                    )
+                                }catch (e:java.lang.Exception){
+                                    resultListener.postResullt(0,"查找失败！")
+                                }
+                                resultListener.postResullt(1,it.message)
+
+                            }
+
+
+                        },{
+                            //resultListener.postResullt(0,it.toString())
+                            //Log.d("sdfasdf","wrong")
+                            services.getFloaterProtocolInfo(protocol_id)
+                                    .subscribeOn(Schedulers.io())
+                                    .unsubscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe({
+                                        try{
+                                            dbUtils.insertAllProtocol(protocol_id,
+                                                    it.data.signatory!![0],
+                                                    sp.getString("user_id","null"),
+                                                    it.data.title,
+                                                    "1")
+                                            dbUtils.insertFloaterProtocol(
+                                                    protocol_id,
+                                                    it.data.signatory[0],
+                                                    sp.getString("user_id","null"),
+                                                    it.data.title,
+                                                    it.data.content,
+                                                    it.data.created_at,
+                                                    it.data.obtain_at!!,
+                                                    it.data.region,
+                                                    it.data.state
+                                            )
+                                        }catch (e:java.lang.Exception){
+                                            resultListener.postResullt(0,"查找失败！")
+                                        }
+                                        resultListener.postResullt(1, it.message)
+                                    },{
+                                        resultListener.postResullt(0, it.toString())
+                                    },{
+
+                                    })
+
+                        },{
+                            //Log.d("sdfasdf","cinoke")
                         })
             }
         }
@@ -530,6 +613,26 @@ class HttpClient(val context: Context){
                     resultListener.postResullt(it.code,it.message)
                     if(null != it && it.code == 1 && it.message.contains("成功")){
                         dbUtils.changeProtocolState(protocol_id)
+                    }
+                },{
+                    resultListener.postResullt(0,it.toString())
+                },{
+
+                })
+    }
+
+    fun getProtocolList(pageSize:Int,page:Int,resultListener: ResultListener){
+        services.getProtocolList(pageSize,page)
+                .subscribeOn(Schedulers.io())
+                .unsubscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (null != it){
+                        if(dbUtils.insertProtocolList(page.toString(),it.data)){
+                            resultListener.postResullt(it.code,it.message)
+                        }
+                    }else{
+                        resultListener.postResullt(it!!.code,it!!.message)
                     }
                 },{
                     resultListener.postResullt(0,it.toString())

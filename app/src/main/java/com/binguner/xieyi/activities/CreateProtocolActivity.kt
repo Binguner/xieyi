@@ -23,7 +23,7 @@ import org.jetbrains.anko.design.snackbar
 import org.jetbrains.anko.sdk25.coroutines.onClick
 import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 
-var type = 3
+private var type = 3
 class CreateProtocolActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {

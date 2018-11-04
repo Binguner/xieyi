@@ -166,7 +166,7 @@ class SettingMyProFragmentUI:AnkoComponent<Setting_MyProFragment>{
                 myAdapter.setOnItemClickListener {
                     adapter, view, position ->
                     //Rtoast("You clicked $position")
-                    startActivity<ProtocolDetial>("pro_id" to list[position]._id)
+                    startActivity<ProtocolDetial>("pro_id" to list[position]._id,"ProtocolList" to false)
                 }
                 adapter = myAdapter
                 /*dapter.setOnItemClickListener(object : BaseQuickAdapter.OnItemClickListener {

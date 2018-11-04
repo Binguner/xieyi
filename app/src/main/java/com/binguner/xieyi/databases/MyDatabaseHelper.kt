@@ -67,6 +67,24 @@ class MyDatabaseHelper(context: Context):ManagedSQLiteOpenHelper(context,"Xieyie
                 "user_id" to TEXT,
                 "signatory_name" to TEXT)
 
+        db?.createTable("protocolList",true,
+                "id" to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
+                "protocol_id" to TEXT,
+                "user_id" to TEXT,
+                "owner" to TEXT,
+                "signatoryNum" to TEXT,
+                "title" to TEXT,
+                "content" to TEXT,
+                "createAt" to TEXT,
+                "pageNumber" to TEXT
+                )
+
+        db?.createTable("protocolList_sign",true,
+                "id" to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
+                "protocol_id" to TEXT,
+                "user_id" to TEXT,
+                "signatory_name" to TEXT)
+
     }
 
     override fun onUpgrade(db: SQLiteDatabase?, oldVersion: Int, newVersion: Int) {

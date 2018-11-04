@@ -1,7 +1,10 @@
 package com.binguner.xieyi.fragments
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
+import android.inputmethodservice.InputMethodService
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
@@ -19,14 +22,22 @@ import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
+import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import com.binguner.xieyi.MainActivityUI
+import com.binguner.xieyi.RxUtils.HttpClient
 import com.binguner.xieyi.activities.CreateProtocolActivity
+import com.binguner.xieyi.activities.ProtocolDetial
 import com.binguner.xieyi.activities.SettingActivity
+import com.binguner.xieyi.httpClient
+import com.binguner.xieyi.listeners.ResultListener
 import org.jetbrains.anko.*
+import org.jetbrains.anko.appcompat.v7.alertDialogLayout
+import org.jetbrains.anko.custom.customView
 import org.jetbrains.anko.design.tabItem
 import org.jetbrains.anko.recyclerview.v7.recyclerView
 import org.jetbrains.anko.sdk25.coroutines.onClick
+import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 import org.jetbrains.anko.support.v4.ctx
 import org.jetbrains.anko.support.v4.onPageChangeListener
 import org.jetbrains.anko.support.v4.viewPager
@@ -83,13 +94,23 @@ class HomeFragmentUI:AnkoComponent<HomeFragment>{
     val id_home_toolbar = View.generateViewId()
     val id_home_shadow = View.generateViewId()
     val id_home_TabLayout = View.generateViewId()
+    val id_home_alert_title = View.generateViewId()
+    val id_home_alert_ed = View.generateViewId()
+    val id_home_alert_search_btn = View.generateViewId()
+    val id_home_alert_cancle_btn = View.generateViewId()
+    val id_home_alert_parent = View.generateViewId()
+    val id_home_alert = View.generateViewId()
+    private lateinit var mAlert:DialogInterface
     val id_recyclerview = View.generateViewId()
     val id_add_new_shake_protocol = View.generateViewId()
+    private lateinit var homeHttpClient:HttpClient
+
+    private lateinit var pro_id : String
     lateinit var add_new_shake_protocol:ImageView
 
 
     override fun createView(ui: AnkoContext<HomeFragment>)= with(ui) {
-
+        homeHttpClient = HttpClient(ctx)
         constraintLayout(){
 
             val home_toolbar = include<View>(R.layout.toolbar_layout) {
@@ -103,7 +124,94 @@ class HomeFragmentUI:AnkoComponent<HomeFragment>{
             imageView {
                 imageResource = R.drawable.ic_search_black_24dp
                 onClick {
-                    toast("Search")
+                    //toast("Search")
+                    mAlert = alert() {
+                        id = id_home_alert
+
+                        onCancelled {
+                            val imm = ctx.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                            imm.hideSoftInputFromInputMethod(this@imageView.windowToken,0)
+                        }
+
+
+
+
+                        customView {
+                            constraintLayout {
+                                id = id_home_alert_parent
+                                textView {
+                                    id = id_home_alert_title
+                                    text = "搜索协议: "
+                                    textSize = 20f
+                                    textColor = ContextCompat.getColor(ctx,R.color.colorTextGrayDeep)
+                                }.lparams(){
+                                    topToTop = id_home_alert_parent
+                                    startToStart = id_home_alert_parent
+                                    leftPadding = dip(20)
+                                    topPadding = dip(10)
+                                }
+
+                                val myed = editText() {
+                                    id = id_home_alert_ed
+                                    setHint("协议 ID")
+                                    hintTextColor = ContextCompat.getColor(ctx,R.color.colorLightGrey)
+                                    textColor = ContextCompat.getColor(ctx,R.color.colorLightGrey)
+                                    textChangedListener {
+                                        afterTextChanged {
+                                            pro_id = this@editText.text.toString()
+                                        }
+                                    }
+                                }.lparams(width = matchParent){
+                                    topToBottom = id_home_alert_title
+                                    startToStart = id_home_alert_parent
+                                    endToEnd = id_home_alert_parent
+                                    topMargin = dip(10)
+                                    leftPadding = dip(10)
+                                    rightPadding = dip(10)
+                                }
+
+                                button("搜索"){
+                                    id = id_home_alert_search_btn
+                                    onClick {
+                                        if (null != pro_id && !pro_id.equals("")){
+                                            homeHttpClient.updateFloaterInfo(2,pro_id,object : ResultListener{
+                                                override fun postResullt(resultType: Int, msg: String) {
+                                                    if(resultType == 1){
+                                                        startActivity<ProtocolDetial>("pro_id" to pro_id,"ProtocolList" to false)
+                                                        myed.setText("")
+                                                    }else{
+                                                        toast("找不到该协议～")
+                                                    }
+                                                }
+                                            })
+                                        }else{
+                                            toast("请输入协议ID")
+                                        }
+                                    }
+                                }.lparams(){
+                                    bottomToBottom = id_home_alert_parent
+                                    endToEnd = id_home_alert_parent
+                                    topToBottom = id_home_alert_ed
+                                    bottomMargin = dip(10)
+                                    rightMargin = dip(10)
+                                }
+
+                                button("取消") {
+                                    id = id_home_alert_cancle_btn
+                                    onClick {
+                                        mAlert.dismiss()
+                                        val imm = ctx.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                                        imm.hideSoftInputFromInputMethod(this@imageView.windowToken,0)
+                                    }
+                                }.lparams(){
+                                    topToTop = id_home_alert_search_btn
+                                    endToStart = id_home_alert_search_btn
+
+                                }
+
+                            }
+                        }
+                    }.show()
                 }
                 leftPadding = dip(10)
                 rightPadding = dip(10)

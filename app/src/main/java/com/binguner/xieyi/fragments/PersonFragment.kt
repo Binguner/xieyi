@@ -91,10 +91,12 @@ class PersonFragment : Fragment() {
         if (requestCode == 111 ) {
             when(resultCode){
                 1 -> {
+                    person_name.setText(sharedPreferences.getString("nickname","请设置昵称").substring(0,1))
                     person_email.setText(sharedPreferences.getString("email","请到设置页面设置邮箱地址！"))
                     person_username.setText(sharedPreferences.getString("nickname","请设置昵称"))
                 }
                 2 -> {
+                    person_name.setText(sharedPreferences.getString("nickname","请设置昵称").substring(0,1))
                     person_email.setText(sharedPreferences.getString("email", "请到设置页面设置邮箱地址！"))
                     person_username.setText(sharedPreferences.getString("nickname","请设置昵称"))
                 }
@@ -108,6 +110,7 @@ class PersonFragment : Fragment() {
 //lateinit var mainActivity:MainActivity
 lateinit var person_username:TextView
 lateinit var person_email :TextView
+lateinit var person_name :TextView
 lateinit var sharedPreferences :SharedPreferences
 class PersonFragmentUI: AnkoComponent<PersonFragment>{
 
@@ -124,6 +127,7 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
     val id_person_help= View.generateViewId()
     val id_person_logout= View.generateViewId()
     val id_person_setting= View.generateViewId()
+    val id_person_name= View.generateViewId()
     lateinit var dbUtils:DBUtils
     //lateinit var sharedPreferences: SharedPreferences
     lateinit var editor: SharedPreferences.Editor
@@ -171,6 +175,19 @@ class PersonFragmentUI: AnkoComponent<PersonFragment>{
                 startToStart = PARENT_ID
                 leftMargin = dip(20)
             }
+
+            person_name = textView(){
+                id = id_person_name
+                textSize = 25f
+                
+                text = sharedPreferences.getString("nickname","/").substring(0,1)
+            }.lparams(){
+                topToTop = id_person_avator
+                bottomToBottom = id_person_avator
+                startToStart = id_person_avator
+                endToEnd = id_person_avator
+            }
+
 
             person_username = textView(sharedPreferences.getString("nickname","请设置昵称")){
                 id = id_person_username

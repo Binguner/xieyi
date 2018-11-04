@@ -65,6 +65,7 @@ class ChildFloaterFragment : Fragment() {
         super.onResume()
         //Log.d("dfrv",flag.toString())
         if (flag){
+
             childFloaterFragmentUI.refreshList()
         }
         flag = true
@@ -104,6 +105,7 @@ class ChildFloaterFragmentUI: AnkoComponent<ChildFloaterFragment>{
     fun refreshList(){
         if(dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id","null")).size > oldSize){
             floaterAdapter.addData(0, dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id", "null"))[0])
+            Log.d("adddadada","AddData")
             floater_recyclerview.scrollToPosition(0)
             oldSize++
         }
@@ -147,7 +149,7 @@ class ChildFloaterFragmentUI: AnkoComponent<ChildFloaterFragment>{
                     floaterAdapter.setOnItemClickListener {
                         adapter, view, position ->
                         //toast("Youckcicked $position")
-                        startActivity<ProtocolDetial>("pro_id" to mDatas[position]._id)
+                        startActivity<ProtocolDetial>("pro_id" to mDatas[position]._id,"ProtocolList" to false)
                     }
 
                 }
@@ -192,6 +194,7 @@ class ChildFloaterFragmentUI: AnkoComponent<ChildFloaterFragment>{
                     getAFloater(context)
                 }else if (resultType == 1) {
                     this@ChildFloaterFragmentUI.floaterAdapter.addData(0, dbUtils.getFloaterProtocolList(sharedPreferences.getString("user_id", "null"))[0])
+                    oldSize++
                     this@ChildFloaterFragmentUI.floater_recyclerview.scrollToPosition(0)
                     Toast.makeText(context,msg,Toast.LENGTH_SHORT).show()
                 }

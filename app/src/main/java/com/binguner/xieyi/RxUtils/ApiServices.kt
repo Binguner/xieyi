@@ -86,4 +86,8 @@ interface ApiServices{
     @FormUrlEncoded
     fun changeProtocolState(@Field("id")protocolId: String):Observable<ChangeProtocolBean>
 
+    //xyapi.lzhu.top/api/v1/protocolList/10/1
+    @GET("protocolList/{pagesize}/{page}")
+    fun getProtocolList(@Path("pagesize")pageSize:Int,@Path("page")page:Int):Observable<ProtocolListBean>
+
 }

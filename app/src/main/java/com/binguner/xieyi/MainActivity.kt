@@ -31,7 +31,8 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.ImageView
 import android.widget.TableLayout
-import com.binguner.xieyi.activities.type
+//import com.binguner.xieyi.activities.type//
+import com.binguner.xieyi.databases.DBUtils
 import com.binguner.xieyi.fragments.*
 import com.binguner.xieyi.utils.StatusBarUtil
 import org.jetbrains.anko.*
@@ -46,6 +47,13 @@ class MainActivity : AppCompatActivity(),OnSelectToFinishCallback{
 
     override fun selected() {
         this.finish()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        val dbUtils = DBUtils(this)
+        val sp = getSharedPreferences("UserData", Context.MODE_PRIVATE)
+        dbUtils.clearProtocolList(sp.getString("user_id","null"))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

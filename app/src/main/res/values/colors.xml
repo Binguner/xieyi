@@ -16,4 +16,11 @@
     <color name="colorTransparent">#00ffffff</color>
     <color name="colorAlertDialogContentBackground">#FAFAFA</color>
     <color name="colorAlertDialogToolbar">#EEEEEE</color>
+    <color name="colorCardBlue">#b8eae4</color>
+    <color name="colorCardBlue2">#bee9e3</color>
+    <color name="colorCardBlue3">#cfece8</color>
+    <color name="colorYello">#efe700</color>
+    <color name="colorOrange">#ffc400</color>
+    <color name="colorPink">#f700ff</color>
+    <color name="colorPurple">#ae00ff</color>
 </resources>
