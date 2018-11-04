@@ -1,2 +1,2 @@
 # xieyi
-An application developed with Kotlin and Anko
+An application developed by Kotlin and Anko
